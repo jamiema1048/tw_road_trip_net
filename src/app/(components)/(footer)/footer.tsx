@@ -6,8 +6,8 @@ import { Icon } from "@iconify/react";
 /* 1. 外層容器：改為最大寬度 1440px，居中並隨螢幕縮放 */
 const StyledComponentFooter = styled.div`
   width: 100%;
-  margin: 0 auto;
-  position: relative;
+  margin: auto auto 0 auto;
+  position: bottom;
 `;
 
 /* 2. 主體區塊：改用 Padding 上下留白，替代原本死板的 height: 87.5% */
@@ -49,7 +49,9 @@ const ContactContent = styled.div`
 const TextWrapper = styled.div`
   color: #ffffff;
   font-family: "Inter-Regular", Helvetica;
-  font-size: 20px;
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
   font-weight: 400;
   letter-spacing: 0;
   line-height: normal;
@@ -181,9 +183,9 @@ export interface ComponentFooterProps {
   className?: string;
 }
 
-const Footer: React.FC<ComponentFooterProps> = ({ className = "" }) => {
+const Footer: React.FC<ComponentFooterProps> = () => {
   return (
-    <StyledComponentFooter className={`component-footer ${className}`}>
+    <StyledComponentFooter>
       <Frame>
         <NavigationGroup>
           <NavigationColumn>

@@ -12,6 +12,7 @@ const HomeContainer = styled.div`
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
+  overflow-x: hidden;
   box-sizing: border-box;
   overflow-y: auto; /* 超出螢幕高度時出現滾動條 */
 `;
