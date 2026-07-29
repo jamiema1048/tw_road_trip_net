@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import styled from "styled-components";
 import Link from "next/link";
 // import Loading from "@/src/app/(pages)/stations/[stationId]/loading";
 import { Station, RailwayData } from "@/src/types/railway";
@@ -24,6 +25,30 @@ import { Station, RailwayData } from "@/src/types/railway";
 // }
 
 // ... 其餘 Interface 保持不變
+const LineAreaTitle = styled.div`
+  display: inline-flex;
+  align-items: center;
+`;
+
+const LineAreaTitleDot = styled.div`
+  width: 3rem;
+  height: 3rem;
+  aspect-ratio: 1/1;
+`;
+
+const LineAreaTitleText = styled.h2`
+  color: #ffffff;
+  font-family: "Inter-Regular", Helvetica;
+  display: flex;
+  align-items: center;
+  font-size: 2.5rem;
+  font-weight: 400;
+  height: 3rem;
+  letter-spacing: 0;
+  margin: 0;
+  line-height: normal;
+  white-space: nowrap;
+`;
 
 interface DistrictGroupedStationsProps {
   lineID: number; // 補上這個
@@ -101,10 +126,23 @@ const DistrictGroupedStations: React.FC<DistrictGroupedStationsProps> = ({
           key={district.districtID}
           className="border-l-2 border-gray-700 pl-4"
         >
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-            <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-            {district.districtName}
-          </h2>
+          <LineAreaTitle>
+            <LineAreaTitleDot>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="48"
+                height="48"
+                viewBox="0 0 48 48"
+                fill="none"
+              >
+                <path
+                  d="M14.4 23.9999C14.4 26.546 15.4115 28.9878 17.2118 30.7881C19.0121 32.5885 21.4539 33.5999 24 33.5999C26.5461 33.5999 28.9879 32.5885 30.7883 30.7881C32.5886 28.9878 33.6 26.546 33.6 23.9999C33.6 21.4538 32.5886 19.012 30.7883 17.2117C28.9879 15.4113 26.5461 14.3999 24 14.3999C21.4539 14.3999 19.0121 15.4113 17.2118 17.2117C15.4115 19.012 14.4 21.4538 14.4 23.9999Z"
+                  fill="#008E9B"
+                />
+              </svg>
+            </LineAreaTitleDot>
+            <LineAreaTitleText>{district.districtName}</LineAreaTitleText>
+          </LineAreaTitle>
 
           {district.prevArea && (
             <div className="mb-2">

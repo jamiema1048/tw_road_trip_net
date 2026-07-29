@@ -1,12 +1,14 @@
 "use client";
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
-// import { TitleContext } from "@/app/(context)/title/TitleContext";
-// import Head from "next/head";
+import { TitleContext } from "@/src/app/(context)/title/TitleContext";
+import Head from "next/head";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { RailwayCompanyGroup } from "@/src/app/(components)/(railways)/RailwayCompanyGroup";
-import Header from "../../(components)/(header)/header";
+import Header from "@/src/app/(components)/(header)/header";
 import Footer from "@/src/app/(components)/(footer)/footer";
+import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 
 // import { BreadcrumbRight } from "./BreadcrumbRight";
 // import { ComponentFooterSubsection } from "./ComponentFooterSubsection";
@@ -32,7 +34,7 @@ interface Props {
   lines: Line[];
 }
 
-const RailwayListContainer = styled.div`
+const RailwayListPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #000000;
@@ -47,7 +49,7 @@ const RailwayListContainer = styled.div`
     width: 0;
   }
 `;
-const RailwayListContainerArea = styled.div`
+const RailwayListContainer = styled.div`
   background-color: #000000;
   align-items: center;
   padding: 1.75rem 3rem 1.75rem 3rem;
@@ -56,15 +58,18 @@ const RailwayListContainerArea = styled.div`
   }
 `;
 
+const PageTitleContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 1.25rem auto;
+`;
 const PageTitle = styled.div`
   color: #ffffff;
   font-family: "Inter-Regular", Helvetica;
-  font-size: 50px;
+  font-size: 3rem;
   font-weight: 400;
   letter-spacing: 0;
   line-height: normal;
-  margin: 1.25rem auto;
-  top: 5.5rem;
 `;
 
 const Divider = styled.div`
@@ -75,19 +80,20 @@ const Divider = styled.div`
 `;
 
 export default function LinePageClient({ lines }: Props) {
-  // const { title, setTitle } = useContext(TitleContext);
+  const { title, setTitle } = useContext(TitleContext);
   const [loading, setLoading] = useState(true);
+  const pathname = usePathname();
 
   useEffect(() => {
     // 模擬載入動畫
     const timer = setTimeout(() => {
       setLoading(false);
-      // setTitle("鐵路總覽");
+      setTitle("鐵路總覽");
       document.title = "鐵路總覽";
     }, 100); // 可自行調整延遲，測試可縮短
 
     return () => clearTimeout(timer);
-  }, []); //Context完成後補回setTitle
+  }, [setTitle]); //Context完成後補回setTitle
 
   // 根據 co 分組
   const groupedByCo = lines.reduce<Record<number, Line[]>>((acc, line) => {
@@ -105,20 +111,23 @@ export default function LinePageClient({ lines }: Props) {
 
   return (
     <>
-      {/* <Head>
+      <Head>
         <title>{title}</title>
-      </Head> */}
-      <RailwayListContainer>
+      </Head>
+      <RailwayListPageContainer>
         <Header />
         {loading ? (
           <div className="flex flex-col items-center justify-center min-h-screen bg-black text-gray-200">
             <p className="text-xl text-white mt-4">Loading data...</p>
           </div>
         ) : (
-          <RailwayListContainerArea>
-            <PageTitle>
-              <h1>🚉 鐵路總覽</h1>
-            </PageTitle>
+          <RailwayListContainer>
+            <PageTitleContainer>
+              <PageTitle>
+                <h1>🚉 鐵路總覽</h1>
+              </PageTitle>
+            </PageTitleContainer>
+            <Breadcrumbs currentPath={pathname} />
             <Divider />
             {Object.entries(groupedByCo).map(([co, lineList]) => (
               <RailwayCompanyGroup
@@ -128,10 +137,10 @@ export default function LinePageClient({ lines }: Props) {
                 lineList={lineList} // 這裡直接傳入該 co 專屬的路線陣列
               />
             ))}
-          </RailwayListContainerArea>
+          </RailwayListContainer>
         )}
         <Footer />
-      </RailwayListContainer>
+      </RailwayListPageContainer>
     </>
   );
 }
