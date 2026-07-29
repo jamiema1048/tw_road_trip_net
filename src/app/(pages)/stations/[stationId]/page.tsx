@@ -2,17 +2,17 @@ import { Metadata } from "next";
 import { Types } from "mongoose";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import StationClient from "@/app/(client)/(stations)/StationClient";
-import { getConnections } from "@/app/_lib/mongodb_connections";
-import { RailwaySchema } from "@/models/Railway";
-import { StationSchema } from "@/models/Station";
+import StationClient from "@/src/app/(client)/(stations)/StationClient";
+import { getConnections } from "@/src/app/_lib/mongodb_connections";
+import { RailwaySchema } from "@/src/models/Railway";
+import { StationSchema } from "@/src/models/Station";
 import {
   Station,
   StationLineDistrict,
   StationLine,
   RailwayData,
   MongoStation,
-} from "@/types/railway";
+} from "@/src/types/railway";
 
 interface MongoRawDistrict {
   id?: number;

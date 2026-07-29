@@ -3,7 +3,7 @@
 import React from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import image from "@/public/Logo/Header.svg";
+import LogoSvg from "@/public/Logo/Header.svg";
 
 // --- 響應式佈局調整 ---
 const StyledComponentHeader = styled.div`
@@ -11,77 +11,16 @@ const StyledComponentHeader = styled.div`
   background-color: #090980;
   box-shadow: 0px 8px 10px #ffffff40;
   display: flex;
-  min-height: 80px;
+  height: 5rem;
   height: auto;
   justify-content: space-between;
-  padding: 11px 24px;
+  padding: 0.75rem 1.5rem;
   position: top;
 
   /* 改為自適應寬度，上限 1440px 併置中 */
   width: 100%;
   margin: 0px auto 0 auto;
   box-sizing: border-box;
-
-  & .logo-header {
-    aspect-ratio: 1 !important;
-    height: 56px !important;
-    position: relative !important;
-    width: 56px !important;
-    flex-shrink: 0;
-  }
-
-  & .frame {
-    align-items: center;
-    display: inline-flex;
-    flex: 0 0 auto;
-    gap: 40px;
-    position: relative;
-    flex-wrap: wrap; /* 平板與手機版過窄時允許彈性換行 */
-  }
-
-  & .component-cell-header-search {
-    background-image: url(${image}) !important;
-    left: unset !important;
-    top: unset !important;
-  }
-
-  & .text-wrapper {
-    color: #ffffff;
-    font-family: "Inter-Regular", Helvetica;
-    font-size: 40px;
-    font-weight: 400;
-    letter-spacing: 0;
-    line-height: normal;
-    margin-top: -1px;
-    position: relative;
-    white-space: nowrap;
-    width: fit-content;
-    /* 為了讓按鈕看起來像文字，需要清除 button 的預設樣式 */
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-  }
-
-  & .component-button-light-mode-switch {
-    left: unset !important;
-    top: unset !important;
-    /* 確保按鈕有 pointer 手勢 */
-    cursor: pointer;
-  }
-
-  & .icon-home {
-    aspect-ratio: 1 !important;
-    height: 48px !important;
-    position: relative !important;
-    width: 48px !important;
-    /* 確保圖示按鈕有 pointer 手勢 */
-    cursor: pointer;
-    /* 清除按鈕預設樣式 */
-    background: none;
-    border: none;
-    padding: 0;
-  }
 
   /* 平板尺寸適應 (<= 1024px) */
   @media (max-width: 1024px) {
@@ -96,24 +35,6 @@ const StyledComponentHeader = styled.div`
   /* 手機尺寸適應 (<= 768px) */
   @media (max-width: 768px) {
     padding: 12px 16px;
-
-    & .logo-header {
-      height: 40px !important;
-      width: 40px !important;
-    }
-
-    & .frame {
-      gap: 16px;
-    }
-
-    & .text-wrapper {
-      font-size: 20px;
-    }
-
-    & .icon-home {
-      height: 36px !important;
-      width: 36px !important;
-    }
   }
 `;
 
@@ -125,6 +46,20 @@ const IconButton = styled.button`
   justify-content: center;
   align-items: center;
   aspect-ratio: 1/1;
+  @media (max-width: 768px) {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+`;
+
+const HeaderTools = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2.5rem;
+  @media (max-width: 768px) {
+    gap: 1.25rem;
+  }
 `;
 
 const SearchButton = styled.button`
@@ -132,12 +67,18 @@ const SearchButton = styled.button`
   width: 3rem;
   height: 3rem;
   flex-shrink: 0;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   aspect-ratio: 1/1;
+  @media (max-width: 768px) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 `;
 
 const HighwayButton = styled.button`
+  display: flex;
   color: #ffffff;
   font-family: "Inter-Regular", Helvetica;
   font-size: 40px;
@@ -153,9 +94,13 @@ const HighwayButton = styled.button`
   border: none;
   padding: 0;
   cursor: pointer;
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const RailwayButton = styled.button`
+  display: flex;
   color: #ffffff;
   font-family: "Inter-Regular", Helvetica;
   font-size: 40px;
@@ -171,6 +116,9 @@ const RailwayButton = styled.button`
   border: none;
   padding: 0;
   cursor: pointer;
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const SwitchButton = styled.button`
@@ -178,9 +126,15 @@ const SwitchButton = styled.button`
   width: 3rem;
   height: 3rem;
   flex-shrink: 0;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   aspect-ratio: 1/1;
+  cursor: pointer;
+  @media (max-width: 768px) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 `;
 
 const HomeButton = styled.button`
@@ -188,9 +142,11 @@ const HomeButton = styled.button`
   width: 3rem;
   height: 3rem;
   flex-shrink: 0;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   aspect-ratio: 1/1;
+  cursor: pointer;
 `;
 
 export interface ComponentHeaderProps {
@@ -206,20 +162,43 @@ const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
       <IconButton
         type="button"
         className="component-cell-header-search"
-        aria-label="搜尋"
+        aria-label="Logo"
         onClick={() => {
           console.log("點擊了Logo");
         }}
         style={{ border: "none", cursor: "pointer", backgroundSize: "cover" }}
       >
-        <Image className="logo-header" src={image} alt="Logo" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 840 840"
+          width="56"
+          height="56"
+          fill="none"
+        >
+          <path
+            d="M396.37 309.5H444.37V485.5C444.37 498.755 433.625 509.5 420.37 509.5C407.115 509.5 396.37 498.755 396.37 485.5V309.5Z"
+            fill="white"
+          />
+          <path
+            d="M280.37 285.5C280.37 272.245 291.115 261.5 304.37 261.5H536.37C549.625 261.5 560.37 272.245 560.37 285.5C560.37 298.755 549.625 309.5 536.37 309.5H304.37C291.115 309.5 280.37 298.755 280.37 285.5Z"
+            fill="white"
+          />
+          <path
+            d="M278.37 655.5H562.37L491.37 524.5H349.37L278.37 655.5Z"
+            fill="white"
+          />
+          <path
+            d="M741.666 185C780.156 185 804.212 226.667 784.967 260L564.616 641.657L530.791 579.245L686.24 310C705.485 276.667 681.428 235 642.938 235H197.802C159.312 235 135.255 276.667 154.5 310L309.948 579.244L276.123 641.657L55.7733 260C36.5282 226.667 60.585 185 99.075 185H741.666Z"
+            fill="white"
+          />
+        </svg>
       </IconButton>
 
-      <div className="frame">
+      <HeaderTools>
         {/* 2. Search 區域 */}
         <SearchButton
           type="button"
-          className="component-cell-header-search"
+          className="logo"
           aria-label="搜尋"
           onClick={() => {
             console.log("點擊了搜尋");
@@ -308,7 +287,7 @@ const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
             />
           </svg>
         </HomeButton>
-      </div>
+      </HeaderTools>
     </StyledComponentHeader>
   );
 };

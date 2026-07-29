@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Link from "next/link";
 // import Loading from "@/src/app/(pages)/stations/[stationId]/loading";
 import { Station, RailwayData } from "@/src/types/railway";
@@ -25,6 +25,49 @@ import { Station, RailwayData } from "@/src/types/railway";
 // }
 
 // ... 其餘 Interface 保持不變
+
+interface DistrictGroupedStationsProps {
+  lineID: number; // 補上這個
+  lineData: RailwayData; // 補上這個
+  stations: Station[]; // 補上這個
+  loading: boolean; // 補上這個
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>; // 補上這個
+}
+
+interface OrderedStation extends Station {
+  _order: number;
+}
+
+// 2. 狀態樣式對照表 (封裝 3 種 status 樣式)
+const STATUS_STYLES: Record<Station["status"], ReturnType<typeof css>> = {
+  active: css`
+    color: #000000;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    @media (prefers-color-scheme: dark) {
+      color: #ffffff;
+    }
+  `,
+  disused: css`
+    color: #949494; /* text-gray-500 */
+    text-decoration: line-through;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  `,
+  // 預設/其他狀態 (例如原本的 text-blue-400 italic)
+  plan: css`
+    color: #008e9b; /* text-blue-400 */
+    font-style: italic;
+    font-family: Inter;
+    font-weight: 400;
+    line-height: normal;
+  `,
+};
+
 const LineAreaTitle = styled.div`
   display: inline-flex;
   align-items: center;
@@ -49,18 +92,57 @@ const LineAreaTitleText = styled.h2`
   line-height: normal;
   white-space: nowrap;
 `;
+const LineAreaContentContainer = styled.div`
+  display: grid;
+  width: 100%;
+  gap: 3rem;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  position: relative;
+`;
 
-interface DistrictGroupedStationsProps {
-  lineID: number; // 補上這個
-  lineData: RailwayData; // 補上這個
-  stations: Station[]; // 補上這個
-  loading: boolean; // 補上這個
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>; // 補上這個
-}
+const StationsListItem = styled.li`
+  list-style: none;
+`;
 
-interface OrderedStation extends Station {
-  _order: number;
-}
+// 外層容器：負責動態注入 status 樣式與通用文字大小
+const StationBlock = styled.div<{ $status: Station["status"] }>`
+  font-size: 1.75rem; /* text-xl */
+  transition: all 0.2s ease-in-out;
+
+  /* 動態讀取 STATUS_STYLES */
+  ${({ $status }) => STATUS_STYLES[$status] || STATUS_STYLES.disused}
+`;
+
+// 🟢 有細節時：可點擊的 Link
+const StationLink = styled.a`
+  display: block;
+  text-decoration: inherit; /* 繼承外層的刪除線或斜體 */
+  color: inherit; /* 繼承外層 status 算出來的顏色 */
+  transition: all 0.2s ease-in-out;
+
+  /* Hover 效果 (搭配微調邊距) */
+  &:hover {
+    color: #2f7716; /* hover:text-green-400 */
+    padding-left: 0.5rem; /* hover:pl-2 */
+  }
+`;
+
+// 🔴 無細節時：Disabled 停用樣式
+const StationDisabled = styled.span`
+  opacity: 0.6;
+  cursor: not-allowed;
+  color: #949494;
+  user-select: none;
+  display: block;
+`;
+
+// 次要文字標籤
+const DisabledBadge = styled.span`
+  font-size: 1.75rem;
+  opacity: 0.8;
+  color: #949494;
+  font-style: normal; /* 避免外層 italic 影響標籤 */
+`;
 
 const DistrictGroupedStations: React.FC<DistrictGroupedStationsProps> = ({
   lineID,
@@ -158,30 +240,22 @@ const DistrictGroupedStations: React.FC<DistrictGroupedStationsProps> = ({
           <ul className="space-y-2">
             {groupedStations[district.districtID]?.length > 0 ? (
               groupedStations[district.districtID].map((station) => (
-                <li key={station.id} className="group">
-                  <div
-                    className={`text-xl transition-all ${
-                      station.status === "active"
-                        ? "text-black dark:text-white"
-                        : station.status === "disused"
-                          ? "text-gray-500 line-through"
-                          : "text-blue-400 italic"
-                    }`}
-                  >
+                <StationsListItem key={station.id}>
+                  <StationBlock $status={station.status}>
                     {station.hasDetail ? (
-                      <Link
+                      <StationLink
                         href={`/stations/${station.id}`}
                         className="hover:text-green-400 hover:pl-2 transition-all block"
                       >
                         {station.name}
-                      </Link>
+                      </StationLink>
                     ) : (
-                      <span className="opacity-70">
-                        {station.name} (無細節)
-                      </span>
+                      <StationDisabled>
+                        {station.name} <DisabledBadge>(無細節)</DisabledBadge>
+                      </StationDisabled>
                     )}
-                  </div>
-                </li>
+                  </StationBlock>
+                </StationsListItem>
               ))
             ) : (
               <li className="text-gray-600 italic text-sm">
