@@ -68,6 +68,20 @@ const STATUS_STYLES: Record<Station["status"], ReturnType<typeof css>> = {
   `,
 };
 
+const GroupedStations = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+`;
+
+const LineAreaContentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+`;
+
 const LineAreaTitle = styled.div`
   display: inline-flex;
   align-items: center;
@@ -92,12 +106,32 @@ const LineAreaTitleText = styled.h2`
   line-height: normal;
   white-space: nowrap;
 `;
-const LineAreaContentContainer = styled.div`
-  display: grid;
-  width: 100%;
-  gap: 3rem;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  position: relative;
+
+const LineAreaContentBlock = styled.div`
+  display: flex;
+  align-items: flex-start;
+  margin: auto 1.75rem;
+  gap: 1.5rem;
+`;
+
+const LineAreaDecoration = styled.div`
+  width: 1px;
+  align-self: stretch;
+  background: #d9d9d9;
+`;
+
+const LineAreaContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+`;
+
+const StationList = styled.ul`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
 `;
 
 const StationsListItem = styled.li`
@@ -202,12 +236,9 @@ const DistrictGroupedStations: React.FC<DistrictGroupedStationsProps> = ({
   // if (loading) return <Loading />;
 
   return (
-    <div className="space-y-8">
+    <GroupedStations>
       {lineData.district.map((district) => (
-        <div
-          key={district.districtID}
-          className="border-l-2 border-gray-700 pl-4"
-        >
+        <LineAreaContentContainer key={district.districtID}>
           <LineAreaTitle>
             <LineAreaTitleDot>
               <svg
@@ -226,57 +257,63 @@ const DistrictGroupedStations: React.FC<DistrictGroupedStationsProps> = ({
             <LineAreaTitleText>{district.districtName}</LineAreaTitleText>
           </LineAreaTitle>
 
-          {district.prevArea && (
-            <div className="mb-2">
-              <Link
-                href={`/railways/${district.prevArea}`}
-                className="text-blue-400 text-sm text-black dark:text-white hover:underline"
-              >
-                ↑ 上接區段
-              </Link>
-            </div>
-          )}
+          <LineAreaContentBlock>
+            <LineAreaDecoration />
+            <LineAreaContent>
+              {district.prevArea && (
+                <div className="mb-2">
+                  <Link
+                    href={`/railways/${district.prevArea}`}
+                    className="text-blue-400 text-sm text-black dark:text-white hover:underline"
+                  >
+                    ↑ 上接{district.prevArea}
+                  </Link>
+                </div>
+              )}
 
-          <ul className="space-y-2">
-            {groupedStations[district.districtID]?.length > 0 ? (
-              groupedStations[district.districtID].map((station) => (
-                <StationsListItem key={station.id}>
-                  <StationBlock $status={station.status}>
-                    {station.hasDetail ? (
-                      <StationLink
-                        href={`/stations/${station.id}`}
-                        className="hover:text-green-400 hover:pl-2 transition-all block"
-                      >
-                        {station.name}
-                      </StationLink>
-                    ) : (
-                      <StationDisabled>
-                        {station.name} <DisabledBadge>(無細節)</DisabledBadge>
-                      </StationDisabled>
-                    )}
-                  </StationBlock>
-                </StationsListItem>
-              ))
-            ) : (
-              <li className="text-gray-600 italic text-sm">
-                （此區段暫無車站資料）
-              </li>
-            )}
-          </ul>
+              <StationList>
+                {groupedStations[district.districtID]?.length > 0 ? (
+                  groupedStations[district.districtID].map((station) => (
+                    <StationsListItem key={station.id}>
+                      <StationBlock $status={station.status}>
+                        {station.hasDetail ? (
+                          <StationLink
+                            href={`/stations/${station.id}`}
+                            className="hover:text-green-400 hover:pl-2 transition-all block"
+                          >
+                            {station.name}
+                          </StationLink>
+                        ) : (
+                          <StationDisabled>
+                            {station.name}{" "}
+                            <DisabledBadge>(無細節)</DisabledBadge>
+                          </StationDisabled>
+                        )}
+                      </StationBlock>
+                    </StationsListItem>
+                  ))
+                ) : (
+                  <li className="text-gray-600 italic text-sm">
+                    （此區段暫無車站資料）
+                  </li>
+                )}
+              </StationList>
 
-          {district.nextArea && (
-            <div className="mt-4">
-              <Link
-                href={`/railways/${district.nextArea}`}
-                className="text-blue-400 text-sm hover:underline"
-              >
-                ↓ 下接區段
-              </Link>
-            </div>
-          )}
-        </div>
+              {district.nextArea && (
+                <div className="mt-4">
+                  <Link
+                    href={`/railways/${district.nextArea}`}
+                    className="text-blue-400 text-sm hover:underline"
+                  >
+                    ↓ 下接{district.nextArea}
+                  </Link>
+                </div>
+              )}
+            </LineAreaContent>
+          </LineAreaContentBlock>
+        </LineAreaContentContainer>
       ))}
-    </div>
+    </GroupedStations>
   );
 };
 

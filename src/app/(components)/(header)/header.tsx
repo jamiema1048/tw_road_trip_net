@@ -12,7 +12,6 @@ const StyledComponentHeader = styled.div`
   box-shadow: 0px 8px 10px #ffffff40;
   display: flex;
   height: 5rem;
-  height: auto;
   justify-content: space-between;
   padding: 0.75rem 1.5rem;
   position: top;
