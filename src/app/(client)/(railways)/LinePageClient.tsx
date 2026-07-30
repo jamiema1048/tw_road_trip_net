@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { RailwayCompanyGroup } from "@/src/app/(components)/(railways)/RailwayCompanyGroup";
 import Header from "@/src/app/(components)/(header)/header";
+import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
 import Footer from "@/src/app/(components)/(footer)/footer";
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 
@@ -37,6 +38,7 @@ interface Props {
 const RailwayListPageContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   background-color: #000000;
   min-height: 100vh;
   width: 100%;
@@ -51,7 +53,7 @@ const RailwayListPageContainer = styled.div`
 `;
 const RailwayListContainer = styled.div`
   background-color: #000000;
-  align-items: center;
+  width: 100%;
   padding: 1.75rem 3rem 1.75rem 3rem;
   @media (max-width: 576px) {
     padding: 1.25rem 4.5rem 1.25rem 4.5rem;
@@ -139,6 +141,7 @@ export default function LinePageClient({ lines }: Props) {
             ))}
           </RailwayListContainer>
         )}
+        <BottomNav />
         <Footer />
       </RailwayListPageContainer>
     </>

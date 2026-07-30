@@ -15,6 +15,7 @@ const StyledComponentHeader = styled.div`
   justify-content: space-between;
   padding: 0.75rem 1.5rem;
   position: top;
+  z-index: 5;
 
   /* 改為自適應寬度，上限 1440px 併置中 */
   width: 100%;

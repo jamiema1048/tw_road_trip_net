@@ -10,6 +10,7 @@ import Footer from "@/src/app/(components)/(footer)/footer";
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import Loading from "@/src/app/(pages)/railways/[railwayId]/loading";
 import NotFound from "@/src/app/(pages)/railways/[railwayId]/not-found";
+import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
 import { Station, StationLineDistrict, RailwayData } from "@/src/types/railway";
 
 // interface District {
@@ -47,6 +48,7 @@ interface Props {
 const StationListPageContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   background-color: #000000;
   min-height: 100vh;
   width: 100%;
@@ -62,6 +64,7 @@ const StationListPageContainer = styled.div`
 const RailwayListContainerArea = styled.div`
   background-color: #000000;
   align-items: center;
+  width: 100%;
   padding: 1.75rem 3rem 1.75rem 3rem;
   @media (max-width: 576px) {
     padding: 1.25rem 4.5rem 1.25rem 4.5rem;
@@ -147,6 +150,7 @@ export default function RailwayContentClient({ data, stations }: Props) {
             />
           </RailwayListContainerArea>
         )}
+        <BottomNav />
         <Footer />
       </StationListPageContainer>
     </>

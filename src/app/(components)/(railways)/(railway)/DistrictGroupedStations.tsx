@@ -76,6 +76,7 @@ const GroupedStations = styled.div`
 `;
 
 const LineAreaContentContainer = styled.div`
+  margin: 1.25rem;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
