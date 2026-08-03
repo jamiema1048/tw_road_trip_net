@@ -1,8 +1,15 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import styled from "styled-components";
 import { TitleContext } from "@/src/app/(context)/title/TitleContext";
 import Footer from "@/src/app/(components)/(footer)/footer";
+import Header from "../../(components)/(header)/header";
+import Loading from "@/src/app/(pages)/stations/[stationId]/loading";
+import NotFound from "../../(pages)/stations/[stationId]/not-found";
+import Breadcrumbs from "../../(components)/(breadcrumbs)/Breadcrumbs";
+import BottomNav from "../../(components)/(bottomnav)/BottomNav";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
@@ -68,6 +75,253 @@ import { Station, StationLineDistrict, RailwayData } from "@/src/types/railway";
 //   updatedAt?: string;
 // }
 
+const StationPageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #000000;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+  }
+`;
+const StationContainerArea = styled.div`
+  background-color: #000000;
+  align-items: center;
+  width: 100%;
+  padding: 1.75rem 3rem 1.75rem 3rem;
+  @media (max-width: 576px) {
+    padding: 1.25rem 4.5rem 1.25rem 4.5rem;
+  }
+`;
+
+const PageTitleContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 1.25rem auto;
+`;
+const PageTitle = styled.div`
+  color: #ffffff;
+  font-family: "Inter-Regular", Helvetica;
+  font-size: 3rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: normal;
+`;
+
+const Divider = styled.div`
+  background-color: #ffffff;
+  height: 1px;
+  margin: 1.25rem auto;
+  width: 100%;
+`;
+
+const RouteInfoSection = styled.section`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+`;
+
+const StationDataTitle = styled.h2`
+  color: #ffffff;
+  font-family: Inter;
+  font-size: 3rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 1rem;
+`;
+
+const StationDataDetail = styled.h3`
+  color: #ffffff;
+  font-family: Inter;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 1rem;
+`;
+
+const StationMediaGallerySection = styled.section`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+`;
+
+const StationPhotoTitle = styled.h2`
+  color: #ffffff;
+  font-family: Inter;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 1rem;
+`;
+
+const FrameContainer = styled.div`
+  display: grid;
+  width: 100%;
+  gap: 3rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  position: relative;
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @media (max-width: 576px) {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+`;
+
+const PhotoFrame = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2rem;
+`;
+
+const PhotoBlock = styled.div`
+  border-radius: 2rem;
+  overflow: hidden;
+  box-shadow:
+    4px 4px 4px 0 rgba(0, 0, 0, 0.25) inset,
+    8px 8px 4px 0 rgba(255, 255, 255, 0.25);
+`;
+
+const StationPhoto = styled.img`
+  width: 100%;
+  object-fit: cover;
+  border-radius: 0.5rem;
+`;
+
+const PhotoDescriptionContainer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+`;
+
+const PhotoDescriptionText = styled.p`
+  color: #ffffff;
+  font-family: Inter;
+  font-size: 1.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+const AdjacentStationsSection = styled.section`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.75rem;
+  margin-top: 1rem;
+`;
+
+const PrevStationsArea = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+`;
+
+const PrevStationsTitle = styled.h3`
+  color: #ffffff;
+  font-family: Inter;
+  font-size: 1.75rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+`;
+
+const NextStationsArea = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+`;
+
+const NextStationsTitle = styled.h3`
+  color: #ffffff;
+  font-family: Inter;
+  font-size: 1.75rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+`;
+
+const AdjacentStationsLink = styled.a`
+  color: #ffffff;
+  font-family: Inter;
+  font-size: 1.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    text-decoration: underline;
+    color: #2f7716; /* hover:text-green-400 */
+  }
+`;
+
+const AdjacentStationsDisableLinkText = styled.div`
+  color: #949494;
+  font-family: Inter;
+  font-size: 1.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  opacity: 0.6;
+`;
+
+const StationBottomNav = styled.nav`
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  gap: 3rem;
+`;
+
+const StationBottomNavLink = styled.a`
+  display: block;
+  color: #fff;
+  font-family: Inter;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration: none; /* 繼承外層的刪除線或斜體 */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  /* Hover 效果 (搭配微調邊距) */
+  &:hover {
+    text-decoration: underline;
+    color: #2f7716; /* hover:text-green-400 */
+  }
+`;
+
 export default function StationClient({
   station,
   railways,
@@ -78,10 +332,24 @@ export default function StationClient({
   adjacentStations: Station[];
 }) {
   const { title, setTitle } = useContext(TitleContext);
+  const [loading, setLoading] = useState(true);
+  const [notFoundPage, setNotFoundPage] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
-    setTitle(station.name);
-    document.title = `${station.name}`;
+    const timer = setTimeout(() => {
+      if (!station) {
+        setNotFoundPage(true);
+        setTitle("無法顯示");
+        document.title = "無法顯示";
+        return;
+      }
+      setLoading(false);
+      setTitle(station.name);
+      document.title = `${station.name}`;
+    }, 100); // 延遲模擬
+
+    return () => clearTimeout(timer);
   }, [station.name, setTitle]);
   console.log(station);
 
@@ -90,232 +358,227 @@ export default function StationClient({
       <Head>
         <title>{title}</title>
       </Head>
-      <main className="p-4 text-white">
-        <h1 className="text-3xl text-black dark:text-white font-bold mb-4">
-          {station.name}
-        </h1>
-        <p className="text-black dark:text-white">
-          狀態：
-          {station.status === "active"
-            ? "營運中"
-            : station.status === "disused"
-              ? "已廢止"
-              : "規劃中"}
-        </p>
+      <StationPageContainer>
+        <Header />
+        {loading ? (
+          <Loading />
+        ) : notFoundPage ? (
+          <NotFound />
+        ) : (
+          <StationContainerArea>
+            <PageTitleContainer>
+              <PageTitle>{station.name}</PageTitle>
+            </PageTitleContainer>
+            <Breadcrumbs currentPath={pathname} />
+            <Divider />
+            <p className="text-black dark:text-white">
+              狀態：
+              {station.status === "active"
+                ? "營運中"
+                : station.status === "disused"
+                  ? "已廢止"
+                  : "規劃中"}
+            </p>
 
-        <section className="route-info bg-black-100 p-6 rounded-lg mt-8">
-          <h2 className="text-3xl text-black dark:text-white font-semibold mb-4">
-            車站資料
-          </h2>
-          {station.openDate && (
-            <h3 className="text-xl text-black dark:text-white mb-4">
-              <strong>設站日期:</strong> {station.openDate.join("、")}
-            </h3>
-          )}
-          {station.closeDate && (
-            <h3 className="text-xl text-black dark:text-white mb-4">
-              <strong>廢止日期:</strong> {station.closeDate.join("、")}
-            </h3>
-          )}
-          {station.originalName && (
-            <h3 className="text-xl text-black dark:text-white mb-4">
-              <strong>舊名:</strong> {station.originalName.join("、")}
-            </h3>
-          )}
+            <RouteInfoSection>
+              <StationDataTitle>車站資料</StationDataTitle>
+              {station.openDate && (
+                <StationDataDetail>
+                  <strong>設站日期:</strong> {station.openDate.join("、")}
+                </StationDataDetail>
+              )}
+              {station.closeDate && (
+                <StationDataDetail>
+                  <strong>廢止日期:</strong> {station.closeDate.join("、")}
+                </StationDataDetail>
+              )}
+              {station.originalName && (
+                <StationDataDetail>
+                  <strong>舊名:</strong> {station.originalName.join("、")}
+                </StationDataDetail>
+              )}
 
-          {station.level && (
-            <h3 className="text-xl text-black dark:text-white mb-4">
-              <strong>站等:</strong> {station.level}
-            </h3>
-          )}
-          {station.miles && (
-            <h3 className="text-xl text-black dark:text-white mb-4">
-              <strong>里程:</strong> {station.miles.join("、")}
-            </h3>
-          )}
-          {station.height && (
-            <h3 className="text-xl text-black dark:text-white mb-4">
-              <strong>海拔高度:</strong> {station.height}
-            </h3>
-          )}
-          {station.stationCode && (
-            <h3 className="text-xl text-black dark:text-white mb-4">
-              <strong>代碼:</strong> {station.stationCode}
-            </h3>
-          )}
-        </section>
+              {station.level && (
+                <StationDataDetail>
+                  <strong>站等:</strong> {station.level}
+                </StationDataDetail>
+              )}
+              {station.miles && (
+                <StationDataDetail>
+                  <strong>里程:</strong> {station.miles.join("、")}
+                </StationDataDetail>
+              )}
+              {station.height && (
+                <StationDataDetail>
+                  <strong>海拔高度:</strong> {station.height}
+                </StationDataDetail>
+              )}
+              {station.stationCode && (
+                <StationDataDetail>
+                  <strong>代碼:</strong> {station.stationCode}
+                </StationDataDetail>
+              )}
+            </RouteInfoSection>
 
-        <section className="media-gallery mt-12">
-          <h2 className="text-2xl text-black dark:text-white font-semibold mb-4 auto-rows-auto">
-            Images and Descriptions
-          </h2>
-          {station.images && (
-            <div className="columns-1 sm:columns-2 md:columns-3 gap-4 m-2">
-              {station.images.map((img, idx) => (
-                <div key={img._id} className="media-item inline-block p-4">
-                  <div className="image-container overflow-hidden rounded-lg">
-                    <Image
-                      src={img.url}
-                      alt={`${img.description}`}
-                      width={800}
-                      height={600}
-                      layout="intrinsic"
-                      className="w-full object-cover rounded-lg"
-                    />
-                  </div>
-                  {img.description && (
-                    <p className="mt-2 text-black dark:text-white text-sm sm:text-lg">
-                      {img.description}
-                    </p>
-                  )}
-                  {img.capturedAt && (
-                    <p className="mt-2 text-black dark:text-white text-sm sm:text-lg">
-                      {new Date(img.capturedAt).toISOString().split("T")[0]}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
+            <StationMediaGallerySection>
+              <StationPhotoTitle>Images and Descriptions</StationPhotoTitle>
+              {station.images && (
+                <FrameContainer>
+                  {station.images.map((img, idx) => (
+                    <PhotoFrame key={img._id}>
+                      <PhotoBlock>
+                        <StationPhoto
+                          src={img.url}
+                          alt={`${img.description}`}
+                          width={800}
+                          height={600}
+                          layout="intrinsic"
+                        />
+                      </PhotoBlock>
+                      <PhotoDescriptionContainer>
+                        {img.description && (
+                          <PhotoDescriptionText>
+                            {img.description}
+                          </PhotoDescriptionText>
+                        )}
+                        {img.capturedAt && (
+                          <PhotoDescriptionText>
+                            {
+                              new Date(img.capturedAt)
+                                .toISOString()
+                                .split("T")[0]
+                            }
+                          </PhotoDescriptionText>
+                        )}
+                      </PhotoDescriptionContainer>
+                    </PhotoFrame>
+                  ))}
+                </FrameContainer>
+              )}
+            </StationMediaGallerySection>
 
-        <div className="my-9">
-          <h2 className="text-xl mt-6 mb-5 text-black dark:text-white font-semibold">
-            所屬路線：
-          </h2>
-          <ul className="list-disc pl-5 flex items-center gap-2 flex-wrap">
-            {station.line.map((line) => {
-              // 1. 利用 find 找不到會回傳 undefined 的特性，搭配 || 做預設值
-              const railwayName =
-                railways.find((r) => Number(r.id) === Number(line.lineID))
-                  ?.name || `ID: ${line.lineID}`;
+            <AdjacentStationsSection>
+              {station.prevStation && (
+                <PrevStationsArea>
+                  <PrevStationsTitle>上一站：</PrevStationsTitle>
+                  {Array.isArray(station.prevStation)
+                    ? station.prevStation.map((id) => {
+                        const match = adjacentStations.find(
+                          (s) => String(s.id) === String(id),
+                        );
+                        return match ? (
+                          match.hasDetail ? (
+                            <AdjacentStationsLink
+                              key={id}
+                              href={`/stations/${id}`}
+                            >
+                              {match.name}
+                            </AdjacentStationsLink>
+                          ) : (
+                            <AdjacentStationsDisableLinkText key={id}>
+                              {match.name}
+                            </AdjacentStationsDisableLinkText>
+                          )
+                        ) : (
+                          <span key={id}>ID: {id}</span>
+                        );
+                      })
+                    : (() => {
+                        const match = adjacentStations.find(
+                          (s) => String(s.id) === String(station.prevStation),
+                        );
+                        return match ? (
+                          match.hasDetail ? (
+                            <AdjacentStationsLink
+                              href={`/stations/${station.prevStation}`}
+                            >
+                              {match.name}
+                            </AdjacentStationsLink>
+                          ) : (
+                            <AdjacentStationsDisableLinkText>
+                              {match.name}
+                            </AdjacentStationsDisableLinkText>
+                          )
+                        ) : (
+                          <span>ID: {station.prevStation}</span>
+                        );
+                      })()}
+                </PrevStationsArea>
+              )}
 
-              return (
-                <Link
-                  key={line.lineID}
-                  href={`/railways/${line.lineID}`}
-                  className="mx-4 p-4 rounded bg-green-500 text-white transition-all duration-200 ease-in-out 
-                 hover:bg-green-600 hover:text-yellow-300 hover:scale-[1.05] 
-                 active:bg-green-800 active:text-yellow-600 active:scale-75 active:shadow-md active:shadow-green-400"
-                >
-                  {railwayName}
-                </Link>
-              );
-            })}
-          </ul>
-        </div>
-
-        {station.prevStation && (
-          <div className="my-4 flex items-center gap-2 flex-wrap">
-            <span className="text-lg text-black dark:text-white font-semibold">
-              上一站：
-            </span>
-            {Array.isArray(station.prevStation)
-              ? station.prevStation.map((id) => {
-                  const match = adjacentStations.find(
-                    (s) => String(s.id) === String(id),
-                  );
-                  return match ? (
-                    match.hasDetail ? (
-                      <Link
-                        key={id}
-                        href={`/stations/${id}`}
-                        className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white hover:text-yellow-300 active:text-yellow-600 active:scale-90 hover:scale-[1.05] px-4 py-2 rounded-lg transition-all duration-200 ease-in-out"
-                      >
-                        {match.name}
-                      </Link>
-                    ) : (
-                      <div
-                        key={id}
-                        className="bg-gray-600 text-gray-200 px-4 py-2 rounded-lg opacity-70 cursor-not-allowed active:bg-gray-700"
-                      >
-                        {match.name}
-                      </div>
-                    )
-                  ) : (
-                    <span key={id}>ID: {id}</span>
-                  );
-                })
-              : (() => {
-                  const match = adjacentStations.find(
-                    (s) => String(s.id) === String(station.prevStation),
-                  );
-                  return match ? (
-                    match.hasDetail ? (
-                      <Link
-                        href={`/stations/${station.prevStation}`}
-                        className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white hover:text-yellow-300 active:text-yellow-600 active:scale-90 hover:scale-[1.05] px-4 py-2 rounded-lg transition-all duration-200 ease-in-out"
-                      >
-                        {match.name}
-                      </Link>
-                    ) : (
-                      <div className="bg-gray-600 text-gray-200 px-4 py-2 rounded-lg opacity-70 cursor-not-allowed active:bg-gray-700">
-                        {match.name}
-                      </div>
-                    )
-                  ) : (
-                    <span>ID: {station.prevStation}</span>
-                  );
-                })()}
-          </div>
+              {station.nextStation && (
+                <NextStationsArea>
+                  <NextStationsTitle>下一站：</NextStationsTitle>
+                  {Array.isArray(station.nextStation)
+                    ? station.nextStation.map((id) => {
+                        const match = adjacentStations.find(
+                          (s) => String(s.id) === String(id),
+                        );
+                        return match ? (
+                          match.hasDetail ? (
+                            <AdjacentStationsLink
+                              key={id}
+                              href={`/stations/${id}`}
+                            >
+                              {match.name}
+                            </AdjacentStationsLink>
+                          ) : (
+                            <AdjacentStationsDisableLinkText key={id}>
+                              {match.name}
+                            </AdjacentStationsDisableLinkText>
+                          )
+                        ) : (
+                          <span key={id}>ID: {id}</span>
+                        );
+                      })
+                    : (() => {
+                        const match = adjacentStations.find(
+                          (s) => String(s.id) === String(station.nextStation),
+                        );
+                        return match ? (
+                          match.hasDetail ? (
+                            <AdjacentStationsLink
+                              href={`/stations/${station.nextStation}`}
+                            >
+                              {match.name}
+                            </AdjacentStationsLink>
+                          ) : (
+                            <AdjacentStationsDisableLinkText>
+                              {match.name}
+                            </AdjacentStationsDisableLinkText>
+                          )
+                        ) : (
+                          <AdjacentStationsDisableLinkText>
+                            ID: {station.nextStation}
+                          </AdjacentStationsDisableLinkText>
+                        );
+                      })()}
+                </NextStationsArea>
+              )}
+            </AdjacentStationsSection>
+          </StationContainerArea>
         )}
+        <StationBottomNav>
+          <StationBottomNavLink>回到最上方</StationBottomNavLink>
+          <StationBottomNavLink>回首頁</StationBottomNavLink>
+          {station.line.map((line) => {
+            // 1. 利用 find 找不到會回傳 undefined 的特性，搭配 || 做預設值
+            const railwayName =
+              railways.find((r) => Number(r.id) === Number(line.lineID))
+                ?.name || `ID: ${line.lineID}`;
 
-        {station.nextStation && (
-          <div className="my-4 flex items-center gap-2 flex-wrap">
-            <span className="text-lg text-black dark:text-white font-semibold">
-              下一站：
-            </span>
-            {Array.isArray(station.nextStation)
-              ? station.nextStation.map((id) => {
-                  const match = adjacentStations.find(
-                    (s) => String(s.id) === String(id),
-                  );
-                  return match ? (
-                    match.hasDetail ? (
-                      <Link
-                        key={id}
-                        href={`/stations/${id}`}
-                        className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white hover:text-yellow-300 active:text-yellow-600 active:scale-90 hover:scale-[1.05] px-4 py-2 rounded-lg transition-all duration-200 ease-in-out"
-                      >
-                        {match.name}
-                      </Link>
-                    ) : (
-                      <div
-                        key={id}
-                        className="bg-gray-600 text-gray-200 px-4 py-2 rounded-lg opacity-70 cursor-not-allowed active:bg-gray-700"
-                      >
-                        {match.name}
-                      </div>
-                    )
-                  ) : (
-                    <span key={id}>ID: {id}</span>
-                  );
-                })
-              : (() => {
-                  const match = adjacentStations.find(
-                    (s) => String(s.id) === String(station.nextStation),
-                  );
-                  return match ? (
-                    match.hasDetail ? (
-                      <Link
-                        href={`/stations/${station.nextStation}`}
-                        className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white hover:text-yellow-300 active:text-yellow-600 active:scale-90 hover:scale-[1.05] px-4 py-2 rounded-lg transition-all duration-200 ease-in-out"
-                      >
-                        {match.name}
-                      </Link>
-                    ) : (
-                      <div className="bg-gray-600 text-gray-200 px-4 py-2 rounded-lg opacity-70 cursor-not-allowed active:bg-gray-700">
-                        {match.name}
-                      </div>
-                    )
-                  ) : (
-                    <span>ID: {station.nextStation}</span>
-                  );
-                })()}
-          </div>
-        )}
-      </main>
-      <Footer />
+            return (
+              <StationBottomNavLink
+                key={line.lineID}
+                href={`/railways/${line.lineID}`}
+              >
+                回{railwayName}
+              </StationBottomNavLink>
+            );
+          })}
+        </StationBottomNav>
+        <Footer />
+      </StationPageContainer>
     </>
   );
 }

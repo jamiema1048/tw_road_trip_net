@@ -114,15 +114,6 @@ export default function RailwayContentClient({ data, stations }: Props) {
     return () => clearTimeout(timer);
   }, [data, setTitle]); //修好後補回第二個param : setTitle
 
-  if (notFoundPage) return <NotFound />;
-
-  if (loading)
-    return (
-      <>
-        <Loading />
-      </>
-    );
-
   return (
     <>
       <Head>
@@ -132,6 +123,8 @@ export default function RailwayContentClient({ data, stations }: Props) {
         <Header />
         {loading ? (
           <Loading />
+        ) : notFoundPage ? (
+          <NotFound />
         ) : (
           <RailwayListContainerArea>
             <PageTitleContainer>
