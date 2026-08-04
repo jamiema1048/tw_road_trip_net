@@ -1,0 +1,126 @@
+"use client";
+
+import { useState, useEffect, useContext, useRef } from "react";
+import Head from "next/head";
+import { usePathname } from "next/navigation";
+import styled from "styled-components";
+import { TitleContext } from "@/src/app/(context)/title/TitleContext";
+import Header from "@/src/app/(components)/(header)/header";
+import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
+import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
+import Province from "@/src/app/(components)/(highways)/Province";
+import County from "@/src/app/(components)/(highways)/County";
+import Footer from "@/src/app/(components)/(footer)/footer";
+import Loading from "@/src/app/(pages)/highways/loading";
+import NotFound from "../../(pages)/highways/not-found";
+import { Highway } from "@/src/types/highway";
+
+interface Props {
+  highways: Highway[];
+  hoveredHighway: Highway | null;
+  setHoveredHighway: (hwy: Highway | null) => void;
+  loading: boolean;
+  setLoading: (val: boolean) => void;
+}
+
+const HighwayListPageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #000000;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+  }
+`;
+
+const HighwayListContainer = styled.div`
+  background-color: #000000;
+  width: 100%;
+  padding: 1.75rem 3rem 1.75rem 3rem;
+  @media (max-width: 576px) {
+    padding: 1.25rem 4.5rem 1.25rem 4.5rem;
+  }
+`;
+
+const PageTitleContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 1.25rem auto;
+`;
+const PageTitle = styled.div`
+  color: #ffffff;
+  font-family: "Inter-Regular", Helvetica;
+  font-size: 3rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: normal;
+`;
+
+const Divider = styled.div`
+  background-color: #ffffff;
+  height: 1px;
+  margin: 1.25rem auto;
+  width: 100%;
+`;
+
+export default function HighwayListClient({ highways }: Props) {
+  const [loading, setLoading] = useState(false);
+  const { title, setTitle } = useContext(TitleContext);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    // 模擬載入動畫
+    const timer = setTimeout(() => {
+      setLoading(false);
+      setTitle("鐵路總覽");
+      document.title = "鐵路總覽";
+    }, 100); // 可自行調整延遲，測試可縮短
+
+    return () => clearTimeout(timer);
+  }, [setTitle]);
+
+  return (
+    <>
+      <Head>
+        <title>{title}</title>
+      </Head>
+      <HighwayListPageContainer>
+        <Header />
+        {loading ? (
+          <Loading />
+        ) : (
+          <HighwayListContainer>
+            <PageTitleContainer>
+              <PageTitle>
+                <h1>公路列表</h1>
+              </PageTitle>
+            </PageTitleContainer>
+            <Breadcrumbs currentPath={pathname} />
+            <Divider />
+            <div className="pl-1 md:pl-3 lg:pl-5">
+              <Province
+                highways={highways}
+                loading={loading}
+                setLoading={setLoading}
+              />
+              <County
+                highways={highways}
+                loading={loading}
+                setLoading={setLoading}
+              />
+            </div>
+          </HighwayListContainer>
+        )}
+        <BottomNav />
+        <Footer />
+      </HighwayListPageContainer>
+    </>
+  );
+}

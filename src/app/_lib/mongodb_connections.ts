@@ -2,8 +2,9 @@ import mongoose, { Connection, ConnectOptions } from "mongoose";
 
 const RAILWAY_URI = process.env.MONGODB_RAILWAY_URI!;
 const STATION_URI = process.env.MONGODB_STATION_URI!;
+const HIGHWAY_URI = process.env.MONGODB_HIGHWAY_URI!;
 
-if (!RAILWAY_URI || !STATION_URI) {
+if (!RAILWAY_URI || !STATION_URI || !HIGHWAY_URI) {
   throw new Error("請定義 MONGODB_RAILWAY_URI 與 MONGODB_STATION_URI 環境變數");
 }
 
@@ -11,6 +12,7 @@ if (!RAILWAY_URI || !STATION_URI) {
 interface MongooseCache {
   railway: { conn: Connection | null; promise: Promise<Connection> | null };
   station: { conn: Connection | null; promise: Promise<Connection> | null };
+  highway: { conn: Connection | null; promise: Promise<Connection> | null };
 }
 
 // 2. 擴充全域物件型別，消除 (global as any)
@@ -28,6 +30,7 @@ export async function getConnections() {
     cached = global.mongoose_multi = {
       railway: { conn: null, promise: null },
       station: { conn: null, promise: null },
+      highway: { conn: null, promise: null },
     };
   }
 
@@ -57,8 +60,19 @@ export async function getConnections() {
     cached.station.conn = await cached.station.promise;
   }
 
+  // --- 處理 Highway 連線 ---
+  if (!cached.highway.conn) {
+    if (!cached.highway.promise) {
+      cached.highway.promise = mongoose
+        .createConnection(HIGHWAY_URI, options)
+        .asPromise();
+    }
+    cached.highway.conn = await cached.highway.promise;
+  }
+
   return {
     railwayConn: cached.railway.conn,
     stationConn: cached.station.conn,
+    highwayConn: cached.highway.conn,
   };
 }
