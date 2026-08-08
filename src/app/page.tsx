@@ -2,6 +2,7 @@
 import React from "react";
 import styled from "styled-components";
 import Image from "next/image";
+import Link from "next/link";
 import TempImg from "@/public/Logo/Header.png";
 import Header from "./(components)/(header)/header";
 import Footer from "./(components)/(footer)/footer";
@@ -74,67 +75,39 @@ const JourneyCards = styled.div`
   flex-wrap: wrap; /* 手機板自動換行豎排 */
 `;
 
-const StationJourneyCard = styled.div`
-  aspect-ratio: 1;
-  background-color: #ffffff;
-  border-radius: 24px;
-  box-shadow:
-    8px 8px 12px #ffffff40,
-    inset -4px -4px 4px #ffffff40;
-  height: auto;
-  width: min(100%, 360px);
-  overflow: hidden;
-  position: relative;
-`;
-
-const StationJourneyImage = styled(Image)`
-  aspect-ratio: 0.75;
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-  position: absolute;
-  left: 0;
-  top: 0;
-`;
-
-const StationJourneyLabel = styled.div`
-  color: var(--textwhiteaaaa, #ffffff);
-  font-family: "Inter-Regular", Helvetica;
-  font-size: clamp(28px, 3vw, 40px);
-  font-weight: 400;
-  left: 10%;
-  letter-spacing: 0;
-  line-height: normal;
-  position: absolute;
-  top: 70%;
-  white-space: nowrap;
-`;
-
-const RoadJourneyCard = styled.div`
+const StationJourneyCard = styled(Link)`
   aspect-ratio: 1;
   background-color: #ffffff;
   border-radius: 24px;
   box-shadow:
     8px 8px 4px #ffffff40,
     inset -4px 4px 4px #ffffff40;
-  height: auto;
   width: min(100%, 360px);
   overflow: hidden;
   position: relative;
+
+  /* 🟢 確保 Link 是塊級元素，且游標顯示為手型 */
+  display: block;
+  cursor: pointer;
+  text-decoration: none;
 `;
 
-const RoadJourneyImage = styled(Image)`
-  aspect-ratio: 1.33;
+const StationJourneyImage = styled(Image)`
+  /* 🟢 移除 aspect-ratio，讓圖片貼滿卡片 */
   height: 100%;
   width: 100%;
   object-fit: cover;
   position: absolute;
   left: 0;
   top: 0;
+  z-index: 1; /* 確保在背景層 */
+
+  /* 🟢 關鍵：讓圖片不攔截點擊事件，直接穿透給外層的 <Link> */
+  pointer-events: none;
 `;
 
-const RoadJourneyLabel = styled.div`
-  color: var(--textwhiteaaaa, #ffffff);
+const StationJourneyLabel = styled.div`
+  color: #ffffff;
   font-family: "Inter-Regular", Helvetica;
   font-size: clamp(28px, 3vw, 40px);
   font-weight: 400;
@@ -144,6 +117,58 @@ const RoadJourneyLabel = styled.div`
   position: absolute;
   top: 70%;
   white-space: nowrap;
+  z-index: 2; /* 確保文字浮在圖片上方 */
+
+  /* 🟢 讓文字也不會阻擋點擊 */
+  pointer-events: none;
+`;
+
+const RoadJourneyCard = styled(Link)`
+  aspect-ratio: 1;
+  background-color: #ffffff;
+  border-radius: 24px;
+  box-shadow:
+    8px 8px 4px #ffffff40,
+    inset -4px 4px 4px #ffffff40;
+  width: min(100%, 360px);
+  overflow: hidden;
+  position: relative;
+
+  /* 🟢 確保 Link 是塊級元素，且游標顯示為手型 */
+  display: block;
+  cursor: pointer;
+  text-decoration: none;
+`;
+
+const RoadJourneyImage = styled(Image)`
+  /* 🟢 移除 aspect-ratio，讓圖片貼滿卡片 */
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1; /* 確保在背景層 */
+
+  /* 🟢 關鍵：讓圖片不攔截點擊事件，直接穿透給外層的 <Link> */
+  pointer-events: none;
+`;
+
+const RoadJourneyLabel = styled.div`
+  color: #ffffff;
+  font-family: "Inter-Regular", Helvetica;
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 400;
+  left: 10%;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 70%;
+  white-space: nowrap;
+  z-index: 2; /* 確保文字浮在圖片上方 */
+
+  /* 🟢 讓文字也不會阻擋點擊 */
+  pointer-events: none;
 `;
 
 export default function HomePage(): React.ReactElement {
@@ -161,11 +186,11 @@ export default function HomePage(): React.ReactElement {
         </Description>
         <Divider />
         <JourneyCards>
-          <StationJourneyCard>
+          <StationJourneyCard href="/railways">
             <StationJourneyImage alt="車站旅途" src={TempImg} />
             <StationJourneyLabel>車站旅途</StationJourneyLabel>
           </StationJourneyCard>
-          <RoadJourneyCard>
+          <RoadJourneyCard href="/highways">
             <RoadJourneyImage alt="公路旅途" src={TempImg} />
             <RoadJourneyLabel>公路旅途</RoadJourneyLabel>
           </RoadJourneyCard>

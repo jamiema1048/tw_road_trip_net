@@ -149,7 +149,7 @@ const StationBlock = styled.div<{ $status: Station["status"] }>`
 `;
 
 // 🟢 有細節時：可點擊的 Link
-const StationLink = styled.a`
+const StationLink = styled(Link)`
   display: block;
   text-decoration: inherit; /* 繼承外層的刪除線或斜體 */
   color: inherit; /* 繼承外層 status 算出來的顏色 */
@@ -278,10 +278,7 @@ const DistrictGroupedStations: React.FC<DistrictGroupedStationsProps> = ({
                     <StationsListItem key={station.id}>
                       <StationBlock $status={station.status}>
                         {station.hasDetail ? (
-                          <StationLink
-                            href={`/stations/${station.id}`}
-                            className="hover:text-green-400 hover:pl-2 transition-all block"
-                          >
+                          <StationLink href={`/stations/${station.id}`}>
                             {station.name}
                           </StationLink>
                         ) : (

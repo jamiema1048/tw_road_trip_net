@@ -2,6 +2,7 @@
 
 import React from "react";
 import styled from "styled-components";
+import Link from "next/link";
 import Image from "next/image";
 import LogoSvg from "@/public/Logo/Header.svg";
 
@@ -38,7 +39,7 @@ const StyledComponentHeader = styled.div`
   }
 `;
 
-const IconButton = styled.button`
+const IconButton = styled(Link)`
   display: flex;
   width: 3.5rem;
   height: 3.5rem;
@@ -77,7 +78,7 @@ const SearchButton = styled.button`
   }
 `;
 
-const HighwayButton = styled.button`
+const HighwayButton = styled(Link)`
   display: flex;
   color: #ffffff;
   font-family: "Inter-Regular", Helvetica;
@@ -99,7 +100,7 @@ const HighwayButton = styled.button`
   }
 `;
 
-const RailwayButton = styled.button`
+const RailwayButton = styled(Link)`
   display: flex;
   color: #ffffff;
   font-family: "Inter-Regular", Helvetica;
@@ -137,7 +138,7 @@ const SwitchButton = styled.button`
   }
 `;
 
-const HomeButton = styled.button`
+const HomeButton = styled(Link)`
   display: flex;
   width: 3rem;
   height: 3rem;
@@ -160,6 +161,7 @@ const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
     <StyledComponentHeader className={`component-header ${className}`}>
       {/* 1. Logo */}
       <IconButton
+        href="/"
         type="button"
         className="component-cell-header-search"
         aria-label="Logo"
@@ -197,6 +199,7 @@ const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
       <HeaderTools>
         {/* 2. Search 區域 */}
         <SearchButton
+          href="/highways"
           type="button"
           className="logo"
           aria-label="搜尋"
@@ -224,6 +227,7 @@ const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
 
         {/* 3. 文字 wrappers */}
         <HighwayButton
+          href="/highways"
           type="button"
           className="text-wrapper"
           onClick={() => {
@@ -233,6 +237,7 @@ const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
           公路旅途
         </HighwayButton>
         <RailwayButton
+          href="/railways"
           type="button"
           className="text-wrapper"
           onClick={() => {
@@ -267,6 +272,7 @@ const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
 
         {/* 5. Home icon */}
         <HomeButton
+          href="/"
           type="button"
           className="icon-home"
           aria-label="回首頁"

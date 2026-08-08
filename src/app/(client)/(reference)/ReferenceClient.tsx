@@ -1,29 +1,15 @@
 "use client";
-
 import { useState, useEffect, useContext, useRef } from "react";
 import Head from "next/head";
 import { usePathname } from "next/navigation";
 import styled from "styled-components";
 import { TitleContext } from "@/src/app/(context)/title/TitleContext";
 import Header from "@/src/app/(components)/(header)/header";
+import Footer from "@/src/app/(components)/(footer)/footer";
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
-import Province from "@/src/app/(components)/(highways)/Province";
-import County from "@/src/app/(components)/(highways)/County";
-import Footer from "@/src/app/(components)/(footer)/footer";
-import Loading from "@/src/app/(pages)/highways/loading";
-import NotFound from "../../(pages)/highways/not-found";
-import { Highway } from "@/src/types/highway";
 
-interface Props {
-  highways: Highway[];
-  hoveredHighway: Highway | null;
-  setHoveredHighway: (hwy: Highway | null) => void;
-  loading: boolean;
-  setLoading: (val: boolean) => void;
-}
-
-const HighwayListPageContainer = styled.div`
+const ReferencePageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -39,8 +25,7 @@ const HighwayListPageContainer = styled.div`
     width: 0;
   }
 `;
-
-const HighwayListContainer = styled.div`
+const ReferenceContainer = styled.div`
   background-color: #000000;
   width: 100%;
   padding: 1.75rem 3rem 1.75rem 3rem;
@@ -48,7 +33,6 @@ const HighwayListContainer = styled.div`
     padding: 1.25rem 4.5rem 1.25rem 4.5rem;
   }
 `;
-
 const PageTitleContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -70,57 +54,40 @@ const Divider = styled.div`
   width: 100%;
 `;
 
-export default function HighwayListClient({ highways }: Props) {
+export default function ReferenceClient() {
   const [loading, setLoading] = useState(false);
   const { title, setTitle } = useContext(TitleContext);
   const pathname = usePathname();
-
   useEffect(() => {
     // 模擬載入動畫
     const timer = setTimeout(() => {
       setLoading(false);
-      setTitle("公路列表");
-      document.title = "公路列表";
+      setTitle("參考資料");
+      document.title = "參考資料";
     }, 100); // 可自行調整延遲，測試可縮短
 
     return () => clearTimeout(timer);
   }, [setTitle]);
-
   return (
     <>
       <Head>
         <title>{title}</title>
       </Head>
-      <HighwayListPageContainer>
+      <ReferencePageContainer>
         <Header />
-        {loading ? (
-          <Loading />
-        ) : (
-          <HighwayListContainer>
-            <PageTitleContainer>
-              <PageTitle>
-                <h1>公路列表</h1>
-              </PageTitle>
-            </PageTitleContainer>
-            <Breadcrumbs currentPath={pathname} />
-            <Divider />
-            <div className="pl-1 md:pl-3 lg:pl-5">
-              <Province
-                highways={highways}
-                loading={loading}
-                setLoading={setLoading}
-              />
-              <County
-                highways={highways}
-                loading={loading}
-                setLoading={setLoading}
-              />
-            </div>
-          </HighwayListContainer>
-        )}
+        <ReferenceContainer>
+          <PageTitleContainer>
+            <PageTitle>
+              <h1>參考資料</h1>
+            </PageTitle>
+          </PageTitleContainer>
+          <Breadcrumbs currentPath={pathname} />
+          <Divider />
+          <div>Reference</div>
+        </ReferenceContainer>
         <BottomNav />
         <Footer />
-      </HighwayListPageContainer>
+      </ReferencePageContainer>
     </>
   );
 }

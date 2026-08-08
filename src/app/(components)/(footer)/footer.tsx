@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 import styled from "styled-components";
 import { Icon } from "@iconify/react";
 
@@ -104,7 +105,7 @@ const NavigationColumn = styled.div`
   gap: 16px;
 `;
 
-const NavigationItem = styled.div`
+const NavigationItem = styled(Link)`
   display: flex;
   align-items: center;
   gap: 4px;
@@ -167,7 +168,7 @@ const BottomDivider = styled.div`
   }
 `;
 
-const TermsText = styled.div`
+const TermsText = styled(Link)`
   color: #ffffff;
   font-family: "Inter-Regular", Helvetica;
   font-size: 12px;
@@ -189,7 +190,7 @@ const Footer: React.FC<ComponentFooterProps> = () => {
       <Frame>
         <NavigationGroup>
           <NavigationColumn>
-            <NavigationItem>
+            <NavigationItem href="/about">
               <StyledBreadcrumbRight
                 icon="mdi:chevron-right"
                 className="icon"
@@ -197,7 +198,7 @@ const Footer: React.FC<ComponentFooterProps> = () => {
               />
               <TextWrapper>關於我們</TextWrapper>
             </NavigationItem>
-            <NavigationItem>
+            <NavigationItem href="/reference">
               <StyledBreadcrumbRight
                 icon="mdi:chevron-right"
                 className="icon"
@@ -207,7 +208,7 @@ const Footer: React.FC<ComponentFooterProps> = () => {
             </NavigationItem>
           </NavigationColumn>
           <NavigationColumn>
-            <NavigationItem>
+            <NavigationItem href="/railways">
               <StyledBreadcrumbRight
                 icon="mdi:chevron-right"
                 className="icon"
@@ -215,7 +216,7 @@ const Footer: React.FC<ComponentFooterProps> = () => {
               />
               <TextWrapper>車站旅途</TextWrapper>
             </NavigationItem>
-            <NavigationItem>
+            <NavigationItem href="/highways">
               <StyledBreadcrumbRight
                 icon="mdi:chevron-right"
                 className="icon"
@@ -257,7 +258,7 @@ const Footer: React.FC<ComponentFooterProps> = () => {
           <CopyrightText>All Rights Reserved</CopyrightText>
         </CopyrightGroup>
         <BottomDivider />
-        <TermsText>使用條款</TermsText>
+        <TermsText href="/terms">使用條款</TermsText>
       </BottomFrame>
     </StyledComponentFooter>
   );
