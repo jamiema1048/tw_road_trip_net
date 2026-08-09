@@ -3,6 +3,7 @@
 import React from "react";
 import styled from "styled-components";
 import Link from "next/link";
+import HeaderSearchBar from "@/src/app/(components)/(header)/HeaderSearchBar";
 import Image from "next/image";
 import LogoSvg from "@/public/Logo/Header.svg";
 
@@ -198,8 +199,8 @@ const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
 
       <HeaderTools>
         {/* 2. Search 區域 */}
+        <HeaderSearchBar />
         <SearchButton
-          href="/highways"
           type="button"
           className="logo"
           aria-label="搜尋"
