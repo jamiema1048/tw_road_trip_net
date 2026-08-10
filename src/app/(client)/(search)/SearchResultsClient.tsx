@@ -11,6 +11,7 @@ import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
 import Footer from "@/src/app/(components)/(footer)/footer";
 import { SearchResultItem } from "@/src/app/_lib/search";
+import SearchBar from "@/src/app/(components)/(search)/SearchBar";
 
 interface Props {
   query: string;
@@ -63,6 +64,7 @@ export default function SearchResultsClient({ query, results }: Props) {
         ) : (
           <Container>
             <SearchHeader>
+              <SearchBar />
               <Title>
                 「<Highlight>{query}</Highlight>」的搜尋結果
               </Title>
@@ -72,6 +74,7 @@ export default function SearchResultsClient({ query, results }: Props) {
                 筆）
               </SubText>
             </SearchHeader>
+            <Divider />
 
             {/* 分頁 Tab 切換 */}
             {results.length > 0 && (
@@ -156,32 +159,52 @@ const SearchResultsPageContainer = styled.div`
 `;
 
 const Container = styled.div`
-  max-width: 1024px;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem;
-  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 1.75rem 3rem 1.75rem 3rem;
+  overflow-y: auto;
+  position: relative;
 `;
 
 const SearchHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 2rem;
   margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #2e2e2e;
 `;
 
 const Title = styled.h1`
-  font-size: 1.75rem;
-  font-weight: 700;
   color: #ffffff;
-  margin-bottom: 0.5rem;
+  /* text/H2 */
+  font-family: Inter;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 `;
 
 const Highlight = styled.span`
-  color: #2f7716;
+  color: #008e9b;
 `;
 
 const SubText = styled.p`
-  color: #999999;
-  font-size: 0.875rem;
+  color: #ffffff;
+  font-family: Inter;
+  font-size: 1.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+const Divider = styled.div`
+  background-color: #ffffff;
+  height: 1px;
+  margin: 1.25rem auto;
+  width: 100%;
 `;
 
 const TabContainer = styled.div`
@@ -191,18 +214,23 @@ const TabContainer = styled.div`
 `;
 
 const TabButton = styled.button<{ $active: boolean }>`
-  padding: 0.5rem 1.25rem;
   border-radius: 9999px;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
   cursor: pointer;
-  border: 1px solid ${({ $active }) => ($active ? "#2f7716" : "#333333")};
-  background-color: ${({ $active }) => ($active ? "#2f7716" : "#1a1a1a")};
-  color: ${({ $active }) => ($active ? "#ffffff" : "#aaaaaa")};
+  display: inline-flex;
+  padding: 0.75rem 1.5rem;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid ${({ $active }) => ($active ? "#4b4bff" : "#333333")};
+  background-color: ${({ $active }) => ($active ? "#067ae0" : "#343434")};
+  color: ${({ $active }) => ($active ? "#ffffff" : "#d9d9d9")};
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    border-color: #2f7716;
+    border-color: #4b4bff;
     color: #ffffff;
   }
 `;

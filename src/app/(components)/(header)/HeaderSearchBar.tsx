@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 export default function HeaderSearchBar() {
   const router = useRouter();
@@ -72,13 +72,29 @@ export default function HeaderSearchBar() {
     <SearchContainer ref={containerRef}>
       <Form onSubmit={handleSearch} $isOpen={isOpen}>
         {/* 放大鏡按鈕 (未展開時顯示，展開時作為提交按鈕) */}
-        <SearchIconButton
+        <SearchButton
           type={isOpen ? "submit" : "button"}
-          onClick={!isOpen ? toggleOpen : undefined}
+          className="logo"
           aria-label="搜尋"
+          onClick={!isOpen ? toggleOpen : undefined}
+          style={{ border: "none", cursor: "pointer", backgroundSize: "cover" }}
         >
-          🔍
-        </SearchIconButton>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="48"
+            height="48"
+            viewBox="0 0 48 48"
+            fill="none"
+          >
+            <path
+              d="M42 41.9999L33.314 33.3139M33.314 33.3139C34.7998 31.8281 35.9784 30.0643 36.7825 28.123C37.5866 26.1818 38.0005 24.1011 38.0005 21.9999C38.0005 19.8987 37.5866 17.8181 36.7825 15.8768C35.9784 13.9356 34.7998 12.1717 33.314 10.6859C31.8283 9.20015 30.0644 8.02157 28.1231 7.21747C26.1819 6.41337 24.1012 5.99951 22 5.99951C19.8988 5.99951 17.8182 6.41337 15.877 7.21747C13.9357 8.02157 12.1718 9.20015 10.686 10.6859C7.68539 13.6866 5.99963 17.7564 5.99963 21.9999C5.99963 26.2435 7.68539 30.3133 10.686 33.3139C13.6867 36.3146 17.7565 38.0003 22 38.0003C26.2436 38.0003 30.3134 36.3146 33.314 33.3139Z"
+              stroke="white"
+              strokeWidth="5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </SearchButton>
 
         {/* 動態展開的輸入框 */}
         <Input
@@ -120,44 +136,30 @@ const Form = styled.form<{ $isOpen: boolean }>`
   display: flex;
   align-items: center;
   position: relative;
-  background-color: ${({ $isOpen }) => ($isOpen ? "#1a1a1a" : "transparent")};
-  border: 1px solid ${({ $isOpen }) => ($isOpen ? "#333333" : "transparent")};
+  background-color: ${({ $isOpen }) => ($isOpen ? "#000000" : "transparent")};
+  border: 2px solid ${({ $isOpen }) => ($isOpen ? "#ffffff" : "transparent")};
   border-radius: 9999px;
-  padding: 4px;
+  padding: 0rem 1.25rem 0rem 1.25rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  width: ${({ $isOpen }) => ($isOpen ? "260px" : "36px")};
-
-  ${({ $isOpen }) =>
-    $isOpen &&
-    css`
-      &:focus-within {
-        border-color: #2f7716;
-        box-shadow: 0 0 0 2px rgba(47, 119, 22, 0.2);
-      }
-    `}
+  width: ${({ $isOpen }) => ($isOpen ? "12rem" : "2rem")};
 
   @media (min-width: 640px) {
-    width: ${({ $isOpen }) => ($isOpen ? "320px" : "36px")};
+    width: ${({ $isOpen }) => ($isOpen ? "26rem" : "2rem")};
   }
 `;
 
-const SearchIconButton = styled.button`
-  background: none;
-  border: none;
-  color: #ffffff;
-  font-size: 16px;
-  width: 28px;
-  height: 28px;
+const SearchButton = styled.button`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
   flex-shrink: 0;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+  @media (max-width: 768px) {
+    width: 1.5rem;
+    height: 1.5rem;
   }
 `;
 
@@ -165,7 +167,7 @@ const Input = styled.input<{ $isOpen: boolean }>`
   background: transparent;
   border: none;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 2.25rem;
   outline: none;
   width: 100%;
   padding: 0 8px;
@@ -176,17 +178,23 @@ const Input = styled.input<{ $isOpen: boolean }>`
     visibility 0.2s;
 
   &::placeholder {
-    color: #888888;
+    color: #949494;
+    text-align: center;
+    font-family: Inter;
+    font-size: 2.25rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
   }
 `;
 
 const CloseButton = styled.button`
   background: none;
   border: none;
-  color: #888888;
-  font-size: 12px;
-  width: 24px;
-  height: 24px;
+  color: #ffffff;
+  font-size: 2rem;
+  width: 1.5rem;
+  height: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -195,7 +203,7 @@ const CloseButton = styled.button`
   border-radius: 50%;
 
   &:hover {
-    color: #ffffff;
+    color: #949494;
     background-color: rgba(255, 255, 255, 0.1);
   }
 `;
