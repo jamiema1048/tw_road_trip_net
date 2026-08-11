@@ -64,26 +64,11 @@ const HeaderTools = styled.div`
   }
 `;
 
-const SearchButton = styled.button`
-  display: flex;
-  width: 3rem;
-  height: 3rem;
-  flex-shrink: 0;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  aspect-ratio: 1/1;
-  @media (max-width: 768px) {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-`;
-
 const HighwayButton = styled(Link)`
   display: flex;
   color: #ffffff;
   font-family: "Inter-Regular", Helvetica;
-  font-size: 40px;
+  font-size: 2rem;
   font-weight: 400;
   letter-spacing: 0;
   line-height: normal;
@@ -105,7 +90,7 @@ const RailwayButton = styled(Link)`
   display: flex;
   color: #ffffff;
   font-family: "Inter-Regular", Helvetica;
-  font-size: 40px;
+  font-size: 2rem;
   font-weight: 400;
   letter-spacing: 0;
   line-height: normal;
@@ -125,8 +110,8 @@ const RailwayButton = styled(Link)`
 
 const SwitchButton = styled.button`
   display: flex;
-  width: 3rem;
-  height: 3rem;
+  width: 2rem;
+  height: 2rem;
   flex-shrink: 0;
   flex-direction: row;
   justify-content: center;
@@ -141,8 +126,8 @@ const SwitchButton = styled.button`
 
 const HomeButton = styled(Link)`
   display: flex;
-  width: 3rem;
-  height: 3rem;
+  width: 2rem;
+  height: 2rem;
   flex-shrink: 0;
   flex-direction: row;
   justify-content: center;

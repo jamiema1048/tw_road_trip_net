@@ -150,8 +150,8 @@ const Form = styled.form<{ $isOpen: boolean }>`
 
 const SearchButton = styled.button`
   display: flex;
-  width: 3rem;
-  height: 3rem;
+  width: 2rem;
+  height: 2rem;
   flex-shrink: 0;
   flex-direction: row;
   justify-content: center;
@@ -167,7 +167,7 @@ const Input = styled.input<{ $isOpen: boolean }>`
   background: transparent;
   border: none;
   color: #ffffff;
-  font-size: 2.25rem;
+  font-size: 1.5rem;
   outline: none;
   width: 100%;
   padding: 0 8px;
@@ -179,9 +179,9 @@ const Input = styled.input<{ $isOpen: boolean }>`
 
   &::placeholder {
     color: #949494;
-    text-align: center;
+    text-align: start;
     font-family: Inter;
-    font-size: 2.25rem;
+    font-size: 1.5rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -192,7 +192,7 @@ const CloseButton = styled.button`
   background: none;
   border: none;
   color: #ffffff;
-  font-size: 2rem;
+  font-size: 1.5rem;
   width: 1.5rem;
   height: 1.5rem;
   display: flex;

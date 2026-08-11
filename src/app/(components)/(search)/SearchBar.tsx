@@ -159,7 +159,7 @@ const SearchInputBox = styled.div<{ $isOpen: boolean }>`
   background-color: #000000;
   border: 1px solid #d9d9d9;
   border-radius: 0.75rem;
-  padding: 0rem 1.25rem 0rem 1.25rem;
+  padding: 0rem 0.5rem 0rem 0.5rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   width: 35rem;
   &:hover:not(:focus-within) {
@@ -190,10 +190,10 @@ const Input = styled.input<{ $isOpen: boolean }>`
   background: transparent;
   border: none;
   color: #ffffff;
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   outline: none;
   width: 100%;
-  padding: 1.25rem 1rem;
+  padding: 1rem 1rem;
   transition:
     opacity 0.2s ease-in-out,
     visibility 0.2s;
@@ -231,10 +231,10 @@ const CloseButton = styled.button`
 
 const SearchButton = styled.button<{ $isOpen: boolean }>`
   display: flex;
-  padding: 1rem 2.5rem;
+  padding: 0.5rem 1rem;
   justify-content: center;
   align-items: center;
-  border-radius: 2.25rem;
+  border-radius: 1rem;
   transition:
     opacity 0.2s ease-in-out,
     visibility 0.2s;
@@ -272,7 +272,7 @@ const SearchButton = styled.button<{ $isOpen: boolean }>`
 const SearchButtonText = styled.p`
   color: #d9d9d9;
   font-family: Inter;
-  font-size: 2rem;
+  font-size: 1.5rem;
   white-space: nowrap;
   margin: 0;
   font-style: normal;
