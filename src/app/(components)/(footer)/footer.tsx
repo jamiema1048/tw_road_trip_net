@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import { Icon } from "@iconify/react";
@@ -184,6 +184,59 @@ export interface ComponentFooterProps {
   className?: string;
 }
 
+const ContactEmail = () => {
+  const [copied, setCopied] = useState(false);
+  const email = "stu1030113@gmail.co";
+
+  const handleCopy = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigator.clipboard.writeText(email);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); // 2秒後提示消失
+  };
+
+  return (
+    <div style={{ position: "relative" }}>
+      <button
+        onClick={handleCopy}
+        aria-label="複製 Email"
+        style={{
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          padding: 0,
+        }}
+      >
+        <StyledEmail
+          icon="mdi:email-outline"
+          className="icon-instance-node"
+          color="white"
+        />
+      </button>
+
+      {/* 複製成功提示小氣泡 */}
+      {copied && (
+        <span
+          style={{
+            position: "absolute",
+            top: "-30px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            backgroundColor: "#333",
+            color: "#fff",
+            padding: "4px 8px",
+            borderRadius: "4px",
+            fontSize: "12px",
+            whiteSpace: "nowrap",
+          }}
+        >
+          已複製信箱！
+        </span>
+      )}
+    </div>
+  );
+};
+
 const Footer: React.FC<ComponentFooterProps> = () => {
   return (
     <StyledComponentFooter>
@@ -233,16 +286,21 @@ const Footer: React.FC<ComponentFooterProps> = () => {
           <ContactContent>
             <TextWrapper>聯絡我們</TextWrapper>
             <SocialIcons>
-              <StyledEmail
-                icon="mdi:email-outline"
-                className="icon-instance-node"
-                color="white"
-              />
-              <StyledGithub
-                icon="mdi:github"
-                className="icon-instance-node"
-                color="white"
-              />
+              {/* 1. Email 連結：使用 mailto: 觸發郵件軟體 */}
+              <ContactEmail />
+              {/* 2. GitHub 連結：使用外部連結 */}
+              <Link
+                href="https://github.com/jamiema1048"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="前往 GitHub 主頁"
+              >
+                <StyledGithub
+                  icon="mdi:github"
+                  className="icon-instance-node"
+                  color="white"
+                />
+              </Link>
             </SocialIcons>
           </ContactContent>
         </ContactGroup>
