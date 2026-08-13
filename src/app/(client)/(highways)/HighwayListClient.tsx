@@ -5,12 +5,10 @@ import Head from "next/head";
 import { usePathname } from "next/navigation";
 import styled from "styled-components";
 import { TitleContext } from "@/src/app/(context)/title/TitleContext";
-import Header from "@/src/app/(components)/(header)/header";
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
 import Province from "@/src/app/(components)/(highways)/Province";
 import County from "@/src/app/(components)/(highways)/County";
-import Footer from "@/src/app/(components)/(footer)/footer";
 import Loading from "@/src/app/(pages)/highways/loading";
 import NotFound from "../../(pages)/highways/not-found";
 import { Highway } from "@/src/types/highway";
@@ -92,7 +90,6 @@ export default function HighwayListClient({ highways }: Props) {
         <title>{title}</title>
       </Head>
       <HighwayListPageContainer>
-        <Header />
         {loading ? (
           <Loading />
         ) : (
@@ -119,7 +116,6 @@ export default function HighwayListClient({ highways }: Props) {
           </HighwayListContainer>
         )}
         <BottomNav />
-        <Footer />
       </HighwayListPageContainer>
     </>
   );

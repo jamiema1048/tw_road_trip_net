@@ -4,8 +4,6 @@ import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
 import TempImg from "@/public/Logo/Header.png";
-import Header from "./(components)/(header)/header";
-import Footer from "./(components)/(footer)/footer";
 
 const HomeContainer = styled.div`
   background-color: #000000;
@@ -174,7 +172,6 @@ const RoadJourneyLabel = styled.div`
 export default function HomePage(): React.ReactElement {
   return (
     <HomeContainer>
-      <Header />
       <ContentWrapper>
         <Title>來場探索台灣交通的旅途吧</Title>
         <Description>
@@ -196,7 +193,6 @@ export default function HomePage(): React.ReactElement {
           </RoadJourneyCard>
         </JourneyCards>
       </ContentWrapper>
-      <Footer />
     </HomeContainer>
   );
 }

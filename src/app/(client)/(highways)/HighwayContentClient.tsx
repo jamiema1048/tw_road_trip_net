@@ -6,8 +6,6 @@ import { TitleContext } from "@/src/app/(context)/title/TitleContext";
 import styled from "styled-components";
 import Image from "next/image";
 import Head from "next/head";
-import Footer from "@/src/app/(components)/(footer)/footer";
-import Header from "@/src/app/(components)/(header)/header";
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
 import Loading from "@/src/app/(pages)/highways/[highwayId]/loading";
@@ -141,7 +139,7 @@ const PhotoBlock = styled.div`
     8px 8px 4px 0 rgba(255, 255, 255, 0.25);
 `;
 
-const HighwayPhoto = styled.img`
+const HighwayPhoto = styled(Image)`
   width: 100%;
   object-fit: cover;
   border-radius: 0.5rem;
@@ -192,7 +190,6 @@ export default function HighwayContentClient({ highway }: Props) {
         <title>{title}</title>
       </Head>
       <HighwayPageContainer>
-        <Header />
         {loading ? (
           <Loading />
         ) : notFoundPage ? (
@@ -305,7 +302,6 @@ export default function HighwayContentClient({ highway }: Props) {
           </HighwayContainerArea>
         )}
         <BottomNav />
-        <Footer />
       </HighwayPageContainer>
     </>
   );

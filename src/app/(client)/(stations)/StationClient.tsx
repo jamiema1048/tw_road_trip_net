@@ -4,12 +4,9 @@ import { useState, useContext, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import styled from "styled-components";
 import { TitleContext } from "@/src/app/(context)/title/TitleContext";
-import Footer from "@/src/app/(components)/(footer)/footer";
-import Header from "../../(components)/(header)/header";
 import Loading from "@/src/app/(pages)/stations/[stationId]/loading";
 import NotFound from "../../(pages)/stations/[stationId]/not-found";
 import Breadcrumbs from "../../(components)/(breadcrumbs)/Breadcrumbs";
-import BottomNav from "../../(components)/(bottomnav)/BottomNav";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
@@ -199,7 +196,7 @@ const PhotoBlock = styled.div`
     8px 8px 4px 0 rgba(255, 255, 255, 0.25);
 `;
 
-const StationPhoto = styled.img`
+const StationPhoto = styled(Image)`
   width: 100%;
   object-fit: cover;
   border-radius: 0.5rem;
@@ -267,7 +264,7 @@ const NextStationsTitle = styled.h3`
   line-height: normal;
 `;
 
-const AdjacentStationsLink = styled.a`
+const AdjacentStationsLink = styled(Link)`
   color: #ffffff;
   font-family: Inter;
   font-size: 1.75rem;
@@ -303,7 +300,7 @@ const StationBottomNav = styled.nav`
   gap: 3rem;
 `;
 
-const StationBottomNavLink = styled.a`
+const StationBottomNavLink = styled(Link)`
   display: block;
   color: #fff;
   font-family: Inter;
@@ -359,7 +356,6 @@ export default function StationClient({
         <title>{title}</title>
       </Head>
       <StationPageContainer>
-        <Header />
         {loading ? (
           <Loading />
         ) : notFoundPage ? (
@@ -577,7 +573,6 @@ export default function StationClient({
             );
           })}
         </StationBottomNav>
-        <Footer />
       </StationPageContainer>
     </>
   );

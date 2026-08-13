@@ -6,10 +6,7 @@ import Head from "next/head";
 import { usePathname } from "next/navigation";
 import styled from "styled-components";
 import { TitleContext } from "@/src/app/(context)/title/TitleContext";
-import Header from "@/src/app/(components)/(header)/header";
-import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
-import Footer from "@/src/app/(components)/(footer)/footer";
 import { SearchResultItem } from "@/src/app/_lib/search";
 import SearchBar from "@/src/app/(components)/(search)/SearchBar";
 
@@ -53,7 +50,6 @@ export default function SearchResultsClient({ query, results }: Props) {
         <title>{title}</title>
       </Head> */}
       <SearchResultsPageContainer>
-        <Header />
         {!query ? (
           <Container>
             <EmptyBox>
@@ -201,7 +197,6 @@ export default function SearchResultsClient({ query, results }: Props) {
           </Container>
         )}
         <BottomNav />
-        <Footer />
       </SearchResultsPageContainer>
     </>
   );

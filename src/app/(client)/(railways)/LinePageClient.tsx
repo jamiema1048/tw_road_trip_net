@@ -3,21 +3,11 @@ import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { TitleContext } from "@/src/app/(context)/title/TitleContext";
 import Head from "next/head";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Loading from "@/src/app/(pages)/railways/loading";
 import { RailwayCompanyGroup } from "@/src/app/(components)/(railways)/RailwayCompanyGroup";
-import Header from "@/src/app/(components)/(header)/header";
 import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
-import Footer from "@/src/app/(components)/(footer)/footer";
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
-
-// import { BreadcrumbRight } from "./BreadcrumbRight";
-// import { ComponentFooterSubsection } from "./ComponentFooterSubsection";
-// import { ComponentHeaderSubsection } from "./ComponentHeaderSubsection";
-// import { DropListDown } from "./DropListDown";
-// import { DropListUp } from "./DropListUp";
-// import { FrameSubsection } from "./FrameSubsection";
-// import { FrameWrapperSubsection } from "./FrameWrapperSubsection";
 
 interface Line {
   id: number;
@@ -117,11 +107,8 @@ export default function LinePageClient({ lines }: Props) {
         <title>{title}</title>
       </Head>
       <RailwayListPageContainer>
-        <Header />
         {loading ? (
-          <div className="flex flex-col items-center justify-center min-h-screen bg-black text-gray-200">
-            <p className="text-xl text-white mt-4">Loading data...</p>
-          </div>
+          <Loading />
         ) : (
           <RailwayListContainer>
             <PageTitleContainer>
@@ -142,163 +129,7 @@ export default function LinePageClient({ lines }: Props) {
           </RailwayListContainer>
         )}
         <BottomNav />
-        <Footer />
       </RailwayListPageContainer>
     </>
   );
 }
-
-// const ForestryRailwayGroup = styled.div`
-//   display: flex;
-//   gap: 16px;
-//   height: 48px;
-//   left: 48px;
-//   position: absolute;
-//   top: 631px;
-//   width: 226px;
-// `;
-
-// const SugarRailwayGroup = styled.div`
-//   display: flex;
-//   gap: 16px;
-//   height: 48px;
-//   left: 48px;
-//   position: absolute;
-//   top: 707px;
-//   width: 226px;
-// `;
-
-// const BreadcrumbGroup = styled.div`
-//   display: flex;
-//   height: 29px;
-//   left: 56px;
-//   position: absolute;
-//   top: 181px;
-//   width: 172px;
-// `;
-
-// const BreadcrumbHome = styled.div`
-//   color: #ffffff;
-//   font-family: "Inter-Regular", Helvetica;
-//   font-size: 24px;
-//   font-weight: 400;
-//   height: 29px;
-//   letter-spacing: 0;
-//   line-height: normal;
-//   text-decoration: underline;
-//   width: 48px;
-// `;
-
-// const StyledBreadcrumbRight = styled(BreadcrumbRight)`
-//   aspect-ratio: 1 !important;
-//   height: 24px !important;
-//   margin-top: 3px !important;
-//   width: 24px !important;
-// `;
-
-// const BreadcrumbCurrent = styled.div`
-//   color: #ffffff;
-//   font-family: "Inter-Regular", Helvetica;
-//   font-size: 24px;
-//   font-weight: 400;
-//   height: 29px;
-//   letter-spacing: 0;
-//   line-height: normal;
-//   width: 96px;
-// `;
-
-// const HiddenBackToTopText = styled.div`
-//   color: #000000;
-//   font-family: "Inter-Regular", Helvetica;
-//   font-size: 20px;
-//   font-weight: 400;
-//   left: 570px;
-//   letter-spacing: 0;
-//   line-height: normal;
-//   position: absolute;
-//   top: 963px;
-//   white-space: nowrap;
-// `;
-
-// const HiddenHomeText = styled.div`
-//   color: #000000;
-//   font-family: "Inter-Regular", Helvetica;
-//   font-size: 20px;
-//   font-weight: 400;
-//   left: 760px;
-//   letter-spacing: 0;
-//   line-height: normal;
-//   position: absolute;
-//   top: 958px;
-//   white-space: nowrap;
-// `;
-
-// const FooterLinks = styled.div`
-//   display: flex;
-//   gap: 48px;
-//   height: 24px;
-//   left: 616px;
-//   position: absolute;
-//   top: 871px;
-//   width: 212px;
-// `;
-
-// const BackToTopText = styled.div`
-//   color: #ffffff;
-//   font-family: "Inter-Regular", Helvetica;
-//   font-size: 20px;
-//   font-weight: 400;
-//   height: 24px;
-//   letter-spacing: 0;
-//   line-height: normal;
-//   white-space: nowrap;
-//   width: 100px;
-// `;
-
-// const HomeText = styled.div`
-//   color: #ffffff;
-//   font-family: "Inter-Regular", Helvetica;
-//   font-size: 20px;
-//   font-weight: 400;
-//   height: 24px;
-//   letter-spacing: 0;
-//   line-height: normal;
-//   white-space: nowrap;
-//   width: 60px;
-// `;
-
-// export const RailwayManagement = (): JSX.Element => {
-//   return (
-//     <RailwayManagementContainer>
-//       <PageTitle>路線一覽</PageTitle>
-//       <RailwayGroup>
-//         <RailwayText>台鐵</RailwayText>
-//         <StyledDropListUp color="white" />
-//       </RailwayGroup>
-//       <ForestryRailwayGroup>
-//         <RailwayText>林業鐵道</RailwayText>
-//         <StyledDropListDown color="white" />
-//       </ForestryRailwayGroup>
-//       <SugarRailwayGroup>
-//         <RailwayText>糖業鐵道</RailwayText>
-//         <StyledDropListUp color="white" />
-//       </SugarRailwayGroup>
-//       <BreadcrumbGroup>
-//         <BreadcrumbHome>首頁</BreadcrumbHome>
-//         <StyledBreadcrumbRight color="white" />
-//         <BreadcrumbCurrent>車站旅途</BreadcrumbCurrent>
-//       </BreadcrumbGroup>
-//       <HiddenBackToTopText>回到最上方</HiddenBackToTopText>
-//       <HiddenHomeText>回首頁</HiddenHomeText>
-//       <FrameSubsection />
-//       <FrameWrapperSubsection />
-//       <FooterLinks>
-//         <BackToTopText>回到最上方</BackToTopText>
-//         <HomeText>回首頁</HomeText>
-//       </FooterLinks>
-//       <ComponentFooterSubsection />
-//       <Divider />
-//       <ComponentHeaderSubsection />
-//     </RailwayManagementContainer>
-//   );
-// };

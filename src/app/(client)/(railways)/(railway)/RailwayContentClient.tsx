@@ -5,8 +5,6 @@ import { TitleContext } from "@/src/app/(context)/title/TitleContext";
 import DistrictGroupedStations from "@/src/app/(components)/(railways)/(railway)/DistrictGroupedStations";
 import Head from "next/head";
 import { usePathname } from "next/navigation";
-import Header from "@/src/app/(components)/(header)/header";
-import Footer from "@/src/app/(components)/(footer)/footer";
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import Loading from "@/src/app/(pages)/railways/[railwayId]/loading";
 import NotFound from "@/src/app/(pages)/railways/[railwayId]/not-found";
@@ -120,7 +118,6 @@ export default function RailwayContentClient({ data, stations }: Props) {
         <title>{title}</title>
       </Head>
       <StationListPageContainer>
-        <Header />
         {loading ? (
           <Loading />
         ) : notFoundPage ? (
@@ -144,7 +141,6 @@ export default function RailwayContentClient({ data, stations }: Props) {
           </RailwayListContainerArea>
         )}
         <BottomNav />
-        <Footer />
       </StationListPageContainer>
     </>
   );

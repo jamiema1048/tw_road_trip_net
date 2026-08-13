@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import styled from "styled-components";
+import Link from "next/link";
 
 interface Line {
   id: number;
@@ -124,7 +125,7 @@ const FrameContainer = styled.div`
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 `;
-const RouteCell = styled.a`
+const RouteCell = styled(Link)`
   display: flex;
   background-color: #343434;
   border: 1px solid;
