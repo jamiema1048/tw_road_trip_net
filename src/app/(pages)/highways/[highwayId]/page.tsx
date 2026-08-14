@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import mongoose from "mongoose";
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
 import HighwayContentClient from "@/src/app/(client)/(highways)/HighwayContentClient";
+import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { HighwaySchema } from "@/src/models/Highway";
 
@@ -91,9 +92,7 @@ export default async function HighwayContentServer({
     // 🟢 修正 3：明確轉為數字，並阻擋無效 ID
     const numericHighwayId = Number(highwayIdStr);
     if (isNaN(numericHighwayId)) {
-      return (
-        <div className="p-10 text-center">無效的公路編號：{highwayIdStr}</div>
-      );
+      notFound();
     }
 
     // 🟢 修正 2：正確取得連線物件
@@ -109,15 +108,13 @@ export default async function HighwayContentServer({
     }).lean();
 
     if (!highwayData) {
-      return (
-        <div className="p-10 text-center">找不到公路編號：{highwayIdStr}</div>
-      );
+      notFound();
     }
 
     // 3. 序列化處理 (Serialization)
     const serializedHighway = {
       ...highwayData,
-      _id: highwayData._id.toString(),
+      _id: highwayData._id?.toString() || "",
       // 🟢 修正 1：給予預設空陣列 (highwayData.images || [])，防止 .map() 崩潰
       images: (highwayData.images || []).map((img: any) => ({
         ...img,
@@ -130,13 +127,18 @@ export default async function HighwayContentServer({
 
     // 4. 將單一公路資料傳給 Client 渲染
     return <HighwayContentClient highway={serializedHighway} />;
-  } catch (err) {
+  } catch (err: any) {
     // 💡 建議：印出完整的錯誤訊息，幫你下次更好抓蟲
-    console.error("載入公路頁面失敗，詳細錯誤:", err);
-    return (
-      <div className="text-red-500 p-10">
-        無法載入公路資料，請檢查資料庫連線。
-      </div>
-    );
+    if (
+      err?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
+      err?.message === "NEXT_NOT_FOUND"
+    ) {
+      throw err;
+    }
+
+    console.error("載入公路頁面失敗，詳細錯誤原因:", err);
+
+    // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
+    throw new Error(err?.message || "無法載入公路資料，請檢查資料庫連線。");
   }
 }

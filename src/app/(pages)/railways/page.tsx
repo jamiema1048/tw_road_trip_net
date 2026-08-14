@@ -1,5 +1,6 @@
 // src/app/railways/LinePageServer.tsx
 import LinePageClient from "@/src/app/(client)/(railways)/LinePageClient";
+import { notFound } from "next/navigation";
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
 import { RailwaySchema } from "@/src/models/Railway";
 import { Types } from "mongoose";
@@ -37,7 +38,7 @@ export default async function LinePageServer() {
     const allRailways = (await RailwayModel.find({}).lean()) as MongoRailway[];
 
     if (!allRailways || allRailways.length === 0) {
-      return <div>暫無路線資料</div>;
+      notFound();
     }
 
     // 4. 資料標準化 (將所有的 ObjectId 轉成字串)
@@ -53,8 +54,17 @@ export default async function LinePageServer() {
 
     // 5. 將處理好的陣列傳給 Client 端
     return <LinePageClient lines={serializedLines} />;
-  } catch (err) {
-    console.error("MongoDB Fetch Error:", err);
-    return <div>資料載入失敗</div>;
+  } catch (err: any) {
+    if (
+      err?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
+      err?.message === "NEXT_NOT_FOUND"
+    ) {
+      throw err;
+    }
+
+    console.error("載入公路頁面失敗，詳細錯誤原因:", err);
+
+    // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
+    throw new Error(err?.message || "無法載入公路資料，請檢查資料庫連線。");
   }
 }

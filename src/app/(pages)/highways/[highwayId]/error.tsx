@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Head from "next/head";
 import styled from "styled-components";
 import ErrorPageClient from "@/src/app/(client)/(ErrorPage)/ErrorPageClient";

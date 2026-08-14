@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import { Types } from "mongoose";
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import StationClient from "@/src/app/(client)/(stations)/StationClient";
+import { notFound } from "next/navigation";
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
 import { RailwaySchema } from "@/src/models/Railway";
 import { StationSchema } from "@/src/models/Station";
@@ -144,7 +144,9 @@ export default async function StationPage({ params }: { params: PageParams }) {
     // 你原本寫 stationParams.stationId 會抓不到值
     const { stationId: rawStationId } = await params;
     const stationId = Number(rawStationId);
-    if (isNaN(stationId)) notFound();
+    if (isNaN(stationId)) {
+      notFound();
+    }
 
     const { railwayConn, stationConn } = await getConnections();
     const RailwayModel =
@@ -159,7 +161,9 @@ export default async function StationPage({ params }: { params: PageParams }) {
       RailwayModel.find({}).lean() as Promise<RailwayData[]>,
     ]);
 
-    if (!rawStation) notFound();
+    if (!rawStation) {
+      notFound();
+    }
 
     // 處理鄰近車站 ID
     const toArr = (val: number | number[] | undefined) =>
@@ -294,19 +298,17 @@ export default async function StationPage({ params }: { params: PageParams }) {
         adjacentStations={adjacentStations}
       />
     );
-  } catch (e) {
-    console.error("Station Page Error:", e);
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-6">
-        <h1 className="text-3xl font-bold mb-4">🚧 發生錯誤</h1>
-        <p className="text-lg mb-6">無法載入車站資料，請檢查資料庫連線。</p>
-        <Link
-          href="/"
-          className="px-4 py-2 bg-green-600 rounded hover:bg-green-500 transition-colors"
-        >
-          返回首頁
-        </Link>
-      </div>
-    );
+  } catch (err: any) {
+    if (
+      err?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
+      err?.message === "NEXT_NOT_FOUND"
+    ) {
+      throw err;
+    }
+
+    console.error("載入公路頁面失敗，詳細錯誤原因:", err);
+
+    // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
+    throw new Error(err?.message || "無法載入公路資料，請檢查資料庫連線。");
   }
 }

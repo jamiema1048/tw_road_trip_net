@@ -11,6 +11,26 @@ const Nav = styled.nav`
   gap: 3rem;
 `;
 
+const BottomNavButton = styled.button`
+  display: block;
+  background: none;
+  border: none;
+  padding: 0;
+  color: #fff;
+  font-family: Inter, sans-serif;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    text-decoration: underline;
+    color: #2f7716;
+  }
+`;
+
 const BottomNavLink = styled.a`
   display: block;
   color: #fff;
@@ -47,10 +67,18 @@ const BottomNav: React.FC<BottomNavProps> = (
     // customNames = {},
   },
 ) => {
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // 平滑滾動效果
+    });
+  };
   return (
     <Nav aria-label="bottomnav">
-      <BottomNavLink>回到最上方</BottomNavLink>
-      <BottomNavLink>回首頁</BottomNavLink>
+      <BottomNavButton onClick={scrollToTop}>回到最上方</BottomNavButton>
+      <BottomNavLink href="/">回首頁</BottomNavLink>
+      <BottomNavLink href="/highways">公路旅途</BottomNavLink>
+      <BottomNavLink href="/railways">車站旅途</BottomNavLink>
     </Nav>
   );
 };

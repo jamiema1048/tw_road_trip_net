@@ -1,16 +1,14 @@
+"use client";
 import React from "react";
-import Link from "next/link";
-
+import Head from "next/head";
+import { NotFoundClient } from "@/src/app/(client)/(NotFound)/NotFoundClient";
 const NotFound = (): React.ReactElement => {
   return (
     <>
-      <div>
-        <h2>Page not found</h2>
-        <p>Could not find requested resource</p>
-        <p>
-          <Link href="/">Home</Link>
-        </p>
-      </div>
+      <Head>
+        <title>找不到頁面</title>
+      </Head>
+      <NotFoundClient></NotFoundClient>
     </>
   );
 };

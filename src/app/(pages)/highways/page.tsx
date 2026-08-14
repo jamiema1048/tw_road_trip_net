@@ -1,6 +1,7 @@
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
 import { HighwaySchema } from "@/src/models/Highway";
 import { Types } from "mongoose";
+import { notFound } from "next/navigation";
 import HighwayListClient from "@/src/app/(client)/(highways)/HighwayListClient";
 
 interface HighwayImage {
@@ -41,7 +42,7 @@ export default async function HighwayListServer() {
     const allHighways = (await HighwayModel.find({}).lean()) as MongoHighway[];
 
     if (!allHighways || allHighways.length === 0) {
-      return <div>暫無路線資料</div>;
+      notFound();
     }
     console.log(HighwayModel);
 
@@ -62,15 +63,17 @@ export default async function HighwayListServer() {
 
     // 4. 直接把完整的資料丟給 Client Component
     return <HighwayListClient highways={detailedHighways} />;
-  } catch (err) {
-    console.error(err);
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-6">
-        <h1 className="text-3xl font-bold mb-4">🚧 發生錯誤</h1>
-        <p className="text-lg mb-6">
-          無法載入公路資料，可能是伺服器或網路有問題。
-        </p>
-      </div>
-    );
+  } catch (err: any) {
+    if (
+      err?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
+      err?.message === "NEXT_NOT_FOUND"
+    ) {
+      throw err;
+    }
+
+    console.error("載入公路頁面失敗，詳細錯誤原因:", err);
+
+    // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
+    throw new Error(err?.message || "無法載入公路資料，請檢查資料庫連線。");
   }
 }

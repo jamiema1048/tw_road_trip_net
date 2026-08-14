@@ -300,6 +300,26 @@ const StationBottomNav = styled.nav`
   gap: 3rem;
 `;
 
+const StationBottomNavButton = styled.button`
+  display: block;
+  background: none;
+  border: none;
+  padding: 0;
+  color: #fff;
+  font-family: Inter, sans-serif;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    text-decoration: underline;
+    color: #2f7716;
+  }
+`;
+
 const StationBottomNavLink = styled(Link)`
   display: block;
   color: #fff;
@@ -332,6 +352,13 @@ export default function StationClient({
   const [loading, setLoading] = useState(true);
   const [notFoundPage, setNotFoundPage] = useState(false);
   const pathname = usePathname();
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // 平滑滾動效果
+    });
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -555,8 +582,10 @@ export default function StationClient({
           </StationContainerArea>
         )}
         <StationBottomNav>
-          <StationBottomNavLink>回到最上方</StationBottomNavLink>
-          <StationBottomNavLink>回首頁</StationBottomNavLink>
+          <StationBottomNavButton onClick={scrollToTop}>
+            回到最上方
+          </StationBottomNavButton>
+          <StationBottomNavLink href="/">回首頁</StationBottomNavLink>
           {station.line.map((line) => {
             // 1. 利用 find 找不到會回傳 undefined 的特性，搭配 || 做預設值
             const railwayName =

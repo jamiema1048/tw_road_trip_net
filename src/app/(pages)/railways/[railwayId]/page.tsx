@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 // import { Types } from "mongoose"; // 用於定義 ObjectId
 import RailwayContentClient from "@/src/app/(client)/(railways)/(railway)/RailwayContentClient";
+import { notFound } from "next/navigation";
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
 import { RailwaySchema } from "@/src/models/Railway";
 import { StationSchema } from "@/src/models/Station";
@@ -92,7 +93,9 @@ export default async function RailwayContentServer({
   try {
     const { railwayId: rawId } = await params;
     const railwayId = Number(rawId);
-    if (!railwayId) return <div>Invalid Railway ID</div>;
+    if (!railwayId) {
+      notFound();
+    }
 
     const { railwayConn, stationConn } = await getConnections();
 
@@ -109,7 +112,9 @@ export default async function RailwayContentServer({
       "line.lineID": railwayId,
     }).lean()) as Station[];
 
-    if (!rawRailway) return <div>Railway Not Found</div>;
+    if (!rawRailway) {
+      notFound();
+    }
 
     // --- 序列化處理 (Serialization) ---
 
@@ -210,8 +215,17 @@ export default async function RailwayContentServer({
         stations={serializedStations}
       />
     );
-  } catch (error) {
-    console.error("MongoDB Fetch Error:", error);
-    return <div>Error loading railway data</div>;
+  } catch (err: any) {
+    if (
+      err?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
+      err?.message === "NEXT_NOT_FOUND"
+    ) {
+      throw err;
+    }
+
+    console.error("載入公路頁面失敗，詳細錯誤原因:", err);
+
+    // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
+    throw new Error(err?.message || "無法載入公路資料，請檢查資料庫連線。");
   }
 }
