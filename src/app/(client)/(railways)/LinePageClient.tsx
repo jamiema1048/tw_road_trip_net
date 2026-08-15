@@ -29,7 +29,7 @@ const RailwayListPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #000000;
+  background-color: var(--background);
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
@@ -42,7 +42,7 @@ const RailwayListPageContainer = styled.div`
   }
 `;
 const RailwayListContainer = styled.div`
-  background-color: #000000;
+  background-color: var(--background);
   width: 100%;
   padding: 1.75rem 3rem 1.75rem 3rem;
   @media (max-width: 576px) {
@@ -56,7 +56,7 @@ const PageTitleContainer = styled.div`
   margin: 1.25rem auto;
 `;
 const PageTitle = styled.div`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
   font-size: 3rem;
   font-weight: 400;
@@ -65,7 +65,7 @@ const PageTitle = styled.div`
 `;
 
 const Divider = styled.div`
-  background-color: #ffffff;
+  background-color: var(--text-white-aaaa);
   height: 1px;
   margin: 1.25rem auto;
   width: 100%;

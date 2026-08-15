@@ -16,7 +16,7 @@ const BottomNavButton = styled.button`
   background: none;
   border: none;
   padding: 0;
-  color: #fff;
+  color: var(--text-white-aaaa);
   font-family: Inter, sans-serif;
   font-size: 1.25rem;
   font-style: normal;
@@ -27,13 +27,13 @@ const BottomNavButton = styled.button`
 
   &:hover {
     text-decoration: underline;
-    color: #2f7716;
+    color: var(--text-success);
   }
 `;
 
 const BottomNavLink = styled.a`
   display: block;
-  color: #fff;
+  color: var(--text-white-aaaa);
   font-family: Inter;
   font-size: 1.25rem;
   font-style: normal;
@@ -46,7 +46,7 @@ const BottomNavLink = styled.a`
   /* Hover 效果 (搭配微調邊距) */
   &:hover {
     text-decoration: underline;
-    color: #2f7716; /* hover:text-green-400 */
+    color: var(--text-success); /* hover:text-green-400 */
   }
 `;
 

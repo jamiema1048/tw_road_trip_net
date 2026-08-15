@@ -76,7 +76,7 @@ const StationPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #000000;
+  background-color: var(--background);
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
@@ -89,7 +89,7 @@ const StationPageContainer = styled.div`
   }
 `;
 const StationContainerArea = styled.div`
-  background-color: #000000;
+  background-color: var(--background);
   align-items: center;
   width: 100%;
   padding: 1.75rem 3rem 1.75rem 3rem;
@@ -104,7 +104,7 @@ const PageTitleContainer = styled.div`
   margin: 1.25rem auto;
 `;
 const PageTitle = styled.div`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
   font-size: 3rem;
   font-weight: 400;
@@ -113,7 +113,7 @@ const PageTitle = styled.div`
 `;
 
 const Divider = styled.div`
-  background-color: #ffffff;
+  background-color: var(--text-white-aaaa);
   height: 1px;
   margin: 1.25rem auto;
   width: 100%;
@@ -129,7 +129,7 @@ const RouteInfoSection = styled.section`
 `;
 
 const StationDataTitle = styled.h2`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: Inter;
   font-size: 3rem;
   font-style: normal;
@@ -139,7 +139,7 @@ const StationDataTitle = styled.h2`
 `;
 
 const StationDataDetail = styled.h3`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: Inter;
   font-size: 2rem;
   font-style: normal;
@@ -158,7 +158,7 @@ const StationMediaGallerySection = styled.section`
 `;
 
 const StationPhotoTitle = styled.h2`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: Inter;
   font-size: 2.5rem;
   font-style: normal;
@@ -211,7 +211,7 @@ const PhotoDescriptionContainer = styled.div`
 `;
 
 const PhotoDescriptionText = styled.p`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: Inter;
   font-size: 1.75rem;
   font-style: normal;
@@ -238,7 +238,7 @@ const PrevStationsArea = styled.div`
 `;
 
 const PrevStationsTitle = styled.h3`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: Inter;
   font-size: 1.75rem;
   font-style: normal;
@@ -256,7 +256,7 @@ const NextStationsArea = styled.div`
 `;
 
 const NextStationsTitle = styled.h3`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: Inter;
   font-size: 1.75rem;
   font-style: normal;
@@ -265,7 +265,7 @@ const NextStationsTitle = styled.h3`
 `;
 
 const AdjacentStationsLink = styled(Link)`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: Inter;
   font-size: 1.75rem;
   font-style: normal;
@@ -276,12 +276,12 @@ const AdjacentStationsLink = styled(Link)`
   transition: all 0.2s ease-in-out;
   &:hover {
     text-decoration: underline;
-    color: #2f7716; /* hover:text-green-400 */
+    color: var(--text-success); /* hover:text-green-400 */
   }
 `;
 
 const AdjacentStationsDisableLinkText = styled.div`
-  color: #949494;
+  color: var(--text-gray-aa);
   font-family: Inter;
   font-size: 1.75rem;
   font-style: normal;
@@ -305,7 +305,7 @@ const StationBottomNavButton = styled.button`
   background: none;
   border: none;
   padding: 0;
-  color: #fff;
+  color: var(--text-white-aaaa);
   font-family: Inter, sans-serif;
   font-size: 1.25rem;
   font-style: normal;
@@ -316,13 +316,13 @@ const StationBottomNavButton = styled.button`
 
   &:hover {
     text-decoration: underline;
-    color: #2f7716;
+    color: var(--text-success);
   }
 `;
 
 const StationBottomNavLink = styled(Link)`
   display: block;
-  color: #fff;
+  color: var(--text-white-aaaa);
   font-family: Inter;
   font-size: 1.25rem;
   font-style: normal;
@@ -335,7 +335,7 @@ const StationBottomNavLink = styled(Link)`
   /* Hover 效果 (搭配微調邊距) */
   &:hover {
     text-decoration: underline;
-    color: #2f7716; /* hover:text-green-400 */
+    color: var(--text-success); /* hover:text-green-400 */
   }
 `;
 

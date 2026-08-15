@@ -13,7 +13,7 @@ const StyledComponentFooter = styled.div`
 
 /* 2. 主體區塊：改用 Padding 上下留白，替代原本死板的 height: 87.5% */
 const Frame = styled.div`
-  background-color: #090980;
+  background-color: var(--bg-primary);
   width: 100%;
   padding: 40px 24px;
   box-sizing: border-box;
@@ -48,7 +48,7 @@ const ContactContent = styled.div`
 `;
 
 const TextWrapper = styled.div`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
   display: flex;
   align-items: center;
@@ -80,7 +80,7 @@ const StyledGithub = styled(Icon)`
 
 /* 3. 分隔線：電腦端為豎線，手機端轉為橫線 */
 const Divider = styled.div`
-  background-color: #d9d9d9;
+  background-color: var(--text-gray-a);
   height: 100px;
   width: 1px;
 
@@ -120,7 +120,7 @@ const StyledBreadcrumbRight = styled(Icon)`
 
 /* 4. 底部 Copyright 欄位：隨螢幕居中縮放 */
 const BottomFrame = styled.div`
-  background-color: #343434;
+  background-color: var(--text-gray-aaa);
   width: 100%;
   padding: 12px 24px;
   box-sizing: border-box;
@@ -143,7 +143,7 @@ const CopyrightGroup = styled.div`
 `;
 
 const CopyrightText = styled.div`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
   font-size: 12px;
   font-weight: 400;
@@ -159,7 +159,7 @@ const StyledCopyright = styled(Icon)`
 `;
 
 const BottomDivider = styled.div`
-  background-color: #d9d9d9;
+  background-color: var(--text-gray-a);
   height: 12px;
   width: 1px;
 
@@ -247,7 +247,7 @@ const Footer: React.FC<ComponentFooterProps> = () => {
               <StyledBreadcrumbRight
                 icon="mdi:chevron-right"
                 className="icon"
-                color="white"
+                color={"var(--text-white-aaaa)"}
               />
               <TextWrapper>關於我們</TextWrapper>
             </NavigationItem>
@@ -255,7 +255,7 @@ const Footer: React.FC<ComponentFooterProps> = () => {
               <StyledBreadcrumbRight
                 icon="mdi:chevron-right"
                 className="icon"
-                color="white"
+                color={"var(--text-white-aaaa)"}
               />
               <TextWrapper>參考資料</TextWrapper>
             </NavigationItem>
@@ -265,7 +265,7 @@ const Footer: React.FC<ComponentFooterProps> = () => {
               <StyledBreadcrumbRight
                 icon="mdi:chevron-right"
                 className="icon"
-                color="white"
+                color={"var(--text-white-aaaa)"}
               />
               <TextWrapper>車站旅途</TextWrapper>
             </NavigationItem>
@@ -273,7 +273,7 @@ const Footer: React.FC<ComponentFooterProps> = () => {
               <StyledBreadcrumbRight
                 icon="mdi:chevron-right"
                 className="icon"
-                color="white"
+                color={"var(--text-white-aaaa)"}
               />
               <TextWrapper>公路旅途</TextWrapper>
             </NavigationItem>
@@ -298,7 +298,7 @@ const Footer: React.FC<ComponentFooterProps> = () => {
                 <StyledGithub
                   icon="mdi:github"
                   className="icon-instance-node"
-                  color="white"
+                  color={"var(--text-white-aaaa)"}
                 />
               </Link>
             </SocialIcons>
@@ -311,7 +311,7 @@ const Footer: React.FC<ComponentFooterProps> = () => {
           <StyledCopyright
             icon="mdi:copyright"
             className="icon-copyright"
-            color="white"
+            color={"var(--text-white-aaaa)"}
           />
           <CopyrightText>All Rights Reserved</CopyrightText>
         </CopyrightGroup>

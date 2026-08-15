@@ -20,7 +20,7 @@ const HighwayPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #000000;
+  background-color: var(--background);
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
@@ -33,7 +33,7 @@ const HighwayPageContainer = styled.div`
   }
 `;
 const HighwayContainerArea = styled.div`
-  background-color: #000000;
+  background-color: var(--background);
   align-items: center;
   width: 100%;
   padding: 1.75rem 3rem 1.75rem 3rem;
@@ -48,7 +48,7 @@ const PageTitleContainer = styled.div`
   margin: 1.25rem auto;
 `;
 const PageTitle = styled.div`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
   font-size: 3rem;
   font-weight: 400;
@@ -57,7 +57,7 @@ const PageTitle = styled.div`
 `;
 
 const Divider = styled.div`
-  background-color: #ffffff;
+  background-color: var(--text-white-aaaa);
   height: 1px;
   margin: 1.25rem auto;
   width: 100%;
@@ -73,7 +73,7 @@ const RouteInfoSection = styled.section`
 `;
 
 const HighwayDataTitle = styled.h2`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: Inter;
   font-size: 3rem;
   font-style: normal;
@@ -83,7 +83,7 @@ const HighwayDataTitle = styled.h2`
 `;
 
 const HighwayDataDetail = styled.h3`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: Inter;
   font-size: 2rem;
   font-style: normal;
@@ -101,7 +101,7 @@ const HighwayMediaGallerySection = styled.section`
 `;
 
 const HighwayPhotoTitle = styled.h2`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: Inter;
   font-size: 2.5rem;
   font-style: normal;
@@ -154,7 +154,7 @@ const PhotoDescriptionContainer = styled.div`
 `;
 
 const PhotoDescriptionText = styled.p`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: Inter;
   font-size: 1.75rem;
   font-style: normal;

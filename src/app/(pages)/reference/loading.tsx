@@ -17,7 +17,7 @@ const LoadingContainer = styled.div`
 `;
 
 const LoadingText = styled.p`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
   display: flex;
   align-items: center;

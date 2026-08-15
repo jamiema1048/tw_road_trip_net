@@ -1,26 +1,74 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* 1. Tailwind v4 主題變數註冊 (讓你在 Class 中可以直接使用，例如: bg-primary, border-route-cell) */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-bg-primary: var(--bg-primary);
+  --color-border-route-cell: var(--border-route-cell);
+
+  --color-text-success: var(--text-success);
+  --color-text-info: var(--text-info);
+  --color-text-warning: var(--text-warning);
+  --color-text-danger: var(--text-danger);
+
+  --color-text-gray-aaa: var(--text-gray-aaa);
+  --color-text-gray-aa: var(--text-gray-aa);
+  --color-text-gray-a: var(--text-gray-a);
+  --color-text-white-aaa: var(--text-white-aaa);
+  --color-text-white-aaaa: var(--text-white-aaaa);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* 2. Light Mode (預設值) */
+:root {
+  /* 基礎背景與文字 */
+  --background: #ffffff;
+  --foreground: #171717;
+  --bg-primary: #f0f4ff;
+  --border-route-cell: #a0c0ff; /* 🟢 補齊 Light Mode 對應的邊框色 */
+
+  /* 狀態文字顏色 (Light Mode 加深以提升對比度) */
+  --text-success: #235c10;
+  --text-info: #007682;
+  --text-warning: #a36202;
+  --text-danger: #80140f;
+
+  /* 灰階與白階 (Light Mode 下轉為深色) */
+  --text-gray-aaa: #f7f7f7;
+  --text-gray-aa: #666666;
+  --text-gray-a: #333333;
+  --text-white-aaa: #2a2a2a;
+  --text-white-aaaa: #171717;
 }
 
+/* 3. Dark Mode (當 html 上有 [data-theme="dark"] 時覆蓋) */
+[data-theme="dark"] {
+  --background: #121212;
+  --foreground: #ffffff;
+  --bg-primary: #090980;
+  --border-route-cell: #4b4bff;
+
+  --text-success: #2f7716;
+  --text-info: #008e9b;
+  --text-warning: #c47703;
+  --text-danger: #961812;
+
+  --text-gray-aaa: #343434;
+  --text-gray-aa: #949494;
+  --text-gray-a: #d9d9d9;
+  --text-white-aaa: #f7f7f7;
+  --text-white-aaaa: #ffffff;
+}
+
+/* 4. 全域 Body 樣式 */
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }

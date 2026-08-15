@@ -140,7 +140,7 @@ export default function SearchResultsClient({ query, results }: Props) {
                         >
                           <path
                             d="M26 36L38 24L26 12M38 24H10"
-                            stroke="white"
+                            stroke={"var(--text-white-aaaa)"}
                             stroke-width="4"
                             stroke-linecap="round"
                             stroke-linejoin="round"
@@ -162,31 +162,31 @@ export default function SearchResultsClient({ query, results }: Props) {
                     >
                       <path
                         d="M223.548 111.774C223.548 173.505 173.505 223.548 111.774 223.548C50.043 223.548 0 173.505 0 111.774C0 50.043 50.043 0 111.774 0C173.505 0 223.548 50.043 223.548 111.774ZM16.7661 111.774C16.7661 164.246 59.3027 206.782 111.774 206.782C164.246 206.782 206.782 164.246 206.782 111.774C206.782 59.3027 164.246 16.7661 111.774 16.7661C59.3027 16.7661 16.7661 59.3027 16.7661 111.774Z"
-                        fill="white"
+                        fill={"var(--text-white-aaaa)"}
                       />
                       <path
                         d="M175.511 200.743C172.205 196.802 172.719 190.927 176.659 187.62C180.6 184.314 186.475 184.828 189.782 188.768L237.68 245.851C240.987 249.792 240.473 255.667 236.532 258.974C232.591 262.28 226.716 261.766 223.409 257.826L175.511 200.743Z"
-                        fill="white"
+                        fill={"var(--text-white-aaaa)"}
                       />
                       <path
                         d="M85.6935 110.843C85.6935 121.646 81.1062 130.403 75.4476 130.403C69.7889 130.403 65.2016 121.646 65.2016 110.843C65.2016 100.04 69.7889 91.2822 75.4476 91.2822C81.1062 91.2822 85.6935 100.04 85.6935 110.843Z"
-                        fill="white"
+                        fill={"var(--text-white-aaaa)"}
                       />
                       <path
                         d="M151.827 110.843C151.827 121.646 147.239 130.403 141.581 130.403C135.922 130.403 131.335 121.646 131.335 110.843C131.335 100.04 135.922 91.2822 141.581 91.2822C147.239 91.2822 151.827 100.04 151.827 110.843Z"
-                        fill="white"
+                        fill={"var(--text-white-aaaa)"}
                       />
                       <path
                         d="M111.308 181.633L89.9319 160.675L111.308 174.647L132.685 160.675L111.308 181.633Z"
-                        fill="white"
+                        fill={"var(--text-white-aaaa)"}
                       />
                       <path
                         d="M49.5231 70.4965L79.1304 54.7541L80.8795 58.0437L51.2723 73.7862L49.5231 70.4965Z"
-                        fill="white"
+                        fill={"var(--text-white-aaaa)"}
                       />
                       <path
                         d="M137.741 54.9556L167.348 70.6981L165.599 73.9878L135.992 58.2453L137.741 54.9556Z"
-                        fill="white"
+                        fill={"var(--text-white-aaaa)"}
                       />
                     </svg>
                   </EmptyIcon>
@@ -241,7 +241,7 @@ const SearchHeader = styled.div`
 `;
 
 const Title = styled.h1`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   /* text/H2 */
   font-family: Inter;
   font-size: 2rem;
@@ -251,11 +251,11 @@ const Title = styled.h1`
 `;
 
 const Highlight = styled.span`
-  color: #008e9b;
+  color: var(--text-info);
 `;
 
 const SubText = styled.p`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: Inter;
   font-size: 1rem;
   font-style: normal;
@@ -264,7 +264,7 @@ const SubText = styled.p`
 `;
 
 const Divider = styled.div`
-  background-color: #ffffff;
+  background-color: var(--text-white-aaaa);
   height: 1px;
   margin: 0 auto;
   width: 100%;
@@ -295,14 +295,17 @@ const TabButton = styled.button<{ $active: boolean }>`
   padding: 0.5rem 1rem;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${({ $active }) => ($active ? "#4b4bff" : "#333333")};
-  background-color: ${({ $active }) => ($active ? "#067ae0" : "#343434")};
-  color: ${({ $active }) => ($active ? "#ffffff" : "#d9d9d9")};
+  border: 1px solid
+    ${({ $active }) => ($active ? "var(--border-route-cell)" : "#333333")};
+  background-color: ${({ $active }) =>
+    $active ? "#067ae0" : "var(--text-gray-aaa)"};
+  color: ${({ $active }) =>
+    $active ? "var(--text-white-aaaa)" : "var(--text-gray-a)"};
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    border-color: #4b4bff;
-    color: #ffffff;
+    border-color: var(--border-route-cell);
+    color: var(--text-white-aaaa);
   }
 `;
 
@@ -321,19 +324,19 @@ const ResultCard = styled(Link)`
   align-items: center;
   align-self: stretch;
   padding: 1.25rem 2.25rem;
-  background-color: #1a1a1a;
+  background-color: var(--background);
   border: 1px solid #2e2e2e;
   border-radius: 1.25rem;
   text-decoration: none;
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    border: 3px solid #008e9b;
+    border: 3px solid var(--text-info);
     transform: translateY(-2px);
   }
 
   &:active {
-    border: 3px solid #ffffff;
+    border: 3px solid var(--text-white-aaaa);
   }
 `;
 
@@ -346,12 +349,12 @@ const CardInfo = styled.div`
 const CardTitle = styled.span`
   font-size: 1.125rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-white-aaaa);
 `;
 
 const CardSubtitle = styled.span`
   font-size: 0.875rem;
-  color: #888888;
+  color: var(--text-gray-aa);
 `;
 
 const CardGoIcon = styled.div`
@@ -359,21 +362,6 @@ const CardGoIcon = styled.div`
   height: 3rem;
   flex-shrink: 0;
   aspect-ratio: 1/1;
-`;
-
-const Badge = styled.span<{ $type: "highway" | "railway" }>`
-  font-size: 0.75rem;
-  padding: 0.25rem 0.625rem;
-  border-radius: 6px;
-  font-weight: 600;
-  background-color: ${({ $type }) =>
-    $type === "highway" ? "rgba(47, 119, 22, 0.2)" : "rgba(0, 102, 204, 0.2)"};
-  color: ${({ $type }) => ($type === "highway" ? "#4ade80" : "#60a5fa")};
-  border: 1px solid
-    ${({ $type }) =>
-      $type === "highway"
-        ? "rgba(47, 119, 22, 0.5)"
-        : "rgba(0, 102, 204, 0.5)"};
 `;
 
 const EmptyBox = styled.div`

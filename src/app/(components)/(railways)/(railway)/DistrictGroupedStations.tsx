@@ -41,17 +41,17 @@ interface OrderedStation extends Station {
 // 2. 狀態樣式對照表 (封裝 3 種 status 樣式)
 const STATUS_STYLES: Record<Station["status"], ReturnType<typeof css>> = {
   active: css`
-    color: #000000;
+    color: var(--background);
     font-family: Inter;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
     @media (prefers-color-scheme: dark) {
-      color: #ffffff;
+      color: var(--text-white-aaaa);
     }
   `,
   disused: css`
-    color: #949494; /* text-gray-500 */
+    color: var(--text-gray-aa); /* text-gray-500 */
     text-decoration: line-through;
     font-family: Inter;
     font-style: normal;
@@ -60,7 +60,7 @@ const STATUS_STYLES: Record<Station["status"], ReturnType<typeof css>> = {
   `,
   // 預設/其他狀態 (例如原本的 text-blue-400 italic)
   plan: css`
-    color: #008e9b; /* text-blue-400 */
+    color: var(--text-info); /* text-blue-400 */
     font-style: italic;
     font-family: Inter;
     font-weight: 400;
@@ -95,7 +95,7 @@ const LineAreaTitleDot = styled.div`
 `;
 
 const LineAreaTitleText = styled.h2`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
   display: flex;
   align-items: center;
@@ -118,7 +118,7 @@ const LineAreaContentBlock = styled.div`
 const LineAreaDecoration = styled.div`
   width: 1px;
   align-self: stretch;
-  background: #d9d9d9;
+  background: var(--text-gray-a);
 `;
 
 const LineAreaContent = styled.div`
@@ -157,7 +157,7 @@ const StationLink = styled(Link)`
 
   /* Hover 效果 (搭配微調邊距) */
   &:hover {
-    color: #2f7716; /* hover:text-green-400 */
+    color: var(--text-success); /* hover:text-green-400 */
     padding-left: 0.5rem; /* hover:pl-2 */
   }
 `;
@@ -166,7 +166,7 @@ const StationLink = styled(Link)`
 const StationDisabled = styled.span`
   opacity: 0.6;
   cursor: not-allowed;
-  color: #949494;
+  color: var(--text-gray-aa);
   user-select: none;
   display: block;
 `;
@@ -175,7 +175,7 @@ const StationDisabled = styled.span`
 const DisabledBadge = styled.span`
   font-size: 1.75rem;
   opacity: 0.8;
-  color: #949494;
+  color: var(--text-gray-aa);
   font-style: normal; /* 避免外層 italic 影響標籤 */
 `;
 
@@ -263,10 +263,7 @@ const DistrictGroupedStations: React.FC<DistrictGroupedStationsProps> = ({
             <LineAreaContent>
               {district.prevArea && (
                 <div className="mb-2">
-                  <Link
-                    href={`/railways/${district.prevArea}`}
-                    className="text-blue-400 text-sm text-black dark:text-white hover:underline"
-                  >
+                  <Link href={`/railways/${district.prevArea}`}>
                     ↑ 上接{district.prevArea}
                   </Link>
                 </div>

@@ -23,7 +23,7 @@ const Item = styled.li`
 `;
 
 const Link = styled.a`
-  color: #888888;
+  color: var(--text-gray-aa);
   text-decoration: none;
   transition: color 0.2s;
   font-weight: 500;
@@ -33,13 +33,13 @@ const Link = styled.a`
   line-height: normal;
 
   &:hover {
-    color: #ffffff;
+    color: var(--text-white-aaaa);
     text-decoration: underline;
   }
 `;
 
 const CurrentPage = styled.span`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-weight: 500;
   font-family: Inter;
   font-size: 1.5rem;
@@ -125,7 +125,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
                   >
                     <path
                       d="M9.5 6L15.5 12L9.5 18"
-                      stroke="white"
+                      stroke={"var(--text-white-aaaa)"}
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"

@@ -88,7 +88,7 @@ export default function HeaderSearchBar() {
           >
             <path
               d="M42 41.9999L33.314 33.3139M33.314 33.3139C34.7998 31.8281 35.9784 30.0643 36.7825 28.123C37.5866 26.1818 38.0005 24.1011 38.0005 21.9999C38.0005 19.8987 37.5866 17.8181 36.7825 15.8768C35.9784 13.9356 34.7998 12.1717 33.314 10.6859C31.8283 9.20015 30.0644 8.02157 28.1231 7.21747C26.1819 6.41337 24.1012 5.99951 22 5.99951C19.8988 5.99951 17.8182 6.41337 15.877 7.21747C13.9357 8.02157 12.1718 9.20015 10.686 10.6859C7.68539 13.6866 5.99963 17.7564 5.99963 21.9999C5.99963 26.2435 7.68539 30.3133 10.686 33.3139C13.6867 36.3146 17.7565 38.0003 22 38.0003C26.2436 38.0003 30.3134 36.3146 33.314 33.3139Z"
-              stroke="white"
+              stroke={"var(--text-white-aaaa)"}
               strokeWidth="5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -136,8 +136,10 @@ const Form = styled.form<{ $isOpen: boolean }>`
   display: flex;
   align-items: center;
   position: relative;
-  background-color: ${({ $isOpen }) => ($isOpen ? "#000000" : "transparent")};
-  border: 2px solid ${({ $isOpen }) => ($isOpen ? "#ffffff" : "transparent")};
+  background-color: ${({ $isOpen }) =>
+    $isOpen ? "var(--background)" : "transparent"};
+  border: 2px solid
+    ${({ $isOpen }) => ($isOpen ? "var(--text-white-aaaa)" : "transparent")};
   border-radius: 9999px;
   padding: 0rem 1.25rem 0rem 1.25rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -166,7 +168,7 @@ const SearchButton = styled.button`
 const Input = styled.input<{ $isOpen: boolean }>`
   background: transparent;
   border: none;
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-size: 1.5rem;
   outline: none;
   width: 100%;
@@ -178,7 +180,7 @@ const Input = styled.input<{ $isOpen: boolean }>`
     visibility 0.2s;
 
   &::placeholder {
-    color: #949494;
+    color: var(--text-gray-aa);
     text-align: start;
     font-family: Inter;
     font-size: 1.5rem;
@@ -191,7 +193,7 @@ const Input = styled.input<{ $isOpen: boolean }>`
 const CloseButton = styled.button`
   background: none;
   border: none;
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-size: 1.5rem;
   width: 1.5rem;
   height: 1.5rem;
@@ -203,7 +205,7 @@ const CloseButton = styled.button`
   border-radius: 50%;
 
   &:hover {
-    color: #949494;
+    color: var(--text-gray-aa);
     background-color: rgba(255, 255, 255, 0.1);
   }
 `;

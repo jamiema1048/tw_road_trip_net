@@ -6,7 +6,7 @@ import Link from "next/link";
 import TempImg from "@/public/Logo/Header.png";
 
 const HomeContainer = styled.div`
-  background-color: #000000;
+  background-color: var(--background);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -29,7 +29,7 @@ const ContentWrapper = styled.main`
 `;
 
 const Title = styled.h1`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
   font-size: clamp(32px, 5vw, 60px);
   font-weight: 400;
@@ -42,7 +42,7 @@ const Title = styled.h1`
 `;
 
 const Description = styled.div`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
   font-size: clamp(18px, 2.5vw, 32px);
   font-weight: 400;
@@ -55,7 +55,7 @@ const Description = styled.div`
 `;
 
 const Divider = styled.div`
-  background-color: #ffffff;
+  background-color: var(--text-white-aaaa);
   height: 1px;
   margin-top: 48px;
   width: 100%;
@@ -75,7 +75,7 @@ const JourneyCards = styled.div`
 
 const StationJourneyCard = styled(Link)`
   aspect-ratio: 1;
-  background-color: #ffffff;
+  background-color: var(--text-white-aaaa);
   border-radius: 24px;
   box-shadow:
     8px 8px 4px #ffffff40,
@@ -123,7 +123,7 @@ const StationJourneyLabel = styled.div`
 
 const RoadJourneyCard = styled(Link)`
   aspect-ratio: 1;
-  background-color: #ffffff;
+  background-color: var(--text-white-aaaa);
   border-radius: 24px;
   box-shadow:
     8px 8px 4px #ffffff40,

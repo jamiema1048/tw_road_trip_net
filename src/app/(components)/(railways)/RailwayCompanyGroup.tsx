@@ -94,7 +94,7 @@ const RailwayCoTitle = styled.div`
 `;
 
 const RailwayText = styled.h2`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
   display: flex;
   align-items: center;
@@ -127,9 +127,9 @@ const FrameContainer = styled.div`
 `;
 const RouteCell = styled(Link)`
   display: flex;
-  background-color: #343434;
+  background-color: var(--text-gray-aaa);
   border: 1px solid;
-  border-color: #4b4bff;
+  border-color: var(--border-route-cell);
   border-radius: 1rem;
   box-shadow:
     6px 6px 6px #4a64f640,
@@ -147,7 +147,7 @@ const RouteCell = styled(Link)`
   transition: all 0.2s ease-in-out;
 `;
 const RouteName = styled.h3`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
   font-size: 1.25rem;
   font-weight: 400;
@@ -188,7 +188,7 @@ export const RailwayCompanyGroup: React.FC<RailwayCompanyGroupProps> = ({
               fillRule="evenodd"
               clipRule="evenodd"
               d="M25.414 31.414C25.039 31.7889 24.5303 31.9995 24 31.9995C23.4697 31.9995 22.9611 31.7889 22.586 31.414L11.272 20.1C11.081 19.9155 10.9286 19.6948 10.8238 19.4508C10.719 19.2068 10.6638 18.9443 10.6615 18.6788C10.6592 18.4132 10.7098 18.1498 10.8104 17.904C10.9109 17.6583 11.0594 17.4349 11.2472 17.2472C11.435 17.0594 11.6583 16.9109 11.9041 16.8103C12.1499 16.7097 12.4133 16.6591 12.6788 16.6615C12.9444 16.6638 13.2068 16.7189 13.4508 16.8238C13.6948 16.9286 13.9155 17.0809 14.1 17.272L24 27.172L33.9 17.272C34.2772 16.9076 34.7824 16.706 35.3068 16.7106C35.8312 16.7152 36.3328 16.9255 36.7037 17.2963C37.0745 17.6671 37.2848 18.1688 37.2894 18.6932C37.2939 19.2175 37.0923 19.7227 36.728 20.1L25.414 31.414Z"
-              fill="white"
+              fill={"var(--text-white-aaaa)"}
             />
           </ArrowIcon>
         </RailwayCoTitle>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Providers } from "@/src/app/providers";
 import Header from "@/src/app/(components)/(header)/header";
 import Footer from "@/src/app/(components)/(footer)/footer";
 
@@ -26,13 +27,17 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="zh-TW"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
-        <Header />
-        <main>{children}</main>
-        <Footer />
+      <body>
+        {/* 把 Providers 包在最外層，讓 Header、Footer、Children 都能共享 Theme 狀態 */}
+        <Providers>
+          <Header />
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
