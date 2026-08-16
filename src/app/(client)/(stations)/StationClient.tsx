@@ -93,8 +93,8 @@ const StationContainerArea = styled.div`
   align-items: center;
   width: 100%;
   padding: 1.75rem 3rem 1.75rem 3rem;
-  @media (max-width: 576px) {
-    padding: 1.25rem 4.5rem 1.25rem 4.5rem;
+  @media (max-width: 768px) {
+    padding: 1.25rem 2.5rem 1.25rem 2.5rem;
   }
 `;
 
@@ -110,6 +110,9 @@ const PageTitle = styled.div`
   font-weight: 400;
   letter-spacing: 0;
   line-height: normal;
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
 `;
 
 const Divider = styled.div`
@@ -117,6 +120,9 @@ const Divider = styled.div`
   height: 1px;
   margin: 1.25rem auto;
   width: 100%;
+  @media (max-width: 768px) {
+    margin: 0.75rem auto;
+  }
 `;
 
 const RouteInfoSection = styled.section`
@@ -318,6 +324,9 @@ const StationBottomNavButton = styled.button`
     text-decoration: underline;
     color: var(--text-success);
   }
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const StationBottomNavLink = styled(Link)`
@@ -336,6 +345,9 @@ const StationBottomNavLink = styled(Link)`
   &:hover {
     text-decoration: underline;
     color: var(--text-success); /* hover:text-green-400 */
+  }
+  @media (max-width: 768px) {
+    font-size: 1rem;
   }
 `;
 

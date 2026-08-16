@@ -9,6 +9,10 @@ const Nav = styled.nav`
   margin-top: 0;
   margin-bottom: 1.25rem;
   gap: 3rem;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
 `;
 
 const BottomNavButton = styled.button`
@@ -29,6 +33,9 @@ const BottomNavButton = styled.button`
     text-decoration: underline;
     color: var(--text-success);
   }
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const BottomNavLink = styled.a`
@@ -47,6 +54,9 @@ const BottomNavLink = styled.a`
   &:hover {
     text-decoration: underline;
     color: var(--text-success); /* hover:text-green-400 */
+  }
+  @media (max-width: 768px) {
+    font-size: 1rem;
   }
 `;
 

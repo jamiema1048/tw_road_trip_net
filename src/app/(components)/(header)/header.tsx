@@ -46,6 +46,7 @@ const HeaderMainArea = styled.div`
   width: 100%;
   margin: 0px auto 0 auto;
   box-sizing: border-box;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   /* 平板尺寸適應 (<= 1024px) */
   @media (max-width: 1024px) {
@@ -101,6 +102,7 @@ const HighwayButton = styled(Link)`
   cursor: pointer;
   @media (max-width: 768px) {
     display: none;
+    font-size: 1.5rem;
   }
 `;
 
@@ -123,6 +125,7 @@ const RailwayButton = styled(Link)`
   cursor: pointer;
   @media (max-width: 768px) {
     display: none;
+    font-size: 1.5rem;
   }
 `;
 

@@ -169,7 +169,7 @@ const BottomDivider = styled.div`
 `;
 
 const TermsText = styled(Link)`
-  color: #ffffff;
+  color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
   font-size: 12px;
   font-weight: 400;
@@ -210,7 +210,7 @@ const ContactEmail = () => {
         <StyledEmail
           icon="mdi:email-outline"
           className="icon-instance-node"
-          color="white"
+          color={"var(--text-white-aaaa)"}
         />
       </button>
 

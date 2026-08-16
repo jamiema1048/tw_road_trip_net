@@ -197,6 +197,9 @@ const Input = styled.input<{ $isOpen: boolean }>`
   transition:
     opacity 0.2s ease-in-out,
     visibility 0.2s;
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
 
   &::placeholder {
     color: var(--text-gray-aa);
@@ -206,6 +209,9 @@ const Input = styled.input<{ $isOpen: boolean }>`
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    @media (max-width: 768px) {
+      font-size: 1.25rem;
+    }
   }
 `;
 

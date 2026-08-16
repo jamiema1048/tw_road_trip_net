@@ -36,6 +36,9 @@ const Link = styled.a`
     color: var(--text-white-aaaa);
     text-decoration: underline;
   }
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const CurrentPage = styled.span`
@@ -45,6 +48,9 @@ const CurrentPage = styled.span`
   font-size: 1.5rem;
   font-style: normal;
   line-height: normal;
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const Separator = styled.svg`

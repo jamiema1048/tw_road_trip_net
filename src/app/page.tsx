@@ -39,6 +39,9 @@ const Title = styled.h1`
   text-align: center;
   width: 100%;
   max-width: 720px;
+  @media (max-width: 768px) {
+    font-size: 1.75rem;
+  }
 `;
 
 const Description = styled.div`
@@ -52,6 +55,9 @@ const Description = styled.div`
   text-align: center;
   width: 100%;
   max-width: 945px;
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const Divider = styled.div`

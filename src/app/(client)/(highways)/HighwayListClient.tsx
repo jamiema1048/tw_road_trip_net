@@ -42,8 +42,8 @@ const HighwayListContainer = styled.div`
   background-color: var(--background);
   width: 100%;
   padding: 1.75rem 3rem 1.75rem 3rem;
-  @media (max-width: 576px) {
-    padding: 1.25rem 4.5rem 1.25rem 4.5rem;
+  @media (max-width: 768px) {
+    padding: 1.25rem 2.5rem 1.25rem 2.5rem;
   }
 `;
 
@@ -59,6 +59,9 @@ const PageTitle = styled.div`
   font-weight: 400;
   letter-spacing: 0;
   line-height: normal;
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
 `;
 
 const Divider = styled.div`
@@ -66,6 +69,9 @@ const Divider = styled.div`
   height: 1px;
   margin: 1.25rem auto;
   width: 100%;
+  @media (max-width: 768px) {
+    margin: 0.75rem auto;
+  }
 `;
 
 export default function HighwayListClient({ highways }: Props) {

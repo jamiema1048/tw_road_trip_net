@@ -229,6 +229,9 @@ const Container = styled.div`
   padding: 1.75rem 3rem 1.75rem 3rem;
   overflow-y: auto;
   position: relative;
+  @media (max-width: 768px) {
+    padding: 1.25rem 2.5rem 1.25rem 2.5rem;
+  }
 `;
 
 const SearchHeader = styled.div`
@@ -244,10 +247,13 @@ const Title = styled.h1`
   color: var(--text-white-aaaa);
   /* text/H2 */
   font-family: Inter;
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  @media (max-width: 768px) {
+    font-size: 1.75rem;
+  }
 `;
 
 const Highlight = styled.span`
