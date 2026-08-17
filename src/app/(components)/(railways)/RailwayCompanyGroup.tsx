@@ -83,10 +83,11 @@ const RailwayGroup = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: 1.25rem;
+  margin: 1.25rem 0;
   gap: 1.75rem;
   @media (max-width: 768px) {
     gap: 1.25rem;
+    margin: 0 0;
   }
 `;
 

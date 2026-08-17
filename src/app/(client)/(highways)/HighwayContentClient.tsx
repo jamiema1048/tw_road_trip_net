@@ -76,16 +76,22 @@ const RouteInfoSection = styled.section`
   align-items: flex-start;
   gap: 1.5rem;
   margin-top: 1.25rem;
+  @media (max-width: 768px) {
+    gap: 1rem;
+  }
 `;
 
 const HighwayDataTitle = styled.h2`
   color: var(--text-white-aaaa);
   font-family: Inter;
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   margin-bottom: 1rem;
+  @media (max-width: 768px) {
+    font-size: 1.75rem;
+  }
 `;
 
 const HighwayDataDetail = styled.h3`
@@ -95,7 +101,9 @@ const HighwayDataDetail = styled.h3`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  margin-bottom: 1rem;
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
 `;
 const HighwayMediaGallerySection = styled.section`
   display: flex;
@@ -157,6 +165,9 @@ const PhotoDescriptionContainer = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 0.75rem;
+  @media (max-width: 576px) {
+    gap: 0.5rem;
+  }
 `;
 
 const PhotoDescriptionText = styled.p`
@@ -166,6 +177,9 @@ const PhotoDescriptionText = styled.p`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  @media (max-width: 576px) {
+    font-size: 1rem;
+  }
 `;
 
 export default function HighwayContentClient({ highway }: Props) {

@@ -15,19 +15,19 @@ const StyledComponentFooter = styled.div`
 const Frame = styled.div`
   background-color: var(--bg-primary);
   width: 100%;
-  padding: 40px 24px;
+  padding: 2.5rem 1.5rem;
   box-sizing: border-box;
 
   display: flex;
   justify-content: space-around;
   align-items: center;
   flex-wrap: wrap;
-  gap: 32px;
+  gap: 2rem;
 
   @media (max-width: 768px) {
     flex-direction: column-reverse;
     align-items: center;
-    gap: 24px;
+    gap: 1.5rem;
   }
 `;
 
@@ -39,7 +39,7 @@ const ContactGroup = styled.div`
 const ContactContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1rem;
   align-items: flex-start;
 
   @media (max-width: 768px) {
@@ -61,27 +61,27 @@ const TextWrapper = styled.div`
 
 const SocialIcons = styled.div`
   display: flex;
-  gap: 24px;
+  gap: 1.5rem;
 `;
 
 const StyledEmail = styled(Icon)`
   aspect-ratio: 1 !important;
-  height: 24px !important;
-  width: 24px !important;
+  height: 1.5rem !important;
+  width: 1.5rem !important;
   cursor: pointer;
 `;
 
 const StyledGithub = styled(Icon)`
   aspect-ratio: 1 !important;
-  height: 24px !important;
-  width: 24px !important;
+  height: 1.5rem !important;
+  width: 1.5rem !important;
   cursor: pointer;
 `;
 
 /* 3. 分隔線：電腦端為豎線，手機端轉為橫線 */
 const Divider = styled.div`
   background-color: var(--text-gray-a);
-  height: 100px;
+  height: 6rem;
   width: 1px;
 
   @media (max-width: 768px) {
@@ -92,60 +92,60 @@ const Divider = styled.div`
 
 const NavigationGroup = styled.div`
   display: flex;
-  gap: 48px;
+  gap: 3rem;
 
-  @media (max-width: 480px) {
-    gap: 24px;
+  @media (max-width: 768px) {
+    gap: 2rem;
   }
 `;
 
 const NavigationColumn = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1rem;
 `;
 
 const NavigationItem = styled(Link)`
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 0.25rem;
   cursor: pointer;
 `;
 
 const StyledBreadcrumbRight = styled(Icon)`
   aspect-ratio: 1 !important;
-  height: 20px !important;
-  width: 20px !important;
+  height: 1.25rem !important;
+  width: 1.25rem !important;
 `;
 
 /* 4. 底部 Copyright 欄位：隨螢幕居中縮放 */
 const BottomFrame = styled.div`
   background-color: var(--text-gray-aaa);
   width: 100%;
-  padding: 12px 24px;
+  padding: 0.75rem 1.5rem;
   box-sizing: border-box;
 
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 24px;
+  gap: 1.5rem;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     flex-direction: column;
-    gap: 8px;
+    gap: 0.5rem;
   }
 `;
 
 const CopyrightGroup = styled.div`
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.5rem;
 `;
 
 const CopyrightText = styled.div`
   color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 400;
   letter-spacing: 0;
   line-height: normal;
@@ -154,16 +154,16 @@ const CopyrightText = styled.div`
 
 const StyledCopyright = styled(Icon)`
   aspect-ratio: 1 !important;
-  height: 12px !important;
-  width: 12px !important;
+  height: 0.75rem !important;
+  width: 0.75rem !important;
 `;
 
 const BottomDivider = styled.div`
   background-color: var(--text-gray-a);
-  height: 12px;
+  height: 0.75rem;
   width: 1px;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     display: none;
   }
 `;
@@ -171,7 +171,7 @@ const BottomDivider = styled.div`
 const TermsText = styled(Link)`
   color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 400;
   letter-spacing: 0;
   line-height: normal;

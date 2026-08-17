@@ -74,6 +74,16 @@ const Divider = styled.div`
   }
 `;
 
+const HighwayContentContainer = styled.div`
+  margin: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  @media (max-width: 768px) {
+    margin: 0;
+  }
+`;
+
 export default function HighwayListClient({ highways }: Props) {
   const [loading, setLoading] = useState(false);
   const { title, setTitle } = useContext(TitleContext);
@@ -107,7 +117,7 @@ export default function HighwayListClient({ highways }: Props) {
             </PageTitleContainer>
             <Breadcrumbs currentPath={pathname} />
             <Divider />
-            <div className="pl-1 md:pl-3 lg:pl-5">
+            <HighwayContentContainer>
               <Province
                 highways={highways}
                 loading={loading}
@@ -118,7 +128,7 @@ export default function HighwayListClient({ highways }: Props) {
                 loading={loading}
                 setLoading={setLoading}
               />
-            </div>
+            </HighwayContentContainer>
           </HighwayListContainer>
         )}
         <BottomNav />

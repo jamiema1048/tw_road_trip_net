@@ -81,6 +81,10 @@ const LineAreaContentContainer = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 1.25rem;
+  @media (max-width: 768px) {
+    margin: 0;
+    gap: 0.75rem;
+  }
 `;
 
 const LineAreaTitle = styled.div`
@@ -92,6 +96,19 @@ const LineAreaTitleDot = styled.div`
   width: 3rem;
   height: 3rem;
   aspect-ratio: 1/1;
+  @media (max-width: 768px) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+`;
+
+const LineAreaTitleDotIcon = styled.svg`
+  width: 3rem;
+  height: 3rem;
+  @media (max-width: 768px) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 `;
 
 const LineAreaTitleText = styled.h2`
@@ -101,11 +118,13 @@ const LineAreaTitleText = styled.h2`
   align-items: center;
   font-size: 2.5rem;
   font-weight: 400;
-  height: 3rem;
   letter-spacing: 0;
   margin: 0;
   line-height: normal;
   white-space: nowrap;
+  @media (max-width: 768px) {
+    font-size: 1.75rem;
+  }
 `;
 
 const LineAreaContentBlock = styled.div`
@@ -113,6 +132,10 @@ const LineAreaContentBlock = styled.div`
   align-items: flex-start;
   margin: auto 1.75rem;
   gap: 1.5rem;
+  @media (max-width: 768px) {
+    margin: auto 1rem;
+    gap: 1rem;
+  }
 `;
 
 const LineAreaDecoration = styled.div`
@@ -126,6 +149,9 @@ const LineAreaContent = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 1.25rem;
+  @media (max-width: 768px) {
+    gap: 1rem;
+  }
 `;
 
 const StationList = styled.ul`
@@ -133,6 +159,9 @@ const StationList = styled.ul`
   flex-direction: column;
   align-items: flex-start;
   gap: 1.25rem;
+  @media (max-width: 768px) {
+    gap: 1rem;
+  }
 `;
 
 const StationsListItem = styled.li`
@@ -146,6 +175,9 @@ const StationBlock = styled.div<{ $status: Station["status"] }>`
 
   /* 動態讀取 STATUS_STYLES */
   ${({ $status }) => STATUS_STYLES[$status] || STATUS_STYLES.disused}
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
 `;
 
 // 🟢 有細節時：可點擊的 Link
@@ -177,6 +209,9 @@ const DisabledBadge = styled.span`
   opacity: 0.8;
   color: var(--text-gray-aa);
   font-style: normal; /* 避免外層 italic 影響標籤 */
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const DistrictGroupedStations: React.FC<DistrictGroupedStationsProps> = ({
@@ -242,7 +277,7 @@ const DistrictGroupedStations: React.FC<DistrictGroupedStationsProps> = ({
         <LineAreaContentContainer key={district.districtID}>
           <LineAreaTitle>
             <LineAreaTitleDot>
-              <svg
+              <LineAreaTitleDotIcon
                 xmlns="http://www.w3.org/2000/svg"
                 width="48"
                 height="48"
@@ -253,7 +288,7 @@ const DistrictGroupedStations: React.FC<DistrictGroupedStationsProps> = ({
                   d="M14.4 23.9999C14.4 26.546 15.4115 28.9878 17.2118 30.7881C19.0121 32.5885 21.4539 33.5999 24 33.5999C26.5461 33.5999 28.9879 32.5885 30.7883 30.7881C32.5886 28.9878 33.6 26.546 33.6 23.9999C33.6 21.4538 32.5886 19.012 30.7883 17.2117C28.9879 15.4113 26.5461 14.3999 24 14.3999C21.4539 14.3999 19.0121 15.4113 17.2118 17.2117C15.4115 19.012 14.4 21.4538 14.4 23.9999Z"
                   fill="#008E9B"
                 />
-              </svg>
+              </LineAreaTitleDotIcon>
             </LineAreaTitleDot>
             <LineAreaTitleText>{district.districtName}</LineAreaTitleText>
           </LineAreaTitle>

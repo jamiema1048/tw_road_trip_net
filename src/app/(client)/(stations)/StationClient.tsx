@@ -132,16 +132,22 @@ const RouteInfoSection = styled.section`
   align-items: flex-start;
   gap: 1.5rem;
   margin-top: 1.25rem;
+  @media (max-width: 768px) {
+    gap: 1rem;
+  }
 `;
 
 const StationDataTitle = styled.h2`
   color: var(--text-white-aaaa);
   font-family: Inter;
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   margin-bottom: 1rem;
+  @media (max-width: 768px) {
+    font-size: 1.75rem;
+  }
 `;
 
 const StationDataDetail = styled.h3`
@@ -151,7 +157,9 @@ const StationDataDetail = styled.h3`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  margin-bottom: 1rem;
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const StationMediaGallerySection = styled.section`
@@ -214,6 +222,9 @@ const PhotoDescriptionContainer = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 0.75rem;
+  @media (max-width: 576px) {
+    gap: 0.5rem;
+  }
 `;
 
 const PhotoDescriptionText = styled.p`
@@ -223,6 +234,9 @@ const PhotoDescriptionText = styled.p`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  @media (max-width: 576px) {
+    font-size: 1rem;
+  }
 `;
 
 const AdjacentStationsSection = styled.section`
@@ -232,6 +246,9 @@ const AdjacentStationsSection = styled.section`
   align-items: flex-start;
   gap: 1.75rem;
   margin-top: 1rem;
+  @media (max-width: 576px) {
+    gap: 1rem;
+  }
 `;
 
 const PrevStationsArea = styled.div`
@@ -240,7 +257,9 @@ const PrevStationsArea = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 1.5rem;
-  margin-top: 1rem;
+  @media (max-width: 576px) {
+    gap: 1rem;
+  }
 `;
 
 const PrevStationsTitle = styled.h3`
@@ -250,6 +269,9 @@ const PrevStationsTitle = styled.h3`
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+  @media (max-width: 576px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const NextStationsArea = styled.div`
@@ -258,7 +280,9 @@ const NextStationsArea = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 1.5rem;
-  margin-top: 1rem;
+  @media (max-width: 576px) {
+    gap: 1rem;
+  }
 `;
 
 const NextStationsTitle = styled.h3`
@@ -268,6 +292,9 @@ const NextStationsTitle = styled.h3`
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+  @media (max-width: 576px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const AdjacentStationsLink = styled(Link)`
@@ -284,6 +311,9 @@ const AdjacentStationsLink = styled(Link)`
     text-decoration: underline;
     color: var(--text-success); /* hover:text-green-400 */
   }
+  @media (max-width: 576px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const AdjacentStationsDisableLinkText = styled.div`
@@ -294,6 +324,9 @@ const AdjacentStationsDisableLinkText = styled.div`
   font-weight: 400;
   line-height: normal;
   opacity: 0.6;
+  @media (max-width: 576px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const StationBottomNav = styled.nav`
@@ -304,6 +337,10 @@ const StationBottomNav = styled.nav`
   margin-top: 0;
   margin-bottom: 1.25rem;
   gap: 3rem;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
 `;
 
 const StationBottomNavButton = styled.button`
@@ -598,6 +635,12 @@ export default function StationClient({
             回到最上方
           </StationBottomNavButton>
           <StationBottomNavLink href="/">回首頁</StationBottomNavLink>
+          <StationBottomNavLink href="/highways">
+            回公路旅途
+          </StationBottomNavLink>
+          <StationBottomNavLink href="/railways">
+            回車站旅途
+          </StationBottomNavLink>
           {station.line.map((line) => {
             // 1. 利用 find 找不到會回傳 undefined 的特性，搭配 || 做預設值
             const railwayName =
