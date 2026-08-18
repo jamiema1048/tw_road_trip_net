@@ -130,8 +130,8 @@ export default function SearchResultsClient({ query, results }: Props) {
                             : item.subtitle}
                         </CardSubtitle>
                       </CardInfo>
-                      <CardGoIcon>
-                        <svg
+                      <CardGoIconDiv>
+                        <CardGoIcon
                           xmlns="http://www.w3.org/2000/svg"
                           width="48"
                           height="48"
@@ -145,8 +145,8 @@ export default function SearchResultsClient({ query, results }: Props) {
                             stroke-linecap="round"
                             stroke-linejoin="round"
                           />
-                        </svg>
-                      </CardGoIcon>
+                        </CardGoIcon>
+                      </CardGoIconDiv>
                     </ResultCard>
                   ))}
                 </Grid>
@@ -239,8 +239,12 @@ const SearchHeader = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  gap: 1rem;
+  gap: 2rem;
   margin-bottom: 2rem;
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
 `;
 
 const Title = styled.h1`
@@ -263,10 +267,13 @@ const Highlight = styled.span`
 const SubText = styled.p`
   color: var(--text-white-aaaa);
   font-family: Inter;
-  font-size: 1rem;
+  font-size: 1.75rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const Divider = styled.div`
@@ -282,17 +289,25 @@ const ResultsContainerArea = styled.div`
   align-items: center;
   padding: 3rem;
   width: 60%;
+  @media (max-width: 768px) {
+    padding: 1rem;
+    width: 100%;
+  }
 `;
 
 const TabContainer = styled.div`
   display: flex;
-  gap: 0.75rem;
+  flex-wrap: wrap;
+  gap: 2rem;
   margin-bottom: 2rem;
+  @media (max-width: 768px) {
+    gap: 0.75rem;
+  }
 `;
 
 const TabButton = styled.button<{ $active: boolean }>`
-  border-radius: 9999px;
-  font-size: 1rem;
+  border-radius: 0.75rem;
+  font-size: 1.25rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -313,6 +328,11 @@ const TabButton = styled.button<{ $active: boolean }>`
     border-color: var(--border-route-cell);
     color: var(--text-white-aaaa);
   }
+  @media (max-width: 768px) {
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    padding: 0.25rem 1rem;
+  }
 `;
 
 const Grid = styled.div`
@@ -329,9 +349,9 @@ const ResultCard = styled(Link)`
   justify-content: space-between;
   align-items: center;
   align-self: stretch;
-  padding: 1.25rem 2.25rem;
+  padding: 1.25rem 2rem;
   background-color: var(--background);
-  border: 1px solid #2e2e2e;
+  border: 1px solid var(--text-white-aaaa);
   border-radius: 1.25rem;
   text-decoration: none;
   transition: all 0.2s ease-in-out;
@@ -344,30 +364,58 @@ const ResultCard = styled(Link)`
   &:active {
     border: 3px solid var(--text-white-aaaa);
   }
+  @media (max-width: 768px) {
+    border-radius: 1.25rem;
+    padding: 1rem 1.25rem;
+  }
 `;
 
 const CardInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  @media (max-width: 768px) {
+    gap: 0.5rem;
+  }
 `;
 
 const CardTitle = styled.span`
-  font-size: 1.125rem;
+  font-size: 2.5rem;
   font-weight: 700;
   color: var(--text-white-aaaa);
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const CardSubtitle = styled.span`
-  font-size: 0.875rem;
+  font-size: 1.75rem;
   color: var(--text-gray-aa);
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
-const CardGoIcon = styled.div`
+const CardGoIconDiv = styled.div`
   width: 3rem;
   height: 3rem;
   flex-shrink: 0;
   aspect-ratio: 1/1;
+  @media (max-width: 768px) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+`;
+
+const CardGoIcon = styled.svg`
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  aspect-ratio: 1/1;
+  @media (max-width: 768px) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 `;
 
 const EmptyBox = styled.div`
