@@ -67,8 +67,9 @@ const BREADCRUMB_MAP: Record<string, string> = {
   highways: "公路總覽",
   lines: "路線列表",
   stations: "車站列表",
-  schedule: "時刻表",
+  reference: "參考資料",
   about: "關於我們",
+  terms: "使用條款",
   // 若有動態 ID (例如 /railways/123)，可以由組件邏輯過濾或動態處理
 };
 

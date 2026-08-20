@@ -18,7 +18,7 @@ const StyledComponentHeader = styled.header<{ $isMenuOpen: boolean }>`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 1rem 2rem;
+  padding: 0.75rem 1.5rem;
   background-color: var(--bg-primary);
   box-shadow: 0px 8px 10px #ffffff40;
   box-sizing: border-box;
@@ -29,7 +29,7 @@ const StyledComponentHeader = styled.header<{ $isMenuOpen: boolean }>`
 
   @media (max-width: ${BREAKPOINT_MOBILE}) {
     flex-wrap: wrap; /* 允許手機端展開時下方內容往下推 */
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1.5rem;
   }
 `;
 

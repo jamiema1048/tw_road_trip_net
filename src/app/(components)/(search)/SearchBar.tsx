@@ -76,12 +76,12 @@ export default function SearchBar() {
           $isOpen={isOpen}
           onClick={!isOpen ? toggleOpen : undefined}
         >
-          <SearchIcon
+          <SearchIconDiv
             className="logo"
             aria-label="搜尋"
             style={{ border: "none", backgroundSize: "cover" }}
           >
-            <svg
+            <SearchIcon
               xmlns="http://www.w3.org/2000/svg"
               width="48"
               height="48"
@@ -95,8 +95,8 @@ export default function SearchBar() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
-            </svg>
-          </SearchIcon>
+            </SearchIcon>
+          </SearchIconDiv>
 
           {/* 動態展開的輸入框 */}
           <Input
@@ -147,19 +147,23 @@ const Form = styled.form<{ $isOpen: boolean }>`
   background-color: ${({ $isOpen }) => ($isOpen ? "#000000" : "transparent")};
   border-radius: 9999px;
   gap: 1.5rem;
-  padding: 0rem 1.25rem 0rem 1.25rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   width: 100%;
+  @media (max-width: 768px) {
+    gap: 0.75rem;
+  }
 `;
 
 const SearchInputBox = styled.div<{ $isOpen: boolean }>`
   display: flex;
   align-items: center;
   position: relative;
+  justify-content: space-between;
+  gap: 0.75rem;
   background-color: var(--background);
   border: 1px solid var(--text-gray-a);
   border-radius: 0.75rem;
-  padding: 0rem 0.5rem 0rem 0.5rem;
+  padding: 1rem 1.25rem 1rem 1.25rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   width: 35rem;
   &:hover:not(:focus-within) {
@@ -169,9 +173,15 @@ const SearchInputBox = styled.div<{ $isOpen: boolean }>`
     border: 1px solid var(--text-info);
     outline: none;
   }
+  @media (max-width: 768px) {
+    width: 12rem;
+    border-radius: 0.25rem;
+    padding: 0rem 0.5rem 0rem 0.5rem;
+    gap: 0.25rem;
+  }
 `;
 
-const SearchIcon = styled.div`
+const SearchIconDiv = styled.div`
   display: flex;
   width: 2rem;
   height: 2rem;
@@ -186,31 +196,39 @@ const SearchIcon = styled.div`
   }
 `;
 
+const SearchIcon = styled.svg`
+  width: 2rem;
+  height: 2rem;
+  @media (max-width: 768px) {
+    width: 1rem;
+    height: 1rem;
+  }
+`;
+
 const Input = styled.input<{ $isOpen: boolean }>`
   background: transparent;
   border: none;
   color: var(--text-white-aaaa);
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   outline: none;
   width: 100%;
-  padding: 1rem 1rem;
   transition:
     opacity 0.2s ease-in-out,
     visibility 0.2s;
   @media (max-width: 768px) {
-    font-size: 1.25rem;
+    font-size: 1rem;
   }
 
   &::placeholder {
     color: var(--text-gray-aa);
     text-align: start;
     font-family: Inter;
-    font-size: 2.25rem;
+    font-size: 1.75rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
     @media (max-width: 768px) {
-      font-size: 1.25rem;
+      font-size: 1rem;
     }
   }
 `;
@@ -219,7 +237,7 @@ const CloseButton = styled.button`
   background: none;
   border: none;
   color: var(--text-white-aaaa);
-  font-size: 2rem;
+  font-size: 1.75rem;
   width: 1.5rem;
   height: 1.5rem;
   display: flex;
@@ -233,20 +251,23 @@ const CloseButton = styled.button`
     color: var(--text-gray-aa);
     background-color: rgba(255, 255, 255, 0.1);
   }
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const SearchButton = styled.button<{ $isOpen: boolean }>`
   display: flex;
-  padding: 0.5rem 1rem;
+  padding: 1rem 2.5rem;
   justify-content: center;
   align-items: center;
-  border-radius: 1rem;
+  border-radius: 2rem;
   transition:
     opacity 0.2s ease-in-out,
     visibility 0.2s;
   background:
     linear-gradient(0deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 100%),
-    var(-text-info);
+    var(--text-info);
   box-shadow:
     -2px -2px 8px 0 rgba(0, 0, 0, 0.25) inset,
     6px 6px 8px 0 rgba(0, 0, 0, 0.25) inset,
@@ -254,7 +275,7 @@ const SearchButton = styled.button<{ $isOpen: boolean }>`
   &:hover {
     background:
       linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.4) 100%),
-      var(-text-info);
+      var(--text-info);
     box-shadow:
       -4px -4px 8px 0 rgba(0, 0, 0, 0.25) inset,
       8px 8px 4px 0 rgba(0, 0, 0, 0.1) inset,
@@ -264,7 +285,7 @@ const SearchButton = styled.button<{ $isOpen: boolean }>`
   &:active {
     background:
       linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.4) 100%),
-      var(-text-info);
+      var(--text-info);
     box-shadow:
       -4px -4px 8px 0 rgba(0, 0, 0, 0.25) inset,
       8px 8px 4px 0 rgba(0, 0, 0, 0.1) inset,
@@ -273,12 +294,16 @@ const SearchButton = styled.button<{ $isOpen: boolean }>`
 
   white-space: nowrap;
   flex-shrink: 0;
+  @media (max-width: 768px) {
+    border-radius: 1rem;
+    padding: 0.25rem 0.75rem;
+  }
 `;
 
 const SearchButtonText = styled.p`
   color: var(--text-gray-a);
   font-family: Inter;
-  font-size: 1.5rem;
+  font-size: 2rem;
   white-space: nowrap;
   margin: 0;
   font-style: normal;

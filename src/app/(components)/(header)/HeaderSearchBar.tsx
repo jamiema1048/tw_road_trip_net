@@ -79,7 +79,7 @@ export default function HeaderSearchBar() {
           onClick={!isOpen ? toggleOpen : undefined}
           style={{ border: "none", cursor: "pointer", backgroundSize: "cover" }}
         >
-          <svg
+          <SearchButtonIcon
             xmlns="http://www.w3.org/2000/svg"
             width="48"
             height="48"
@@ -93,7 +93,7 @@ export default function HeaderSearchBar() {
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-          </svg>
+          </SearchButtonIcon>
         </SearchButton>
 
         {/* 動態展開的輸入框 */}
@@ -135,18 +135,22 @@ const SearchContainer = styled.div`
 const Form = styled.form<{ $isOpen: boolean }>`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   position: relative;
   background-color: ${({ $isOpen }) =>
     $isOpen ? "var(--background)" : "transparent"};
   border: 2px solid
     ${({ $isOpen }) => ($isOpen ? "var(--text-white-aaaa)" : "transparent")};
   border-radius: 9999px;
-  padding: 0rem 1.25rem 0rem 1.25rem;
+  padding: 0.5rem 1.25rem 0.5rem 1.25rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  width: ${({ $isOpen }) => ($isOpen ? "12rem" : "2rem")};
+  width: ${({ $isOpen }) => ($isOpen ? "26rem" : "3rem")};
+  gap: 0.75rem;
 
-  @media (min-width: 640px) {
-    width: ${({ $isOpen }) => ($isOpen ? "26rem" : "2rem")};
+  @media (max-width: 768px) {
+    width: ${({ $isOpen }) => ($isOpen ? "12rem" : "1.5rem")};
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem 0.25rem 0.5rem;
   }
 `;
 
@@ -165,11 +169,20 @@ const SearchButton = styled.button`
   }
 `;
 
+const SearchButtonIcon = styled.svg`
+  width: 2rem;
+  height: 2rem;
+  @media (max-width: 768px) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+`;
+
 const Input = styled.input<{ $isOpen: boolean }>`
   background: transparent;
   border: none;
   color: var(--text-white-aaaa);
-  font-size: 1.5rem;
+  font-size: 2rem;
   outline: none;
   width: 100%;
   padding: 0 8px;
@@ -183,10 +196,16 @@ const Input = styled.input<{ $isOpen: boolean }>`
     color: var(--text-gray-aa);
     text-align: start;
     font-family: Inter;
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
+  }
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
   }
 `;
 
@@ -194,9 +213,9 @@ const CloseButton = styled.button`
   background: none;
   border: none;
   color: var(--text-white-aaaa);
-  font-size: 1.5rem;
-  width: 1.5rem;
-  height: 1.5rem;
+  font-size: 2rem;
+  width: 2rem;
+  height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -207,5 +226,10 @@ const CloseButton = styled.button`
   &:hover {
     color: var(--text-gray-aa);
     background-color: rgba(255, 255, 255, 0.1);
+  }
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
   }
 `;
