@@ -141,9 +141,7 @@ export default function AboutClient() {
       <AboutPageContainer>
         <AboutContainer>
           <PageTitleContainer>
-            <PageTitle>
-              <h1>關於我們（About Us）</h1>
-            </PageTitle>
+            <PageTitle>關於我們（About Us）</PageTitle>
           </PageTitleContainer>
           <Breadcrumbs currentPath={pathname} />
           <Divider />

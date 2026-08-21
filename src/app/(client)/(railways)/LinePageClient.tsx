@@ -118,9 +118,7 @@ export default function LinePageClient({ lines }: Props) {
         ) : (
           <RailwayListContainer>
             <PageTitleContainer>
-              <PageTitle>
-                <h1>🚉 鐵路總覽</h1>
-              </PageTitle>
+              <PageTitle>🚉 鐵路總覽</PageTitle>
             </PageTitleContainer>
             <Breadcrumbs currentPath={pathname} />
             <Divider />

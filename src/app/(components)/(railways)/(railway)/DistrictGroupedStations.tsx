@@ -310,7 +310,9 @@ const DistrictGroupedStations: React.FC<DistrictGroupedStationsProps> = ({
                     <StationsListItem key={station.id}>
                       <StationBlock $status={station.status}>
                         {station.hasDetail ? (
-                          <StationLink href={`/stations/${station.id}`}>
+                          <StationLink
+                            href={`/stations/${station.id}?line=${lineData.id}`}
+                          >
                             {station.name}
                           </StationLink>
                         ) : (

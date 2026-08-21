@@ -219,7 +219,12 @@ export default function HighwayContentClient({ highway }: Props) {
             <PageTitleContainer>
               <PageTitle>{highway.name}</PageTitle>
             </PageTitleContainer>
-            <Breadcrumbs currentPath={pathname} />
+            <Breadcrumbs
+              currentPath={pathname}
+              customNames={{
+                [highway.id]: highway.name,
+              }}
+            />
             <Divider />
             <p className="text-black dark:text-white">
               狀態：

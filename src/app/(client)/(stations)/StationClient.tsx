@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useContext, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { useState, useContext, useEffect, useMemo } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import styled from "styled-components";
 import { TitleContext } from "@/src/app/(context)/title/TitleContext";
 import Loading from "@/src/app/(pages)/stations/[stationId]/loading";
@@ -401,6 +401,57 @@ export default function StationClient({
   const [loading, setLoading] = useState(true);
   const [notFoundPage, setNotFoundPage] = useState(false);
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const lineMap = useMemo(() => {
+    return railways.reduce<Record<string, string>>((acc, railway) => {
+      acc[String(railway.id)] = railway.name;
+      return acc;
+    }, {});
+  }, [railways]);
+
+  // 2. 收集「彰化站自身擁有的所有 lineID 集合」
+  const stationLineIds = useMemo(() => {
+    return new Set<string>((station.line || []).map((l) => String(l.lineID)));
+  }, [station.line]);
+
+  // 2. 預設路線 ID（預設取車站所屬的第一條路線）
+  const defaultLineID =
+    station.line?.[0]?.lineID !== undefined
+      ? String(station.line[0].lineID)
+      : "";
+
+  // 3. 計算「當前使用的 lineID」與「當前路線中文名稱」
+  const urlLineID = searchParams.get("line");
+  // 檢查 URL 帶入的 lineID 是否確實屬於該車站；若不是（或沒帶），則退回 defaultLineID
+  const currentLineID =
+    urlLineID && stationLineIds.has(urlLineID) ? urlLineID : defaultLineID;
+
+  const currentLineName = lineMap[currentLineID] || "";
+
+  // 4. 組裝虛擬 Breadcrumb 路徑 (/railways/[lineID]/[stationId])
+  const virtualPath = `/railways/${currentLineID}/${station.id}`;
+
+  // 5. 核心邏輯：點擊鄰近車站（adjacentStations）時計算應該帶什麼 ?line= 參數
+  const getTargetLineParam = (targetStation: Station) => {
+    if (!targetStation || !targetStation.line) return "";
+
+    // 檢查「目標車站」隸屬的路線 ID 中，是否包含「我們目前的 currentLineID」
+    const isSameLine = targetStation.line.some(
+      (l) => String(l.lineID) === String(currentLineID),
+    );
+
+    if (isSameLine) {
+      // 若目標車站也在當前路線上，繼續沿用 currentLineID
+      return currentLineID;
+    } else {
+      // 🔴 若目標車站不在當前路線（例如彰化點往花壇，花壇不屬於山線）：
+      // 自動切換為目標車站自身的第 1 條路線 ID
+      return targetStation.line[0]?.lineID
+        ? String(targetStation.line[0].lineID)
+        : "";
+    }
+  };
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -441,7 +492,13 @@ export default function StationClient({
             <PageTitleContainer>
               <PageTitle>{station.name}</PageTitle>
             </PageTitleContainer>
-            <Breadcrumbs currentPath={pathname} />
+            <Breadcrumbs
+              currentPath={virtualPath}
+              customNames={{
+                [currentLineID]: currentLineName, // 例如 "mountain": "山線"
+                [station.id]: station.name, // 例如 "106": "彰化站"
+              }}
+            />
             <Divider />
             <p className="text-black dark:text-white">
               狀態：
@@ -538,11 +595,16 @@ export default function StationClient({
                         const match = adjacentStations.find(
                           (s) => String(s.id) === String(id),
                         );
+                        // 修正：找到 match 後才去計算 targetLine
+                        const targetLine = match
+                          ? getTargetLineParam(match)
+                          : "";
+
                         return match ? (
                           match.hasDetail ? (
                             <AdjacentStationsLink
                               key={id}
-                              href={`/stations/${id}`}
+                              href={`/stations/${id}?line=${targetLine}`}
                             >
                               {match.name}
                             </AdjacentStationsLink>
@@ -559,10 +621,15 @@ export default function StationClient({
                         const match = adjacentStations.find(
                           (s) => String(s.id) === String(station.prevStation),
                         );
+                        // 修正：找到 match 後才去計算 targetLine
+                        const targetLine = match
+                          ? getTargetLineParam(match)
+                          : "";
+
                         return match ? (
                           match.hasDetail ? (
                             <AdjacentStationsLink
-                              href={`/stations/${station.prevStation}`}
+                              href={`/stations/${station.prevStation}?line=${targetLine}`}
                             >
                               {match.name}
                             </AdjacentStationsLink>
@@ -586,11 +653,14 @@ export default function StationClient({
                         const match = adjacentStations.find(
                           (s) => String(s.id) === String(id),
                         );
+                        const targetLine = match
+                          ? getTargetLineParam(match)
+                          : "";
                         return match ? (
                           match.hasDetail ? (
                             <AdjacentStationsLink
                               key={id}
-                              href={`/stations/${id}`}
+                              href={`/stations/${id}?line=${targetLine}`}
                             >
                               {match.name}
                             </AdjacentStationsLink>
@@ -607,10 +677,13 @@ export default function StationClient({
                         const match = adjacentStations.find(
                           (s) => String(s.id) === String(station.nextStation),
                         );
+                        const targetLine = match
+                          ? getTargetLineParam(match)
+                          : "";
                         return match ? (
                           match.hasDetail ? (
                             <AdjacentStationsLink
-                              href={`/stations/${station.nextStation}`}
+                              href={`/stations/${station.nextStation}?line=${targetLine}`}
                             >
                               {match.name}
                             </AdjacentStationsLink>

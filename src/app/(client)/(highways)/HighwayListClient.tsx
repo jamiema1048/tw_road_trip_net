@@ -111,9 +111,7 @@ export default function HighwayListClient({ highways }: Props) {
         ) : (
           <HighwayListContainer>
             <PageTitleContainer>
-              <PageTitle>
-                <h1>公路列表</h1>
-              </PageTitle>
+              <PageTitle>公路列表</PageTitle>
             </PageTitleContainer>
             <Breadcrumbs currentPath={pathname} />
             <Divider />

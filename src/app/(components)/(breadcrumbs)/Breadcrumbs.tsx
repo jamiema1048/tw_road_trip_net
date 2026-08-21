@@ -1,4 +1,6 @@
 import React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import styled from "styled-components";
 
 // ==================== Styled Components ====================
@@ -22,7 +24,7 @@ const Item = styled.li`
   align-items: center;
 `;
 
-const Link = styled.a`
+const NavLink = styled(Link)`
   color: var(--text-gray-aa);
   text-decoration: none;
   transition: color 0.2s;
@@ -74,13 +76,9 @@ const BREADCRUMB_MAP: Record<string, string> = {
 };
 
 interface BreadcrumbsProps {
-  /**
-   * 傳入當前的 pathname，例如 "/railways/lines/123"
-   * 如果是 React Router 可以用 useLocation().pathname 取得
-   * 如果是 Next.js 可以用 usePathname() 取得
-   */
-  currentPath: string;
-  /** 可選：覆蓋或動態傳入特定 ID 的名稱 (例如車站名稱 "台北車站") */
+  /** 手動傳入路徑（選填，若沒傳入會自動使用目前網址 pathname） */
+  currentPath?: string;
+  /** 動態 ID 名稱對照表，例如：{ "40900": "台9線", "mountain": "台中線（山線）" } */
   customNames?: Record<string, string>;
 }
 
@@ -88,6 +86,10 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
   currentPath,
   customNames = {},
 }) => {
+  console.log(customNames);
+  const pathnameFromHook = usePathname();
+  // 若沒有手動帶 currentPath，預設直接抓當前網址
+  const pathname = currentPath || pathnameFromHook || "";
   // 🔴 關鍵 2：將路徑拆解為陣列
   // 例如 "/railways/lines" -> ["railways", "lines"]
   const pathSegments = currentPath
@@ -122,7 +124,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
                 <CurrentPage aria-current="page">{item.name}</CurrentPage>
               ) : (
                 <>
-                  <Link href={item.url}>{item.name}</Link>
+                  <NavLink href={item.url}>{item.name}</NavLink>
                   <Separator
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"

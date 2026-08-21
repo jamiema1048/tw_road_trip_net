@@ -153,7 +153,7 @@ export default function ReferenceClient() {
         <ReferenceContainer>
           <PageTitleContainer>
             <PageTitle>
-              <h1>參考資料與來源聲明（Data Sources & Attributions）</h1>
+              參考資料與來源聲明（Data Sources & Attributions）
             </PageTitle>
           </PageTitleContainer>
           <Breadcrumbs currentPath={pathname} />

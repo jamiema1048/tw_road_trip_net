@@ -131,11 +131,14 @@ export default function RailwayContentClient({ data, stations }: Props) {
         ) : (
           <RailwayListContainerArea>
             <PageTitleContainer>
-              <PageTitle>
-                <h1>{data.name}</h1>
-              </PageTitle>
+              <PageTitle>{data.name}</PageTitle>
             </PageTitleContainer>
-            <Breadcrumbs currentPath={pathname} />
+            <Breadcrumbs
+              currentPath={pathname}
+              customNames={{
+                [data.id]: data.name,
+              }}
+            />
             <Divider />
             <DistrictGroupedStations
               lineID={data.id}

@@ -151,7 +151,7 @@ const GroupedHighwaysLink = styled(Link)<{ $status: Highway["status"] }>`
   }
 `;
 
-const HighwayIcon = styled.div`
+const HighwayIcon = styled.svg`
   width: 3rem;
   height: 3rem;
   aspect-ratio: 1/1;
