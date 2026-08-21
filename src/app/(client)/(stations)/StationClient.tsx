@@ -444,13 +444,25 @@ export default function StationClient({
     if (isSameLine) {
       // 若目標車站也在當前路線上，繼續沿用 currentLineID
       return currentLineID;
-    } else {
-      // 🔴 若目標車站不在當前路線（例如彰化點往花壇，花壇不屬於山線）：
-      // 自動切換為目標車站自身的第 1 條路線 ID
-      return targetStation.line[0]?.lineID
-        ? String(targetStation.line[0].lineID)
-        : "";
     }
+
+    const currentStationLineIds = new Set(
+      (station.line || []).map((l) => String(l.lineID)),
+    );
+
+    const sharedLine = targetStation.line.find((l) =>
+      currentStationLineIds.has(String(l.lineID)),
+    );
+
+    if (sharedLine) {
+      // 🔴 關鍵點：如果找到了兩站重疊的路線（例如：縱貫線 嘉義=高雄），就切換到這條路線！
+      return String(sharedLine.lineID);
+    }
+
+    // 3. 最後退路：完全沒有交集時，才使用目標車站自身的第 1 條預設路線
+    return targetStation.line[0]?.lineID !== undefined
+      ? String(targetStation.line[0].lineID)
+      : "";
   };
 
   const scrollToTop = () => {
