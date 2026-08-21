@@ -37,8 +37,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## To-Do
 1. Add Test File
-2. Dark/Light Mode
-3. Fit all the device in size
+2. Add Meta data
+3. boost performence
 4. Fix type error
-5. Design Terms, About, Reference Page
-6. Not-found Page
+5. Combine station's bottom nav to main bottom nav file
+6. Design all error, empty, loading state
