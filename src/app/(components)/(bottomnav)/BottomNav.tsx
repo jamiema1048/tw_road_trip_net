@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import Link from "next/link";
+import { Station, RailwayData } from "@/src/types/railway";
 
 const Nav = styled.nav`
   padding: 0;
@@ -38,7 +40,7 @@ const BottomNavButton = styled.button`
   }
 `;
 
-const BottomNavLink = styled.a`
+const BottomNavLink = styled(Link)`
   display: block;
   color: var(--text-white-aaaa);
   font-family: Inter;
@@ -61,22 +63,11 @@ const BottomNavLink = styled.a`
 `;
 
 interface BottomNavProps {
-  /**
-   * 傳入當前的 pathname，例如 "/railways/lines/123"
-   * 如果是 React Router 可以用 useLocation().pathname 取得
-   * 如果是 Next.js 可以用 usePathname() 取得
-   */
-  // currentPath: string;
-  // /** 可選：覆蓋或動態傳入特定 ID 的名稱 (例如車站名稱 "台北車站") */
-  // customNames?: Record<string, string>;
+  station?: Station;
+  railways?: RailwayData[];
 }
 
-const BottomNav: React.FC<BottomNavProps> = (
-  {
-    // currentPath,
-    // customNames = {},
-  },
-) => {
+export default function BottomNav({ station, railways = [] }: BottomNavProps) {
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -89,7 +80,18 @@ const BottomNav: React.FC<BottomNavProps> = (
       <BottomNavLink href="/">回首頁</BottomNavLink>
       <BottomNavLink href="/highways">公路旅途</BottomNavLink>
       <BottomNavLink href="/railways">車站旅途</BottomNavLink>
+      {station?.line.map((line) => {
+        // 1. 利用 find 找不到會回傳 undefined 的特性，搭配 || 做預設值
+        const railwayName =
+          railways.find((r) => Number(r.id) === Number(line.lineID))?.name ||
+          `ID: ${line.lineID}`;
+
+        return (
+          <BottomNavLink key={line.lineID} href={`/railways/${line.lineID}`}>
+            回{railwayName}
+          </BottomNavLink>
+        );
+      })}
     </Nav>
   );
-};
-export default BottomNav;
+}

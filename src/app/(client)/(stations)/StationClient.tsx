@@ -5,8 +5,9 @@ import { usePathname, useSearchParams } from "next/navigation";
 import styled from "styled-components";
 import { TitleContext } from "@/src/app/(context)/title/TitleContext";
 import Loading from "@/src/app/(pages)/stations/[stationId]/loading";
-import NotFound from "../../(pages)/stations/[stationId]/not-found";
-import Breadcrumbs from "../../(components)/(breadcrumbs)/Breadcrumbs";
+import NotFound from "@/src/app/(pages)/stations/[stationId]/not-found";
+import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
+import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
@@ -326,65 +327,6 @@ const AdjacentStationsDisableLinkText = styled.div`
   opacity: 0.6;
   @media (max-width: 576px) {
     font-size: 1.25rem;
-  }
-`;
-
-const StationBottomNav = styled.nav`
-  padding: 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-top: 0;
-  margin-bottom: 1.25rem;
-  gap: 3rem;
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-`;
-
-const StationBottomNavButton = styled.button`
-  display: block;
-  background: none;
-  border: none;
-  padding: 0;
-  color: var(--text-white-aaaa);
-  font-family: Inter, sans-serif;
-  font-size: 1.25rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-
-  &:hover {
-    text-decoration: underline;
-    color: var(--text-success);
-  }
-  @media (max-width: 768px) {
-    font-size: 1rem;
-  }
-`;
-
-const StationBottomNavLink = styled(Link)`
-  display: block;
-  color: var(--text-white-aaaa);
-  font-family: Inter;
-  font-size: 1.25rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  text-decoration: none; /* 繼承外層的刪除線或斜體 */
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-
-  /* Hover 效果 (搭配微調邊距) */
-  &:hover {
-    text-decoration: underline;
-    color: var(--text-success); /* hover:text-green-400 */
-  }
-  @media (max-width: 768px) {
-    font-size: 1rem;
   }
 `;
 
@@ -715,33 +657,7 @@ export default function StationClient({
             </AdjacentStationsSection>
           </StationContainerArea>
         )}
-        <StationBottomNav>
-          <StationBottomNavButton onClick={scrollToTop}>
-            回到最上方
-          </StationBottomNavButton>
-          <StationBottomNavLink href="/">回首頁</StationBottomNavLink>
-          <StationBottomNavLink href="/highways">
-            回公路旅途
-          </StationBottomNavLink>
-          <StationBottomNavLink href="/railways">
-            回車站旅途
-          </StationBottomNavLink>
-          {station.line.map((line) => {
-            // 1. 利用 find 找不到會回傳 undefined 的特性，搭配 || 做預設值
-            const railwayName =
-              railways.find((r) => Number(r.id) === Number(line.lineID))
-                ?.name || `ID: ${line.lineID}`;
-
-            return (
-              <StationBottomNavLink
-                key={line.lineID}
-                href={`/railways/${line.lineID}`}
-              >
-                回{railwayName}
-              </StationBottomNavLink>
-            );
-          })}
-        </StationBottomNav>
+        <BottomNav station={station} railways={railways} />
       </StationPageContainer>
     </>
   );
