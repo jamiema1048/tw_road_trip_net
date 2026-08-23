@@ -26,6 +26,7 @@ interface MongoRailway {
 }
 
 export default async function LinePageServer() {
+  let serializedLines;
   try {
     // 1. 取得 railway 專屬連線
     const { railwayConn } = await getConnections();
@@ -43,7 +44,7 @@ export default async function LinePageServer() {
 
     // 4. 資料標準化 (將所有的 ObjectId 轉成字串)
     // 透過確切的介面定義，這裡不再需要 any
-    const serializedLines = allRailways.map((line) => ({
+    serializedLines = allRailways.map((line) => ({
       ...line,
       _id: line._id.toString(),
       district: (line.district || []).map((d) => ({
@@ -51,9 +52,6 @@ export default async function LinePageServer() {
         _id: d._id?.toString(),
       })),
     }));
-
-    // 5. 將處理好的陣列傳給 Client 端
-    return <LinePageClient lines={serializedLines} />;
   } catch (err: any) {
     if (
       err?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
@@ -67,4 +65,6 @@ export default async function LinePageServer() {
     // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
     throw new Error(err?.message || "無法載入公路資料，請檢查資料庫連線。");
   }
+  // 5. 將處理好的陣列傳給 Client 端
+  return <LinePageClient lines={serializedLines} />;
 }

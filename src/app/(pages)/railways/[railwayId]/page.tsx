@@ -90,13 +90,16 @@ export default async function RailwayContentServer({
 }: {
   params: Promise<{ railwayId: string }>;
 }) {
-  try {
-    const { railwayId: rawId } = await params;
-    const railwayId = Number(rawId);
-    if (!railwayId) {
-      notFound();
-    }
+  const { railwayId: rawId } = await params;
+  const railwayId = Number(rawId);
+  if (!railwayId) {
+    notFound();
+  }
 
+  let serializedRailway;
+  let serializedStations: Station[];
+  const railwayNameMap: Record<number, string> = {};
+  try {
     const { railwayConn, stationConn } = await getConnections();
 
     const RailwayModel =
@@ -116,9 +119,17 @@ export default async function RailwayContentServer({
       notFound();
     }
 
+    // 💡 關鍵新增：一次性撈取所有路線 ID 與 Name 來建立對照地圖
+    const allRailways = await RailwayModel.find({}, "id name").lean();
+    allRailways.forEach((r) => {
+      if (r.id && r.name) {
+        railwayNameMap[r.id] = r.name;
+      }
+    });
+
     // --- 序列化處理 (Serialization) ---
 
-    const serializedRailway = {
+    serializedRailway = {
       ...rawRailway,
       _id: rawRailway._id.toString(),
       district: (rawRailway.district || []).map((d) => ({
@@ -127,7 +138,7 @@ export default async function RailwayContentServer({
       })),
     };
 
-    const serializedStations: Station[] = rawStations.map((s): Station => {
+    serializedStations = rawStations.map((s): Station => {
       return {
         _id: s._id.toString(),
         id: s.id,
@@ -207,14 +218,6 @@ export default async function RailwayContentServer({
         })),
       };
     });
-
-    // 3. 直接回傳，不再需要 JSON.parse
-    return (
-      <RailwayContentClient
-        data={serializedRailway}
-        stations={serializedStations}
-      />
-    );
   } catch (err: any) {
     if (
       err?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
@@ -228,4 +231,13 @@ export default async function RailwayContentServer({
     // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
     throw new Error(err?.message || "無法載入公路資料，請檢查資料庫連線。");
   }
+
+  // 3. 直接回傳，不再需要 JSON.parse
+  return (
+    <RailwayContentClient
+      data={serializedRailway}
+      stations={serializedStations}
+      railwayNameMap={railwayNameMap} // 💡 將地圖傳入 Client 組件
+    />
+  );
 }

@@ -41,6 +41,7 @@ import { Station, StationLineDistrict, RailwayData } from "@/src/types/railway";
 interface Props {
   data: RailwayData;
   stations: Station[];
+  railwayNameMap: Record<number, string>;
 }
 
 const StationListPageContainer = styled.div`
@@ -96,7 +97,11 @@ const Divider = styled.div`
   }
 `;
 
-export default function RailwayContentClient({ data, stations }: Props) {
+export default function RailwayContentClient({
+  data,
+  stations,
+  railwayNameMap,
+}: Props) {
   const { title, setTitle } = useContext(TitleContext);
   const [loading, setLoading] = useState(true);
   const [notFoundPage, setNotFoundPage] = useState(false);
@@ -144,6 +149,7 @@ export default function RailwayContentClient({ data, stations }: Props) {
               lineID={data.id}
               lineData={data}
               stations={stations}
+              railwayNameMap={railwayNameMap}
               loading={loading}
               setLoading={setLoading}
             />

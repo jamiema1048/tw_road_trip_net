@@ -92,9 +92,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
   const pathname = currentPath || pathnameFromHook || "";
   // 🔴 關鍵 2：將路徑拆解為陣列
   // 例如 "/railways/lines" -> ["railways", "lines"]
-  const pathSegments = currentPath
-    .split("/")
-    .filter((segment) => segment !== "");
+  const pathSegments = pathname.split("/").filter((segment) => segment !== "");
 
   // 組合出路徑物件陣列 [{ name: '首頁', url: '/' }, { name: '鐵道資訊', url: '/railways' }, ...]
   const breadcrumbItems = [

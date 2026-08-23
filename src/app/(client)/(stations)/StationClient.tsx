@@ -515,7 +515,8 @@ export default function StationClient({
                           alt={`${img.description}`}
                           width={800}
                           height={600}
-                          layout="intrinsic"
+                          style={{ width: "100%", height: "auto" }}
+                          priority
                         />
                       </PhotoBlock>
                       <PhotoDescriptionContainer>

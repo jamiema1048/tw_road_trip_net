@@ -15,10 +15,6 @@ import { Highway } from "@/src/types/highway";
 
 interface Props {
   highways: Highway[];
-  hoveredHighway: Highway | null;
-  setHoveredHighway: (hwy: Highway | null) => void;
-  loading: boolean;
-  setLoading: (val: boolean) => void;
 }
 
 const HighwayListPageContainer = styled.div`

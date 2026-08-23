@@ -1,24 +1,27 @@
-// types/highway.ts
+export interface HighwayImageClient {
+  _id?: string; // 或 string，視需求而定
+  url: string;
+  description?: string; // 建議設為選填
+  capturedAt?: string | null; // 💡 RSC 傳遞過來的是 ISO 字串，非 Date 物件
+}
+
 export interface Highway {
   _id: string;
   id: number;
   name: string;
   status: "active" | "disused" | "unlisted";
-  routeName?: string;
-  length: number; // 數字型別
-  currentLength?: number;
+  highwayIcon?: string;
+  routeName: string;
+  length: number;
+  currentLength: number;
   start: string;
-  currentStart?: string;
+  currentStart: string;
   end: string;
-  currentEnd?: string;
-  otherName?: string[]; // 我們把原本逗號隔開的字串變成「陣列」
-  highest?: number;
-  highestPlace?: string;
-  remark?: string;
-  images?: {
-    _id: string;
-    url: string; // 圖片位址 (例如 /images/t1_01.jpg)
-    description: string; // 圖片描述 (例如 "台1線起點行政院前")
-    capturedAt: Date; // 選填：拍攝日期
-  }[];
+  currentEnd: string;
+  otherName: string[];
+  highest: number;
+  highestPlace: string;
+  remark: string;
+  images: HighwayImageClient[]; // 💡 使用支援字串日期的 Client 型別
+  currentImageIndex?: number;
 }

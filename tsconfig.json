@@ -28,7 +28,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "**/*.mts",
+    "updateHighwayIcons.js",
+    "updateHighwayIcons.js"
   ],
   "exclude": ["node_modules"]
 }

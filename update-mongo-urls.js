@@ -24,9 +24,16 @@ async function main() {
     // 舊: /image/005/12345678.jpg
     // 新: https://bucket.s3.amazonaws.com/image/station/005/12345678.jpg
     // ==========================================
+    const oldHost = "my-road-trip-archive-photos.s3.amazonaws.com/";
+    const newHost = "my-road-trip-archive-photos.s3.ap-east-2.amazonaws.com/";
+
     const stationsCollection = stationDb.collection("stations"); // 請確認你的 Collection 名稱
     const stationResult = await stationsCollection.updateMany(
-      { "images.url": { $regex: "^/?image/" } },
+      {
+        "images.url": {
+          $regex: "my-road-trip-archive-photos\\.s3\\.amazonaws\\.com/",
+        },
+      },
       [
         {
           $set: {
@@ -41,8 +48,8 @@ async function main() {
                       url: {
                         $replaceOne: {
                           input: "$$img.url",
-                          find: "/image/",
-                          replacement: `${S3_DOMAIN}/image/station/`,
+                          find: oldHost,
+                          replacement: newHost,
                         },
                       },
                     },
@@ -65,7 +72,11 @@ async function main() {
     // ==========================================
     const highwaysCollection = highwayDb.collection("highways"); // 請確認你的 Collection 名稱
     const highwayResult = await highwaysCollection.updateMany(
-      { "images.url": { $regex: "^/?image/" } },
+      {
+        "images.url": {
+          $regex: "my-road-trip-archive-photos\\.s3\\.amazonaws\\.com/",
+        },
+      },
       [
         {
           $set: {
@@ -80,8 +91,8 @@ async function main() {
                       url: {
                         $replaceOne: {
                           input: "$$img.url",
-                          find: "/image/",
-                          replacement: `${S3_DOMAIN}/image/highway/`,
+                          find: oldHost,
+                          replacement: newHost,
                         },
                       },
                     },

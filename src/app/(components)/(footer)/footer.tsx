@@ -47,7 +47,7 @@ const ContactContent = styled.div`
   }
 `;
 
-const TextWrapper = styled.span`
+const TextWrapper = styled.p`
   color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
   display: flex;

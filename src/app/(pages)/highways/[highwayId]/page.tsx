@@ -85,16 +85,17 @@ export default async function HighwayContentServer({
 }: {
   params: PageParams;
 }) {
+  const resolvedParams = await params;
+  const highwayIdStr = resolvedParams.highwayId;
+
+  // 🟢 修正 3：明確轉為數字，並阻擋無效 ID
+  const numericHighwayId = Number(highwayIdStr);
+  if (isNaN(numericHighwayId)) {
+    notFound();
+  }
+
+  let serializedHighway;
   try {
-    const resolvedParams = await params;
-    const highwayIdStr = resolvedParams.highwayId;
-
-    // 🟢 修正 3：明確轉為數字，並阻擋無效 ID
-    const numericHighwayId = Number(highwayIdStr);
-    if (isNaN(numericHighwayId)) {
-      notFound();
-    }
-
     // 🟢 修正 2：正確取得連線物件
     const { highwayConn } = await getConnections();
 
@@ -112,7 +113,7 @@ export default async function HighwayContentServer({
     }
 
     // 3. 序列化處理 (Serialization)
-    const serializedHighway = {
+    serializedHighway = {
       ...highwayData,
       _id: highwayData._id?.toString() || "",
       // 🟢 修正 1：給予預設空陣列 (highwayData.images || [])，防止 .map() 崩潰
@@ -124,9 +125,6 @@ export default async function HighwayContentServer({
           : null,
       })),
     };
-
-    // 4. 將單一公路資料傳給 Client 渲染
-    return <HighwayContentClient highway={serializedHighway} />;
   } catch (err: any) {
     // 💡 建議：印出完整的錯誤訊息，幫你下次更好抓蟲
     if (
@@ -141,4 +139,6 @@ export default async function HighwayContentServer({
     // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
     throw new Error(err?.message || "無法載入公路資料，請檢查資料庫連線。");
   }
+  // 4. 將單一公路資料傳給 Client 渲染
+  return <HighwayContentClient highway={serializedHighway} />;
 }

@@ -32,6 +32,7 @@ interface DistrictGroupedStationsProps {
   stations: Station[]; // 補上這個
   loading: boolean; // 補上這個
   setLoading: React.Dispatch<React.SetStateAction<boolean>>; // 補上這個
+  railwayNameMap?: Record<number, string>;
 }
 
 interface OrderedStation extends Station {
@@ -180,6 +181,29 @@ const StationBlock = styled.div<{ $status: Station["status"] }>`
   }
 `;
 
+const AdjacentAreaLink = styled(Link)`
+  display: block;
+  color: var(--background);
+  font-size: 1.75rem;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  @media (prefers-color-scheme: dark) {
+    color: var(--text-white-aaaa);
+  }
+  transition: all 0.2s ease-in-out;
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
+
+  /* Hover 效果 (搭配微調邊距) */
+  &:hover {
+    color: var(--text-success); /* hover:text-green-400 */
+    padding-left: 0.5rem; /* hover:pl-2 */
+  }
+`;
+
 // 🟢 有細節時：可點擊的 Link
 const StationLink = styled(Link)`
   display: block;
@@ -220,6 +244,7 @@ const DistrictGroupedStations: React.FC<DistrictGroupedStationsProps> = ({
   stations,
   loading,
   setLoading,
+  railwayNameMap,
 }) => {
   // 使用 useMemo 處理複雜的分組與排序邏輯
   const groupedStations = useMemo(() => {
@@ -297,11 +322,11 @@ const DistrictGroupedStations: React.FC<DistrictGroupedStationsProps> = ({
             <LineAreaDecoration />
             <LineAreaContent>
               {district.prevArea && (
-                <div className="mb-2">
-                  <Link href={`/railways/${district.prevArea}`}>
-                    ↑ 上接{district.prevArea}
-                  </Link>
-                </div>
+                <AdjacentAreaLink href={`/railways/${district.prevArea}`}>
+                  ↑ 上接
+                  {railwayNameMap?.[district.prevArea] ||
+                    `路線 ${district.prevArea}`}
+                </AdjacentAreaLink>
               )}
 
               <StationList>
@@ -332,14 +357,11 @@ const DistrictGroupedStations: React.FC<DistrictGroupedStationsProps> = ({
               </StationList>
 
               {district.nextArea && (
-                <div className="mt-4">
-                  <Link
-                    href={`/railways/${district.nextArea}`}
-                    className="text-blue-400 text-sm hover:underline"
-                  >
-                    ↓ 下接{district.nextArea}
-                  </Link>
-                </div>
+                <AdjacentAreaLink href={`/railways/${district.nextArea}`}>
+                  ↓ 下接
+                  {railwayNameMap?.[district.nextArea] ||
+                    `路線 ${district.nextArea}`}
+                </AdjacentAreaLink>
               )}
             </LineAreaContent>
           </LineAreaContentBlock>

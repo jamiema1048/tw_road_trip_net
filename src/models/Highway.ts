@@ -22,6 +22,7 @@ export const HighwaySchema = new Schema(
         capturedAt: { type: Date, default: Date.now }, // 選填：拍攝日期
       },
     ],
+    highwayIcon: { type: String, default: "/icons/highways/default.svg" },
   },
   { timestamps: true },
 );
