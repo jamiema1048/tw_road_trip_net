@@ -4,6 +4,7 @@
 import { useState } from "react";
 import styled, { css } from "styled-components";
 import Link from "next/link";
+import Image from "next/image";
 import { Highway } from "@/src/types/highway";
 
 interface Props {
@@ -151,7 +152,10 @@ const GroupedHighwaysLink = styled(Link)<{ $status: Highway["status"] }>`
   }
 `;
 
-const HighwayIcon = styled.svg`
+const HighwayIcon = styled(Image).attrs({
+  width: 48, // 3rem 對應 48px
+  height: 48,
+})`
   width: 3rem;
   height: 3rem;
   aspect-ratio: 1/1;
@@ -224,7 +228,13 @@ export default function Province({ highways, loading, setLoading }: Props) {
                   href={`/highways/${hwy.id}`}
                   $status={hwy.status}
                 >
-                  <HighwayIcon />
+                  <HighwayIcon
+                    src={
+                      hwy.highwayIcon || `/highway_mark/${hwy.id}/${hwy.id}.svg`
+                    }
+                    alt={`${hwy.name} 圖示`}
+                    className="object-contain"
+                  />
                   <HighwayText>{hwy.name}</HighwayText>
                 </GroupedHighwaysLink>
               ))}

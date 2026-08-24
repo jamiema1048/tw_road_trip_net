@@ -10,7 +10,7 @@ export interface Highway {
   id: number;
   name: string;
   status: "active" | "disused" | "unlisted";
-  highwayIcon?: string;
+  highwayIcon: string;
   routeName: string;
   length: number;
   currentLength: number;
