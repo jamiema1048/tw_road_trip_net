@@ -117,10 +117,10 @@ const NumberGroupedHighways = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 2rem;
   align-self: stretch;
   @media (max-width: 768px) {
-    gap: 0.5rem;
+    gap: 1rem;
   }
 `;
 
@@ -128,16 +128,16 @@ const GroupedHighwaysArea = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
   @media (max-width: 768px) {
-    gap: 0.5rem;
+    gap: 1rem;
   }
 `;
 
 const GroupedHighwaysLink = styled(Link)<{ $status: Highway["status"] }>`
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 0.5rem;
   align-self: stretch;
   transition: all 0.2s ease-in-out;
 
@@ -148,7 +148,7 @@ const GroupedHighwaysLink = styled(Link)<{ $status: Highway["status"] }>`
     color: var(--text-success);
   }
   @media (max-width: 768px) {
-    gap: 0.5rem;
+    gap: 0.25rem;
   }
 `;
 

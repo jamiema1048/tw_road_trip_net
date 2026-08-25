@@ -44,9 +44,29 @@ const HighwayContainerArea = styled.div`
 
 const PageTitleContainer = styled.div`
   display: flex;
+  flex-direction: row;
   justify-content: center;
   margin: 1.25rem auto;
+  align-items: center;
+  gap: 1rem;
+  @media (max-width: 768px) {
+    gap: 0.5rem;
+  }
 `;
+
+const HighwayIcon = styled(Image).attrs({
+  width: 48, // 3rem 對應 48px
+  height: 48,
+})`
+  width: 3rem;
+  height: 3rem;
+  aspect-ratio: 1/1;
+  @media (max-width: 768px) {
+    width: 2rem;
+    height: 2rem;
+  }
+`;
+
 const PageTitle = styled.div`
   color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
@@ -217,6 +237,14 @@ export default function HighwayContentClient({ highway }: Props) {
         ) : (
           <HighwayContainerArea>
             <PageTitleContainer>
+              <HighwayIcon
+                src={
+                  highway.highwayIcon ||
+                  `/highway_mark/${highway.id}/${highway.id}.svg`
+                }
+                alt={`${highway.name} 圖示`}
+                className="object-contain"
+              />
               <PageTitle>{highway.name}</PageTitle>
             </PageTitleContainer>
             <Breadcrumbs
