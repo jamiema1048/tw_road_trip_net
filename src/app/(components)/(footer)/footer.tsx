@@ -8,7 +8,6 @@ import { Icon } from "@iconify/react";
 const StyledComponentFooter = styled.div`
   width: 100%;
   margin: auto auto 0 auto;
-  position: bottom;
 `;
 
 /* 2. 主體區塊：改用 Padding 上下留白，替代原本死板的 height: 87.5% */

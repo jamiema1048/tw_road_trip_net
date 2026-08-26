@@ -30,8 +30,6 @@ interface DistrictGroupedStationsProps {
   lineID: number; // 補上這個
   lineData: RailwayData; // 補上這個
   stations: Station[]; // 補上這個
-  loading: boolean; // 補上這個
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>; // 補上這個
   railwayNameMap?: Record<number, string>;
 }
 
@@ -242,8 +240,6 @@ const DistrictGroupedStations: React.FC<DistrictGroupedStationsProps> = ({
   lineID,
   lineData,
   stations,
-  loading,
-  setLoading,
   railwayNameMap,
 }) => {
   // 使用 useMemo 處理複雜的分組與排序邏輯

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useContext, useRef } from "react";
+import { useEffect, useContext } from "react";
 import Head from "next/head";
 import { usePathname } from "next/navigation";
 import styled from "styled-components";
@@ -118,18 +118,11 @@ const TermsDetailText = styled.h3`
 `;
 
 export default function TermsClient() {
-  const [loading, setLoading] = useState(false);
   const { title, setTitle } = useContext(TitleContext);
   const pathname = usePathname();
   useEffect(() => {
-    // 模擬載入動畫
-    const timer = setTimeout(() => {
-      setLoading(false);
-      setTitle("使用條款");
-      document.title = "使用條款";
-    }, 100); // 可自行調整延遲，測試可縮短
-
-    return () => clearTimeout(timer);
+    setTitle("使用條款");
+    document.title = "使用條款";
   }, [setTitle]);
   return (
     <>

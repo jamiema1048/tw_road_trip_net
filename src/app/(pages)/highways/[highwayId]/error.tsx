@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect } from "react";
 import Head from "next/head";
 import styled from "styled-components";
 import ErrorPageClient from "@/src/app/(client)/(ErrorPage)/ErrorPageClient";
@@ -28,9 +28,6 @@ const Error: FC<ErrorProps> = ({ error, reset }) => {
   const errorDigest = error?.digest; // Next.js 產生的 Server 錯誤代碼雜湊值
 
   // 假設我們可以從 error 訊息中拆解或預設錯誤編號
-  const errorCode = errorDigest
-    ? `ERR_${errorDigest.slice(0, 6)}`
-    : "500 ERROR";
 
   useEffect(() => {
     // 可以在這裡將錯誤發送到你的 Log 服務（例如 Sentry）
@@ -45,7 +42,6 @@ const Error: FC<ErrorProps> = ({ error, reset }) => {
         <ErrorPageClient
           errorMessage={errorMessage}
           errorDigest={errorDigest}
-          errorCode={errorCode}
           reset={reset}
         />
       </ErrorContainer>

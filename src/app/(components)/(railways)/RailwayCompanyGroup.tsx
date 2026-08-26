@@ -15,10 +15,6 @@ interface Line {
   }[];
 }
 
-interface Props {
-  lines: Line[];
-}
-
 interface RailwayCompanyGroupProps {
   co: string | number;
   companyMap: Record<number, string>;

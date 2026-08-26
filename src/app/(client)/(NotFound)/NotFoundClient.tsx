@@ -1,7 +1,4 @@
-import { useState, useContext, useEffect } from "react";
-import { usePathname } from "next/navigation";
 import styled from "styled-components";
-import { TitleContext } from "@/src/app/(context)/title/TitleContext";
 import BottomNav from "../../(components)/(bottomnav)/BottomNav";
 
 const NotFoundPageContainer = styled.div`

@@ -84,10 +84,10 @@ export default function LinePageClient({ lines }: Props) {
 
   useEffect(() => {
     // 模擬載入動畫
+    setTitle("鐵路總覽");
+    document.title = "鐵路總覽";
     const timer = setTimeout(() => {
       setLoading(false);
-      setTitle("鐵路總覽");
-      document.title = "鐵路總覽";
     }, 100); // 可自行調整延遲，測試可縮短
 
     return () => clearTimeout(timer);

@@ -27,11 +27,6 @@ const Error: FC<ErrorProps> = ({ error, reset }) => {
   const errorMessage = error?.message || "發生未知錯誤，請稍後再試。";
   const errorDigest = error?.digest; // Next.js 產生的 Server 錯誤代碼雜湊值
 
-  // 假設我們可以從 error 訊息中拆解或預設錯誤編號
-  const errorCode = errorDigest
-    ? `ERR_${errorDigest.slice(0, 6)}`
-    : "500 ERROR";
-
   useEffect(() => {
     // 可以在這裡將錯誤發送到你的 Log 服務（例如 Sentry）
     console.error("抓取到的系統錯誤：", error);
@@ -45,7 +40,6 @@ const Error: FC<ErrorProps> = ({ error, reset }) => {
         <ErrorPageClient
           errorMessage={errorMessage}
           errorDigest={errorDigest}
-          errorCode={errorCode}
           reset={reset}
         />
       </ErrorContainer>

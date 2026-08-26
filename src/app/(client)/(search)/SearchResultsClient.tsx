@@ -3,12 +3,12 @@
 import { useState, useEffect, useContext } from "react";
 import Link from "next/link";
 import Head from "next/head";
-import { usePathname } from "next/navigation";
 import styled from "styled-components";
 import { TitleContext } from "@/src/app/(context)/title/TitleContext";
 import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
 import { SearchResultItem } from "@/src/app/_lib/search";
 import SearchBar from "@/src/app/(components)/(search)/SearchBar";
+import Loading from "@/src/app/(pages)/search/loading";
 
 interface Props {
   query: string;
@@ -16,11 +16,12 @@ interface Props {
 }
 
 export default function SearchResultsClient({ query, results }: Props) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [prevQuery, setPrevQuery] = useState(query);
   const [activeTab, setActiveTab] = useState<
     "all" | "highway" | "railway" | "station"
   >("all");
-  //   const { title, setTitle } = useContext(TitleContext);
+  const { title, setTitle } = useContext(TitleContext);
 
   const highwayList = results.filter((item) => item.type === "highway");
   const railwayList = results.filter((item) => item.type === "railway");
@@ -33,22 +34,29 @@ export default function SearchResultsClient({ query, results }: Props) {
     return true;
   });
 
-  //   useEffect(() => {
-  //     // 模擬載入動畫
-  //     const timer = setTimeout(() => {
-  //       setLoading(false);
-  //       setTitle("公路列表");
-  //       document.title = "公路列表";
-  //     }, 100); // 可自行調整延遲，測試可縮短
+  if (query !== prevQuery) {
+    setPrevQuery(query);
+    setLoading(true); // React 會自動併入同一次渲染批次，不會造成多餘的畫面閃爍
+  }
 
-  //     return () => clearTimeout(timer);
-  //   }, [setTitle]);
+  // 🟢 2. Effect 只負責處理非同步的 timer 與外部系統 (document.title / Context)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+
+      const pageTitle = query ? `「${query}」的搜尋結果` : "全域搜尋";
+      setTitle(pageTitle);
+      document.title = pageTitle;
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [query, setTitle]);
 
   return (
     <>
-      {/* <Head>
+      <Head>
         <title>{title}</title>
-      </Head> */}
+      </Head>
       <SearchResultsPageContainer>
         {!query ? (
           <Container>
@@ -103,7 +111,9 @@ export default function SearchResultsClient({ query, results }: Props) {
               )}
 
               {/* 搜尋結果列表 */}
-              {displayedResults.length > 0 ? (
+              {loading ? (
+                <Loading />
+              ) : displayedResults.length > 0 ? (
                 <Grid>
                   {displayedResults.map((item) => (
                     <ResultCard key={`${item.type}-${item.id}`} href={item.url}>

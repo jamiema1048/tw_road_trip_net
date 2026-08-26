@@ -17,7 +17,6 @@ interface MongooseCache {
 
 // 2. 擴充全域物件型別，消除 (global as any)
 declare global {
-  // eslint-disable-next-line no-var
   var mongoose_multi: MongooseCache | undefined;
 }
 

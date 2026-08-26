@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import Link from "next/link";
 import BottomNav from "../../(components)/(bottomnav)/BottomNav";
 
 // --- Styled Components 樣式定義 ---
@@ -79,14 +78,12 @@ const PrimaryButton = styled.button`
 export interface ErrorPageProps {
   errorMessage: string;
   errorDigest?: string; // 因為 errorDigest 有可能是 undefined，所以要加問號 ?
-  errorCode: string;
   reset: () => void;
 }
 
 export default function ErrorPageClient({
   errorMessage,
   errorDigest,
-  errorCode,
   reset,
 }: ErrorPageProps) {
   return (

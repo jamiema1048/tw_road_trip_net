@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext } from "react";
 import Head from "next/head";
 import { usePathname } from "next/navigation";
 import styled from "styled-components";
@@ -10,7 +10,6 @@ import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
 import Province from "@/src/app/(components)/(highways)/Province";
 import County from "@/src/app/(components)/(highways)/County";
 import Loading from "@/src/app/(pages)/highways/loading";
-import NotFound from "../../(pages)/highways/not-found";
 import { Highway } from "@/src/types/highway";
 
 interface Props {

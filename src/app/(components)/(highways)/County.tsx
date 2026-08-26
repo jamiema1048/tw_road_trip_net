@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import styled, { css } from "styled-components";
 import Link from "next/link";
 import Image from "next/image";
@@ -7,8 +7,6 @@ import { Highway } from "@/src/types/highway";
 
 interface Props {
   highways: Highway[];
-  loading: boolean;
-  setLoading: (val: boolean) => void;
 }
 
 const STATUS_STYLES: Record<Highway["status"], ReturnType<typeof css>> = {
@@ -170,7 +168,7 @@ const HighwayText = styled.h3`
   }
 `;
 
-export default function County({ highways, loading, setLoading }: Props) {
+export default function County({ highways }: Props) {
   const [isCountyShow, setIsCountyShow] = useState(false);
   const [isCountyShowCXX, setIsCountyShowCXX] = useState(false);
   const [isCountyShowCXL, setIsCountyShowCXL] = useState(false);

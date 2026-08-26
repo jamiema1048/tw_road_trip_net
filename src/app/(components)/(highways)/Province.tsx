@@ -9,8 +9,6 @@ import { Highway } from "@/src/types/highway";
 
 interface Props {
   highways: Highway[];
-  loading: boolean;
-  setLoading: (val: boolean) => void;
 }
 
 const STATUS_STYLES: Record<Highway["status"], ReturnType<typeof css>> = {
@@ -176,7 +174,7 @@ const HighwayText = styled.h3`
   }
 `;
 
-export default function Province({ highways, loading, setLoading }: Props) {
+export default function Province({ highways }: Props) {
   const [isProvinceShow, setIsProvinceShow] = useState(false);
   const [isProvinceShowXX, setIsProvinceShowXX] = useState(false);
   const [isProvinceShowC, setIsProvinceShowC] = useState(false);

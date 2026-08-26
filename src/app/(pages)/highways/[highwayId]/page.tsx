@@ -1,6 +1,5 @@
 // src/app/highways/HighwayContentServer.tsx
 export const dynamic = "force-dynamic";
-import mongoose from "mongoose";
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
 import HighwayContentClient from "@/src/app/(client)/(highways)/HighwayContentClient";
 import { notFound } from "next/navigation";

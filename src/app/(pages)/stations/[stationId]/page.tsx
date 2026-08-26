@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import { Types } from "mongoose";
-import Link from "next/link";
 import StationClient from "@/src/app/(client)/(stations)/StationClient";
 import { notFound } from "next/navigation";
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
@@ -139,6 +138,9 @@ export async function generateMetadata({
 
 // --- 主頁面 ---
 export default async function StationPage({ params }: { params: PageParams }) {
+  let station;
+  let matchedRailways;
+  let adjacentStations: Station[];
   try {
     // ✨ 修正 2：解構名稱必須與資料夾名稱 [stationId] 一致
     // 你原本寫 stationParams.stationId 會抓不到值
@@ -274,12 +276,11 @@ export default async function StationPage({ params }: { params: PageParams }) {
       };
     };
 
-    const station = sanitizeStation(rawStation);
-    const adjacentStations: Station[] =
-      rawAdjacentStations.map(sanitizeStation);
+    station = sanitizeStation(rawStation);
+    adjacentStations = rawAdjacentStations.map(sanitizeStation);
 
     // 匹配路線資料
-    const matchedRailways = station.line
+    matchedRailways = station.line
       .map((l) => allRailways.find((r) => r.id === l.lineID))
       .filter((r): r is RailwayData => r !== undefined)
       .map((r) => ({
@@ -290,14 +291,6 @@ export default async function StationPage({ params }: { params: PageParams }) {
           _id: d._id?.toString(),
         })),
       }));
-
-    return (
-      <StationClient
-        station={station}
-        railways={matchedRailways}
-        adjacentStations={adjacentStations}
-      />
-    );
   } catch (err: any) {
     if (
       err?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
@@ -311,4 +304,11 @@ export default async function StationPage({ params }: { params: PageParams }) {
     // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
     throw new Error(err?.message || "無法載入公路資料，請檢查資料庫連線。");
   }
+  return (
+    <StationClient
+      station={station}
+      railways={matchedRailways}
+      adjacentStations={adjacentStations}
+    />
+  );
 }

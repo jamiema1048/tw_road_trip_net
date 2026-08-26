@@ -1,13 +1,10 @@
 "use client";
 
 import React, { useState, useSyncExternalStore } from "react";
-import { useTheme } from "next-themes";
 import styled from "styled-components";
 import Link from "next/link";
 import HeaderSearchBar from "@/src/app/(components)/(header)/HeaderSearchBar";
 import { ThemeToggle } from "@/src/app/(components)/(header)/(button)/ThemeToggle";
-import Image from "next/image";
-import LogoSvg from "@/public/Logo/Header.svg";
 
 // --- 響應式佈局調整 ---
 
