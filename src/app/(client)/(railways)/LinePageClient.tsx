@@ -54,8 +54,9 @@ const PageTitleContainer = styled.div`
   display: flex;
   justify-content: center;
   margin: 1.25rem auto;
+  min-height: 3.5rem;
 `;
-const PageTitle = styled.div`
+const PageTitle = styled.h1`
   color: var(--text-white-aaaa);
   font-family: "Inter-Regular", Helvetica;
   font-size: 3rem;
@@ -75,6 +76,10 @@ const Divider = styled.div`
   @media (max-width: 768px) {
     margin: 0.75rem auto;
   }
+`;
+
+const LoadingPlaceholder = styled(Loading)`
+  min-height: 400px; /* 👈 預留列表高度，避免從 0 變大引發 CLS */
 `;
 
 export default function LinePageClient({ lines }: Props) {
@@ -113,25 +118,25 @@ export default function LinePageClient({ lines }: Props) {
         <title>{title}</title>
       </Head>
       <RailwayListPageContainer>
-        {loading ? (
-          <Loading />
-        ) : (
-          <RailwayListContainer>
-            <PageTitleContainer>
-              <PageTitle>🚉 鐵路總覽</PageTitle>
-            </PageTitleContainer>
-            <Breadcrumbs currentPath={pathname} />
-            <Divider />
-            {Object.entries(groupedByCo).map(([co, lineList]) => (
+        <RailwayListContainer>
+          <PageTitleContainer>
+            <PageTitle>🚉 鐵路總覽</PageTitle>
+          </PageTitleContainer>
+          <Breadcrumbs currentPath={pathname} />
+          <Divider />
+          {loading ? (
+            <LoadingPlaceholder />
+          ) : (
+            Object.entries(groupedByCo).map(([co, lineList]) => (
               <RailwayCompanyGroup
                 key={co}
                 co={co}
                 companyMap={companyMap}
                 lineList={lineList} // 這裡直接傳入該 co 專屬的路線陣列
               />
-            ))}
-          </RailwayListContainer>
-        )}
+            ))
+          )}
+        </RailwayListContainer>
         <BottomNav />
       </RailwayListPageContainer>
     </>

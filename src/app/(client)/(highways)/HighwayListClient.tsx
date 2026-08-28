@@ -111,16 +111,8 @@ export default function HighwayListClient({ highways }: Props) {
             <Breadcrumbs currentPath={pathname} />
             <Divider />
             <HighwayContentContainer>
-              <Province
-                highways={highways}
-                loading={loading}
-                setLoading={setLoading}
-              />
-              <County
-                highways={highways}
-                loading={loading}
-                setLoading={setLoading}
-              />
+              <Province highways={highways} />
+              <County highways={highways} />
             </HighwayContentContainer>
           </HighwayListContainer>
         )}

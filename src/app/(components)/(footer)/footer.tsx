@@ -1,8 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import { Icon } from "@iconify/react";
+import { ChevronRight, Copyright, Mail } from "lucide-react";
 
 /* 1. 外層容器：改為最大寬度 1440px，居中並隨螢幕縮放 */
 const StyledComponentFooter = styled.div`
@@ -63,14 +64,31 @@ const SocialIcons = styled.div`
   gap: 1.5rem;
 `;
 
-const StyledEmail = styled(Icon)`
+const StyledEmail = styled(Mail)`
+  color: var(--text-white-aaaa);
   aspect-ratio: 1 !important;
   height: 1.5rem !important;
   width: 1.5rem !important;
   cursor: pointer;
 `;
 
-const StyledGithub = styled(Icon)`
+export const StyledGithub = styled((props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+    stroke="currentColor"
+    strokeWidth="2"
+    fill="none"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+    <path d="M9 18c-4.51 2-5-2-7-2" />
+  </svg>
+))`
+  color: var(--text-white-aaaa);
   aspect-ratio: 1 !important;
   height: 1.5rem !important;
   width: 1.5rem !important;
@@ -111,7 +129,8 @@ const NavigationItem = styled(Link)`
   cursor: pointer;
 `;
 
-const StyledBreadcrumbRight = styled(Icon)`
+const StyledBreadcrumbRight = styled(ChevronRight)`
+  color: var(--text-white-aaaa);
   aspect-ratio: 1 !important;
   height: 1.25rem !important;
   width: 1.25rem !important;
@@ -151,7 +170,8 @@ const CopyrightText = styled.div`
   white-space: nowrap;
 `;
 
-const StyledCopyright = styled(Icon)`
+const StyledCopyright = styled(Copyright)`
+  color: var(--text-white-aaaa);
   aspect-ratio: 1 !important;
   height: 0.75rem !important;
   width: 0.75rem !important;
@@ -185,7 +205,7 @@ export interface ComponentFooterProps {
 
 const ContactEmail = () => {
   const [copied, setCopied] = useState(false);
-  const email = "stu1030113@gmail.co";
+  const email = "stu1030113@gmail.com";
 
   const handleCopy = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -206,11 +226,7 @@ const ContactEmail = () => {
           padding: 0,
         }}
       >
-        <StyledEmail
-          icon="mdi:email-outline"
-          className="icon-instance-node"
-          color={"var(--text-white-aaaa)"}
-        />
+        <StyledEmail className="icon-instance-node" />
       </button>
 
       {/* 複製成功提示小氣泡 */}
@@ -236,44 +252,28 @@ const ContactEmail = () => {
   );
 };
 
-const Footer: React.FC<ComponentFooterProps> = () => {
+export const Footer = memo(function Footer(props: ComponentFooterProps) {
   return (
-    <StyledComponentFooter>
+    <StyledComponentFooter className={props.className}>
       <Frame>
         <NavigationGroup>
           <NavigationColumn>
             <NavigationItem href="/about">
-              <StyledBreadcrumbRight
-                icon="mdi:chevron-right"
-                className="icon"
-                color={"var(--text-white-aaaa)"}
-              />
+              <StyledBreadcrumbRight className="icon" size={16} />
               <TextWrapper>關於我們</TextWrapper>
             </NavigationItem>
             <NavigationItem href="/reference">
-              <StyledBreadcrumbRight
-                icon="mdi:chevron-right"
-                className="icon"
-                color={"var(--text-white-aaaa)"}
-              />
+              <StyledBreadcrumbRight className="icon" size={16} />
               <TextWrapper>參考資料</TextWrapper>
             </NavigationItem>
           </NavigationColumn>
           <NavigationColumn>
             <NavigationItem href="/railways">
-              <StyledBreadcrumbRight
-                icon="mdi:chevron-right"
-                className="icon"
-                color={"var(--text-white-aaaa)"}
-              />
+              <StyledBreadcrumbRight className="icon" size={16} />
               <TextWrapper>車站旅途</TextWrapper>
             </NavigationItem>
             <NavigationItem href="/highways">
-              <StyledBreadcrumbRight
-                icon="mdi:chevron-right"
-                className="icon"
-                color={"var(--text-white-aaaa)"}
-              />
+              <StyledBreadcrumbRight className="icon" size={16} />
               <TextWrapper>公路旅途</TextWrapper>
             </NavigationItem>
           </NavigationColumn>
@@ -285,20 +285,14 @@ const Footer: React.FC<ComponentFooterProps> = () => {
           <ContactContent>
             <TextWrapper>聯絡我們</TextWrapper>
             <SocialIcons>
-              {/* 1. Email 連結：使用 mailto: 觸發郵件軟體 */}
               <ContactEmail />
-              {/* 2. GitHub 連結：使用外部連結 */}
               <Link
                 href="https://github.com/jamiema1048"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="前往 GitHub 主頁"
               >
-                <StyledGithub
-                  icon="mdi:github"
-                  className="icon-instance-node"
-                  color={"var(--text-white-aaaa)"}
-                />
+                <StyledGithub className="icon-instance-node" />
               </Link>
             </SocialIcons>
           </ContactContent>
@@ -307,11 +301,7 @@ const Footer: React.FC<ComponentFooterProps> = () => {
 
       <BottomFrame>
         <CopyrightGroup>
-          <StyledCopyright
-            icon="mdi:copyright"
-            className="icon-copyright"
-            color={"var(--text-white-aaaa)"}
-          />
+          <StyledCopyright className="icon-copyright" size={16} />
           <CopyrightText>All Rights Reserved</CopyrightText>
         </CopyrightGroup>
         <BottomDivider />
@@ -319,6 +309,6 @@ const Footer: React.FC<ComponentFooterProps> = () => {
       </BottomFrame>
     </StyledComponentFooter>
   );
-};
+});
 
-export default Footer;
+Footer.displayName = "Footer";

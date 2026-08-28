@@ -1,6 +1,11 @@
 "use client";
 
-import React, { useState, useSyncExternalStore } from "react";
+import React, {
+  useState,
+  useSyncExternalStore,
+  useCallback,
+  memo,
+} from "react";
 import styled from "styled-components";
 import Link from "next/link";
 import HeaderSearchBar from "@/src/app/(components)/(header)/HeaderSearchBar";
@@ -250,13 +255,13 @@ const emptySubscribe = () => () => {};
 const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const toggleMenu = () => {
+  const toggleMenu = useCallback(() => {
     setIsMenuOpen((prev) => !prev);
-  };
+  }, []);
 
-  const closeMenu = () => {
+  const closeMenu = useCallback(() => {
     setIsMenuOpen(false);
-  };
+  }, []);
 
   const isMounted = useSyncExternalStore(
     emptySubscribe,
@@ -436,4 +441,7 @@ const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
   );
 };
 
-export default Header;
+const MemoizedHeader = memo(Header);
+MemoizedHeader.displayName = "Header";
+
+export default MemoizedHeader;

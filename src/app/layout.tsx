@@ -3,16 +3,19 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/src/app/providers";
 import Header from "@/src/app/(components)/(header)/header";
-import Footer from "@/src/app/(components)/(footer)/footer";
+import { Footer } from "@/src/app/(components)/(footer)/footer";
+import StyledComponentsRegistry from "@/src/app/_lib/registry";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -33,11 +36,13 @@ export default function RootLayout({
     >
       <body suppressHydrationWarning>
         {/* 把 Providers 包在最外層，讓 Header、Footer、Children 都能共享 Theme 狀態 */}
-        <Providers>
-          <Header />
-          {children}
-          <Footer />
-        </Providers>
+        <StyledComponentsRegistry>
+          <Providers>
+            <Header />
+            <main style={{ flex: 1 }}>{children}</main>
+            <Footer />
+          </Providers>
+        </StyledComponentsRegistry>
       </body>
     </html>
   );

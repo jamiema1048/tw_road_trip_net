@@ -1,14 +1,6 @@
 "use client";
 
 import { ThemeProvider } from "next-themes";
-import styled from "styled-components";
-
-// 🟢 1. 建立一個吃滿全螢幕高度（100vh）的垂直 Flex 容器
-const AppLayoutWrapper = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-`;
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -17,7 +9,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
       defaultTheme="dark"
       enableSystem={false}
     >
-      <AppLayoutWrapper>{children}</AppLayoutWrapper>
+      {/* 🟢 直接用 CSS 樣式，省去 styled-components 執行 JS 注入樣式的毫秒數 */}
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        {children}
+      </div>
     </ThemeProvider>
   );
 }

@@ -1,7 +1,34 @@
-@import "tailwindcss";
+/* 1. 全域 CSS Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-/* 1. Tailwind v4 主題變數註冊 (讓你在 Class 中可以直接使用，例如: bg-primary, border-route-cell) */
-@theme inline {
+/* 2. Light Mode (預設值) */
+:root {
+  /* 基礎背景與文字 */
+  --background: #ededed;
+  --foreground: #171717;
+  --bg-primary: #7e7ef6;
+  --border-route-cell: #0000b3;
+
+  /* 狀態文字顏色 */
+  --text-success: #31c64d;
+  --text-info: #6cb4fc;
+  --text-warning: #ffbc42;
+  --text-danger: #ff4252;
+
+  /* 灰階與白階 */
+  --text-gray-aaa: #f7f7f7;
+  --text-gray-aa: #666666;
+  --text-gray-a: #333333;
+  --text-white-aaa: #2a2a2a;
+  --text-white-aaaa: #030507;
+
+  /* 快捷別名映射 (維持原本 CSS Variables 命名相容性) */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-bg-primary: var(--bg-primary);
@@ -18,30 +45,8 @@
   --color-text-white-aaa: var(--text-white-aaa);
   --color-text-white-aaaa: var(--text-white-aaaa);
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-/* 2. Light Mode (預設值) */
-:root {
-  /* 基礎背景與文字 */
-  --background: #ededed;
-  --foreground: #171717;
-  --bg-primary: #7e7ef6;
-  --border-route-cell: #0000b3; /* 🟢 補齊 Light Mode 對應的邊框色 */
-
-  /* 狀態文字顏色 (Light Mode 加深以提升對比度) */
-  --text-success: #31c64d;
-  --text-info: #6cb4fc;
-  --text-warning: #ffbc42;
-  --text-danger: #ff4252;
-
-  /* 灰階與白階 (Light Mode 下轉為深色) */
-  --text-gray-aaa: #f7f7f7;
-  --text-gray-aa: #666666;
-  --text-gray-a: #333333;
-  --text-white-aaa: #2a2a2a;
-  --text-white-aaaa: #030507;
+  --font-sans: var(--font-geist-sans, Arial, Helvetica, sans-serif);
+  --font-mono: var(--font-geist-mono, monospace);
 }
 
 /* 3. Dark Mode (當 html 上有 [data-theme="dark"] 時覆蓋) */
@@ -64,11 +69,18 @@
 }
 
 /* 4. 全域 Body 樣式 */
+html,
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  width: "100vw";
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  width: 100%;
+  overflow-x: hidden;
   transition:
     background-color 0.3s ease,
     color 0.3s ease;

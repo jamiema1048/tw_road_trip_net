@@ -52,16 +52,15 @@ const PageTitleContainer = styled.div`
   }
 `;
 
-const HighwayIcon = styled(Image).attrs({
-  width: 48, // 3rem 對應 48px
-  height: 48,
-})`
-  width: 3rem;
-  height: 3rem;
-  aspect-ratio: 1/1;
+const HighwayIcon = styled(Image)`
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+
   @media (max-width: 768px) {
-    width: 2rem;
-    height: 2rem;
+    width: 32px; /* 相當於原本的 2rem */
+    height: 32px;
   }
 `;
 
@@ -164,7 +163,11 @@ const PhotoFrame = styled.div`
 `;
 
 const PhotoBlock = styled.div`
+  width: 100%;
   border-radius: 2rem;
+  aspect-ratio: 4 / 3; /* 根據照片比例鎖定，例如 16/9 或 4/3 */
+  position: relative;
+  background-color: var(--bg-placeholder, #f0f0f0);
   overflow: hidden;
   box-shadow:
     4px 4px 4px 0 rgba(0, 0, 0, 0.25) inset,
@@ -173,6 +176,8 @@ const PhotoBlock = styled.div`
 
 const HighwayPhoto = styled(Image)`
   width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
   object-fit: cover;
   border-radius: 0.5rem;
 `;
@@ -228,6 +233,9 @@ export default function HighwayContentClient({ highway }: Props) {
                 `/highway_mark/${highway.id}/${highway.id}.svg`
               }
               alt={`${highway.name} 圖示`}
+              width={48}
+              height={48}
+              priority
               className="object-contain"
             />
             <PageTitle>{highway.name}</PageTitle>
@@ -313,6 +321,7 @@ export default function HighwayContentClient({ highway }: Props) {
                         alt={`${highway.name} - ${idx}`}
                         width={800}
                         height={600}
+                        fill
                         style={{ width: "100%", height: "auto" }}
                         priority
                       />

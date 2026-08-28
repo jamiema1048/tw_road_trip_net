@@ -120,6 +120,7 @@ export default function SearchBar() {
           </CloseButton>
         </SearchInputBox>
         <SearchButton
+          $isOpen={isOpen}
           type="submit"
           className="search-submit"
           aria-label="搜尋"

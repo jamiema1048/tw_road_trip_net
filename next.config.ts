@@ -6,7 +6,9 @@ const nextConfig: NextConfig = {
     styledComponents: true,
   },
   images: {
+    minimumCacheTTL: 31536000,
     unoptimized: true,
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",
