@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { Types } from "mongoose";
 import StationClient from "@/src/app/(client)/(stations)/StationClient";
 import { notFound } from "next/navigation";
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
@@ -18,18 +17,6 @@ interface MongoRawDistrict {
   districtID?: number;
   order?: number;
   _id?: import("mongoose").Types.ObjectId;
-}
-
-interface BaseDistrict {
-  districtID: number;
-  districtName: string;
-  prevArea?: number;
-  nextArea?: number;
-}
-
-// --- 2. 資料庫原始型別 (來自 .lean()) ---
-interface MongoDistrict extends BaseDistrict {
-  _id?: Types.ObjectId;
 }
 
 // interface MongoStation {
@@ -291,10 +278,11 @@ export default async function StationPage({ params }: { params: PageParams }) {
           _id: d._id?.toString(),
         })),
       }));
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const error = err as (Error & { digest?: string }) | null | undefined;
     if (
-      err?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
-      err?.message === "NEXT_NOT_FOUND"
+      error?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
+      error?.message === "NEXT_NOT_FOUND"
     ) {
       throw err;
     }
@@ -302,7 +290,7 @@ export default async function StationPage({ params }: { params: PageParams }) {
     console.error("載入公路頁面失敗，詳細錯誤原因:", err);
 
     // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
-    throw new Error(err?.message || "無法載入公路資料，請檢查資料庫連線。");
+    throw new Error(error?.message || "無法載入公路資料，請檢查資料庫連線。");
   }
   return (
     <StationClient

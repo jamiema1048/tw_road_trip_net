@@ -14,6 +14,12 @@ const SwitchButton = styled.button`
   align-items: center;
   aspect-ratio: 1/1;
   cursor: pointer;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
   @media (max-width: 768px) {
     width: 1.5rem;
     height: 1.5rem;

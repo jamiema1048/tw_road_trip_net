@@ -66,6 +66,7 @@ const IconButton = styled(Link)`
   width: 3.5rem;
   height: 3.5rem;
   flex-shrink: 0;
+  background: transparent;
   justify-content: center;
   align-items: center;
   aspect-ratio: 1/1;
@@ -99,6 +100,7 @@ const HighwayButton = styled(Link)`
   width: fit-content;
   /* 為了讓按鈕看起來像文字，需要清除 button 的預設樣式 */
   background: none;
+  text-decoration: none;
   border: none;
   padding: 0;
   cursor: pointer;
@@ -122,6 +124,7 @@ const RailwayButton = styled(Link)`
   width: fit-content;
   /* 為了讓按鈕看起來像文字，需要清除 button 的預設樣式 */
   background: none;
+  text-decoration: none;
   border: none;
   padding: 0;
   cursor: pointer;
@@ -140,6 +143,7 @@ const HomeButton = styled(Link)`
   justify-content: center;
   align-items: center;
   aspect-ratio: 1/1;
+  background: transparent;
   cursor: pointer;
   @media (max-width: 768px) {
     display: none;
@@ -155,6 +159,12 @@ const MoreOptionButton = styled.button`
   justify-content: center;
   align-items: center;
   aspect-ratio: 1/1;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
   cursor: pointer;
   @media (max-width: 768px) {
     display: flex;
@@ -191,6 +201,7 @@ const DropListHomeButton = styled(Link)`
   width: 100%;
   height: 1.5rem;
   flex-shrink: 0;
+  background: transparent;
   justify-content: center;
   align-items: center;
   aspect-ratio: 1/1;
@@ -214,6 +225,7 @@ const DropListHighwayButton = styled(Link)`
   width: fit-content;
   /* 為了讓按鈕看起來像文字，需要清除 button 的預設樣式 */
   background: none;
+  text-decoration: none;
   border: none;
   padding: 0;
   cursor: pointer;
@@ -236,6 +248,7 @@ const DropListRailwayButton = styled(Link)`
   width: fit-content;
   /* 為了讓按鈕看起來像文字，需要清除 button 的預設樣式 */
   background: none;
+  text-decoration: none;
   border: none;
   padding: 0;
   cursor: pointer;
@@ -327,7 +340,6 @@ const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
           </HighwayButton>
           <RailwayButton
             href="/railways"
-            type="button"
             className="text-wrapper"
             onClick={closeMenu}
           >
@@ -340,7 +352,6 @@ const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
           {/* 5. Home icon */}
           <HomeButton
             href="/"
-            type="button"
             className="icon-home"
             aria-label="回首頁"
             onClick={closeMenu}

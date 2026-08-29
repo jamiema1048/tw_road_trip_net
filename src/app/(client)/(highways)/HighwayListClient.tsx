@@ -78,6 +78,9 @@ const HighwayContentContainer = styled.div`
     margin: 0;
   }
 `;
+const LoadingPlaceholder = styled(Loading)`
+  min-height: 400px; /* 👈 預留列表高度，避免從 0 變大引發 CLS */
+`;
 
 export default function HighwayListClient({ highways }: Props) {
   const [loading, setLoading] = useState(false);
@@ -101,21 +104,21 @@ export default function HighwayListClient({ highways }: Props) {
         <title>{title}</title>
       </Head>
       <HighwayListPageContainer>
-        {loading ? (
-          <Loading />
-        ) : (
-          <HighwayListContainer>
-            <PageTitleContainer>
-              <PageTitle>公路列表</PageTitle>
-            </PageTitleContainer>
-            <Breadcrumbs currentPath={pathname} />
-            <Divider />
+        <HighwayListContainer>
+          <PageTitleContainer>
+            <PageTitle>公路列表</PageTitle>
+          </PageTitleContainer>
+          <Breadcrumbs currentPath={pathname} />
+          <Divider />
+          {loading ? (
+            <LoadingPlaceholder />
+          ) : (
             <HighwayContentContainer>
               <Province highways={highways} />
               <County highways={highways} />
             </HighwayContentContainer>
-          </HighwayListContainer>
-        )}
+          )}
+        </HighwayListContainer>
         <BottomNav />
       </HighwayListPageContainer>
     </>

@@ -218,10 +218,11 @@ export default async function RailwayContentServer({
         })),
       };
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const error = err as (Error & { digest?: string }) | null | undefined;
     if (
-      err?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
-      err?.message === "NEXT_NOT_FOUND"
+      error?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
+      error?.message === "NEXT_NOT_FOUND"
     ) {
       throw err;
     }
@@ -229,7 +230,7 @@ export default async function RailwayContentServer({
     console.error("載入公路頁面失敗，詳細錯誤原因:", err);
 
     // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
-    throw new Error(err?.message || "無法載入公路資料，請檢查資料庫連線。");
+    throw new Error(error?.message || "無法載入公路資料，請檢查資料庫連線。");
   }
 
   // 3. 直接回傳，不再需要 JSON.parse

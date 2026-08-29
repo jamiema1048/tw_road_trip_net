@@ -2,7 +2,6 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { TitleContext } from "@/src/app/(context)/title/TitleContext";
-import Head from "next/head";
 import { usePathname } from "next/navigation";
 import Loading from "@/src/app/(pages)/railways/loading";
 import { RailwayCompanyGroup } from "@/src/app/(components)/(railways)/RailwayCompanyGroup";
@@ -83,7 +82,7 @@ const LoadingPlaceholder = styled(Loading)`
 `;
 
 export default function LinePageClient({ lines }: Props) {
-  const { title, setTitle } = useContext(TitleContext);
+  const { setTitle } = useContext(TitleContext);
   const [loading, setLoading] = useState(true);
   const pathname = usePathname();
 
@@ -113,32 +112,27 @@ export default function LinePageClient({ lines }: Props) {
   };
 
   return (
-    <>
-      <Head>
-        <title>{title}</title>
-      </Head>
-      <RailwayListPageContainer>
-        <RailwayListContainer>
-          <PageTitleContainer>
-            <PageTitle>🚉 鐵路總覽</PageTitle>
-          </PageTitleContainer>
-          <Breadcrumbs currentPath={pathname} />
-          <Divider />
-          {loading ? (
-            <LoadingPlaceholder />
-          ) : (
-            Object.entries(groupedByCo).map(([co, lineList]) => (
-              <RailwayCompanyGroup
-                key={co}
-                co={co}
-                companyMap={companyMap}
-                lineList={lineList} // 這裡直接傳入該 co 專屬的路線陣列
-              />
-            ))
-          )}
-        </RailwayListContainer>
-        <BottomNav />
-      </RailwayListPageContainer>
-    </>
+    <RailwayListPageContainer>
+      <RailwayListContainer>
+        <PageTitleContainer>
+          <PageTitle>🚉 鐵路總覽</PageTitle>
+        </PageTitleContainer>
+        <Breadcrumbs currentPath={pathname} />
+        <Divider />
+        {loading ? (
+          <LoadingPlaceholder />
+        ) : (
+          Object.entries(groupedByCo).map(([co, lineList]) => (
+            <RailwayCompanyGroup
+              key={co}
+              co={co}
+              companyMap={companyMap}
+              lineList={lineList} // 這裡直接傳入該 co 專屬的路線陣列
+            />
+          ))
+        )}
+      </RailwayListContainer>
+      <BottomNav />
+    </RailwayListPageContainer>
   );
 }

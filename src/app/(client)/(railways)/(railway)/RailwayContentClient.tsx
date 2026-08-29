@@ -3,7 +3,6 @@ import { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { TitleContext } from "@/src/app/(context)/title/TitleContext";
 import DistrictGroupedStations from "@/src/app/(components)/(railways)/(railway)/DistrictGroupedStations";
-import Head from "next/head";
 import { usePathname, notFound } from "next/navigation";
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
@@ -100,7 +99,7 @@ export default function RailwayContentClient({
   stations,
   railwayNameMap,
 }: Props) {
-  const { title, setTitle } = useContext(TitleContext);
+  const { setTitle } = useContext(TitleContext);
   const pathname = usePathname();
 
   if (!data) {
@@ -114,31 +113,26 @@ export default function RailwayContentClient({
   }, [data, setTitle]); //修好後補回第二個param : setTitle
 
   return (
-    <>
-      <Head>
-        <title>{title}</title>
-      </Head>
-      <StationListPageContainer>
-        <RailwayListContainerArea>
-          <PageTitleContainer>
-            <PageTitle>{data.name}</PageTitle>
-          </PageTitleContainer>
-          <Breadcrumbs
-            currentPath={pathname}
-            customNames={{
-              [data.id]: data.name,
-            }}
-          />
-          <Divider />
-          <DistrictGroupedStations
-            lineID={data.id}
-            lineData={data}
-            stations={stations}
-            railwayNameMap={railwayNameMap}
-          />
-        </RailwayListContainerArea>
-        <BottomNav />
-      </StationListPageContainer>
-    </>
+    <StationListPageContainer>
+      <RailwayListContainerArea>
+        <PageTitleContainer>
+          <PageTitle>{data.name}</PageTitle>
+        </PageTitleContainer>
+        <Breadcrumbs
+          currentPath={pathname}
+          customNames={{
+            [data.id]: data.name,
+          }}
+        />
+        <Divider />
+        <DistrictGroupedStations
+          lineID={data.id}
+          lineData={data}
+          stations={stations}
+          railwayNameMap={railwayNameMap}
+        />
+      </RailwayListContainerArea>
+      <BottomNav />
+    </StationListPageContainer>
   );
 }

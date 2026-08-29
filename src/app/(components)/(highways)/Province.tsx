@@ -138,6 +138,7 @@ const GroupedHighwaysLink = styled(Link)<{ $status: Highway["status"] }>`
   gap: 0.5rem;
   align-self: stretch;
   transition: all 0.2s ease-in-out;
+  text-decoration: none;
 
   /* 🟢 動態套用不同狀態的樣式 */
   ${({ $status }) => STATUS_STYLES[$status] || STATUS_STYLES.active}

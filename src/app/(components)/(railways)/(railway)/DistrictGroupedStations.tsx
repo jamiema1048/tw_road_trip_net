@@ -187,6 +187,7 @@ const AdjacentAreaLink = styled(Link)`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  text-decoration: none;
   @media (prefers-color-scheme: dark) {
     color: var(--text-white-aaaa);
   }

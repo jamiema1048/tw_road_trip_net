@@ -163,6 +163,7 @@ const SearchButton = styled.button`
   justify-content: center;
   align-items: center;
   aspect-ratio: 1/1;
+  background: transparent;
   @media (max-width: 768px) {
     width: 1.5rem;
     height: 1.5rem;

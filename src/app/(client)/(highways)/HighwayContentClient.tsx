@@ -5,7 +5,6 @@ import { usePathname, notFound } from "next/navigation";
 import { TitleContext } from "@/src/app/(context)/title/TitleContext";
 import styled from "styled-components";
 import Image from "next/image";
-import Head from "next/head";
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
 import { Highway } from "@/src/types/highway";
@@ -206,7 +205,7 @@ const PhotoDescriptionText = styled.p`
 `;
 
 export default function HighwayContentClient({ highway }: Props) {
-  const { title, setTitle } = useContext(TitleContext);
+  const { setTitle } = useContext(TitleContext);
   const pathname = usePathname();
 
   if (!highway) {
@@ -220,132 +219,126 @@ export default function HighwayContentClient({ highway }: Props) {
   }, [highway, setTitle]);
 
   return (
-    <>
-      <Head>
-        <title>{title}</title>
-      </Head>
-      <HighwayPageContainer>
-        <HighwayContainerArea>
-          <PageTitleContainer>
-            <HighwayIcon
-              src={
-                highway.highwayIcon ||
-                `/highway_mark/${highway.id}/${highway.id}.svg`
-              }
-              alt={`${highway.name} 圖示`}
-              width={48}
-              height={48}
-              priority
-              className="object-contain"
-            />
-            <PageTitle>{highway.name}</PageTitle>
-          </PageTitleContainer>
-          <Breadcrumbs
-            currentPath={pathname}
-            customNames={{
-              [highway.id]: highway.name,
-            }}
+    <HighwayPageContainer>
+      <HighwayContainerArea>
+        <PageTitleContainer>
+          <HighwayIcon
+            src={
+              highway.highwayIcon ||
+              `/highway_mark/${highway.id}/${highway.id}.svg`
+            }
+            alt={`${highway.name} 圖示`}
+            width={48}
+            height={48}
+            priority
+            className="object-contain"
           />
-          <Divider />
-          <p className="text-black dark:text-white">
-            狀態：
-            {highway.status === "active"
-              ? "營運中"
-              : highway.status === "disused"
-                ? "已廢止"
-                : "規劃中"}
-          </p>
+          <PageTitle>{highway.name}</PageTitle>
+        </PageTitleContainer>
+        <Breadcrumbs
+          currentPath={pathname}
+          customNames={{
+            [highway.id]: highway.name,
+          }}
+        />
+        <Divider />
+        <p className="text-black dark:text-white">
+          狀態：
+          {highway.status === "active"
+            ? "營運中"
+            : highway.status === "disused"
+              ? "已廢止"
+              : "規劃中"}
+        </p>
 
-          <RouteInfoSection>
-            <HighwayDataTitle>路線資料</HighwayDataTitle>
-            {highway.routeName && (
-              <HighwayDataDetail>
-                <strong>路線名稱:</strong> {highway.routeName}
-              </HighwayDataDetail>
-            )}
+        <RouteInfoSection>
+          <HighwayDataTitle>路線資料</HighwayDataTitle>
+          {highway.routeName && (
             <HighwayDataDetail>
-              <strong>起點:</strong> {highway.start}
+              <strong>路線名稱:</strong> {highway.routeName}
             </HighwayDataDetail>
-            {highway.currentStart && (
-              <HighwayDataDetail>
-                <strong>通車起點:</strong> {highway.currentStart}
-              </HighwayDataDetail>
-            )}
+          )}
+          <HighwayDataDetail>
+            <strong>起點:</strong> {highway.start}
+          </HighwayDataDetail>
+          {highway.currentStart && (
             <HighwayDataDetail>
-              <strong>終點:</strong> {highway.end}
+              <strong>通車起點:</strong> {highway.currentStart}
             </HighwayDataDetail>
-            {highway.currentEnd && (
-              <HighwayDataDetail>
-                <strong>通車終點:</strong> {highway.currentEnd}
-              </HighwayDataDetail>
-            )}
+          )}
+          <HighwayDataDetail>
+            <strong>終點:</strong> {highway.end}
+          </HighwayDataDetail>
+          {highway.currentEnd && (
             <HighwayDataDetail>
-              <strong>長度:</strong> {highway.length} km
+              <strong>通車終點:</strong> {highway.currentEnd}
             </HighwayDataDetail>
-            {highway.currentLength && (
-              <HighwayDataDetail>
-                <strong>通車長度:</strong> {highway.currentLength} km
-              </HighwayDataDetail>
-            )}
-            {highway.highest && (
-              <HighwayDataDetail>
-                <strong>最高海拔:</strong> {highway.highest} m
-              </HighwayDataDetail>
-            )}
-            {highway.highestPlace && (
-              <HighwayDataDetail>
-                <strong>最高點:</strong> {highway.highestPlace}
-              </HighwayDataDetail>
-            )}
-            {highway.otherName && (
-              <HighwayDataDetail>
-                <strong>別稱:</strong> {highway.otherName.join("、")}
-              </HighwayDataDetail>
-            )}
-            {highway.remark && (
-              <HighwayDataDetail>
-                <strong>備註:</strong> {highway.remark}
-              </HighwayDataDetail>
-            )}
-          </RouteInfoSection>
+          )}
+          <HighwayDataDetail>
+            <strong>長度:</strong> {highway.length} km
+          </HighwayDataDetail>
+          {highway.currentLength && (
+            <HighwayDataDetail>
+              <strong>通車長度:</strong> {highway.currentLength} km
+            </HighwayDataDetail>
+          )}
+          {highway.highest && (
+            <HighwayDataDetail>
+              <strong>最高海拔:</strong> {highway.highest} m
+            </HighwayDataDetail>
+          )}
+          {highway.highestPlace && (
+            <HighwayDataDetail>
+              <strong>最高點:</strong> {highway.highestPlace}
+            </HighwayDataDetail>
+          )}
+          {highway.otherName && (
+            <HighwayDataDetail>
+              <strong>別稱:</strong> {highway.otherName.join("、")}
+            </HighwayDataDetail>
+          )}
+          {highway.remark && (
+            <HighwayDataDetail>
+              <strong>備註:</strong> {highway.remark}
+            </HighwayDataDetail>
+          )}
+        </RouteInfoSection>
 
-          <HighwayMediaGallerySection>
-            <HighwayPhotoTitle>Images and Descriptions</HighwayPhotoTitle>
-            {highway.images && (
-              <FrameContainer>
-                {highway.images.map((img, idx) => (
-                  <PhotoFrame key={img._id}>
-                    <PhotoBlock>
-                      <HighwayPhoto
-                        src={img.url}
-                        alt={`${highway.name} - ${idx}`}
-                        width={800}
-                        height={600}
-                        fill
-                        style={{ width: "100%", height: "auto" }}
-                        priority
-                      />
-                    </PhotoBlock>
-                    <PhotoDescriptionContainer>
-                      {img.description && (
-                        <PhotoDescriptionText>
-                          {img.description}
-                        </PhotoDescriptionText>
-                      )}
-                      {img.capturedAt && (
-                        <PhotoDescriptionText>
-                          {new Date(img.capturedAt).toISOString().split("T")[0]}
-                        </PhotoDescriptionText>
-                      )}
-                    </PhotoDescriptionContainer>
-                  </PhotoFrame>
-                ))}
-              </FrameContainer>
-            )}
-          </HighwayMediaGallerySection>
-        </HighwayContainerArea>
-        <BottomNav />
-      </HighwayPageContainer>
-    </>
+        <HighwayMediaGallerySection>
+          <HighwayPhotoTitle>Images and Descriptions</HighwayPhotoTitle>
+          {highway.images && (
+            <FrameContainer>
+              {highway.images.map((img, idx) => (
+                <PhotoFrame key={img._id}>
+                  <PhotoBlock>
+                    <HighwayPhoto
+                      src={img.url}
+                      alt={`${highway.name} - ${idx}`}
+                      width={800}
+                      height={600}
+                      style={{ width: "100%", height: "auto" }}
+                      priority
+                    />
+                  </PhotoBlock>
+                  <PhotoDescriptionContainer>
+                    {img.description && (
+                      <PhotoDescriptionText>
+                        {img.description}
+                      </PhotoDescriptionText>
+                    )}
+                    {img.capturedAt && (
+                      <PhotoDescriptionText>
+                        {new Date(img.capturedAt).toISOString().split("T")[0]}
+                      </PhotoDescriptionText>
+                    )}
+                  </PhotoDescriptionContainer>
+                </PhotoFrame>
+              ))}
+            </FrameContainer>
+          )}
+        </HighwayMediaGallerySection>
+      </HighwayContainerArea>
+      <BottomNav />
+    </HighwayPageContainer>
   );
 }

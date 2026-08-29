@@ -2,7 +2,6 @@
 import React, { useState, memo } from "react";
 import Link from "next/link";
 import styled from "styled-components";
-import { Icon } from "@iconify/react";
 import { ChevronRight, Copyright, Mail } from "lucide-react";
 
 /* 1. 外層容器：改為最大寬度 1440px，居中並隨螢幕縮放 */
@@ -127,6 +126,7 @@ const NavigationItem = styled(Link)`
   align-items: center;
   gap: 0.25rem;
   cursor: pointer;
+  text-decoration: none;
 `;
 
 const StyledBreadcrumbRight = styled(ChevronRight)`
