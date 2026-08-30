@@ -2,7 +2,35 @@ import { getConnections } from "@/src/app/_lib/mongodb_connections";
 import { HighwaySchema } from "@/src/models/Highway";
 import { Types } from "mongoose";
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import HighwayListClient from "@/src/app/(client)/(highways)/HighwayListClient";
+
+// 🟢 1. 設定符合 SEO 規範的 Metadata
+export const metadata: Metadata = {
+  title: "省道與縣道公路列表｜公路與廢線遺跡資料庫",
+  description:
+    "收錄全台省道、縣道及廢棄舊線等公路路線資料，包含里程起終點、路線里程及現場影像紀錄。",
+  keywords: [
+    "公路列表",
+    "台灣省道",
+    "台灣縣道",
+    "公路歷史",
+    "廢線遺跡",
+    "舊線跡",
+    "公路里程",
+  ],
+  openGraph: {
+    title: "省道與縣道公路列表｜公路與廢線遺跡資料庫",
+    description: "完整收錄台灣省道與縣道資料，包含現場照片紀錄。",
+    type: "website",
+    siteName: "公路與廢線遺跡資料庫",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "省道與縣道公路列表｜公路與廢線遺跡資料庫",
+    description: "完整收錄台灣省道與縣道資料，包含現場照片紀錄。",
+  },
+};
 
 interface HighwayImage {
   _id: Types.ObjectId;
@@ -67,10 +95,11 @@ export default async function HighwayListServer() {
       })),
       currentImageIndex: 0, // 為了你的 Client 端切換功能保留
     }));
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const error = err as (Error & { digest?: string }) | null | undefined;
     if (
-      err?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
-      err?.message === "NEXT_NOT_FOUND"
+      error?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
+      error?.message === "NEXT_NOT_FOUND"
     ) {
       throw err;
     }
@@ -78,8 +107,38 @@ export default async function HighwayListServer() {
     console.error("載入公路頁面失敗，詳細錯誤原因:", err);
 
     // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
-    throw new Error(err?.message || "無法載入公路資料，請檢查資料庫連線。");
+    throw new Error(error?.message || "無法載入公路資料，請檢查資料庫連線。");
   }
+
+  // 🟢 2. 建立動態 JSON-LD 結構化資料 (ItemList Schema)
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "台灣公路與廢線目錄",
+    description: "收錄全台省道與縣道之路線清單",
+    numberOfItems: detailedHighways.length,
+    itemListElement: detailedHighways.map((hwy, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Thing",
+        name: `${hwy.name} (${hwy.routeName})`,
+        description: `起點：${hwy.currentStart || hwy.start}，終點：${
+          hwy.currentEnd || hwy.end
+        }，全長：${hwy.currentLength || hwy.length} 公里。`,
+      },
+    })),
+  };
+
   // 4. 直接把完整的資料丟給 Client Component
-  return <HighwayListClient highways={detailedHighways} />;
+  return (
+    <>
+      {/* 注入 Schema 結構化資料給 Google 爬蟲 */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <HighwayListClient highways={detailedHighways} />
+    </>
+  );
 }

@@ -4,6 +4,35 @@ import { notFound } from "next/navigation";
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
 import { RailwaySchema } from "@/src/models/Railway";
 import { Types } from "mongoose";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "全台鐵路路線總覽｜台鐵、林鐵、糖鐵與廢線遺跡",
+  description:
+    "收錄台灣鐵路路線總覽，包含台鐵主支線、阿里山林業鐵路、糖業鐵路及歷史廢線軌跡，提供完整營運區間與車站歷史紀錄。",
+  keywords: [
+    "台灣鐵路",
+    "台鐵路線",
+    "阿里山林鐵",
+    "糖業鐵路",
+    "鐵路廢線",
+    "車站遺跡",
+    "鐵道歷史",
+  ],
+  openGraph: {
+    title: "全台鐵路路線總覽｜台鐵、林鐵、糖鐵與廢線遺跡",
+    description:
+      "完整收錄全台鐵路路線，涵蓋台鐵、林鐵、糖鐵與歷史廢線之路線營運區間與車站紀錄。",
+    type: "website",
+    siteName: "鐵道與公路廢線遺跡資料庫",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "全台鐵路路線總覽｜台鐵、林鐵、糖鐵與廢線遺跡",
+    description:
+      "完整收錄全台鐵路路線，涵蓋台鐵、林鐵、糖鐵與歷史廢線之路線營運區間與車站紀錄。",
+  },
+};
 
 interface BaseDistrict {
   districtID: number;
@@ -52,10 +81,11 @@ export default async function LinePageServer() {
         _id: d._id?.toString(),
       })),
     }));
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const error = err as (Error & { digest?: string }) | null | undefined;
     if (
-      err?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
-      err?.message === "NEXT_NOT_FOUND"
+      error?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
+      error?.message === "NEXT_NOT_FOUND"
     ) {
       throw err;
     }
@@ -63,8 +93,35 @@ export default async function LinePageServer() {
     console.error("載入公路頁面失敗，詳細錯誤原因:", err);
 
     // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
-    throw new Error(err?.message || "無法載入公路資料，請檢查資料庫連線。");
+    throw new Error(error?.message || "無法載入鐵路資料，請檢查資料庫連線。");
   }
+
+  // 🟢 2. 建立網頁結構化資料 (ItemList Schema)
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "全台鐵路路線與廢線目錄",
+    description: "收錄全台台鐵、林鐵、糖鐵與廢線之路線清單",
+    numberOfItems: serializedLines.length,
+    itemListElement: serializedLines.map((line, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Thing",
+        name: line.name,
+        description: `包含 ${line.district.length} 個營運/歷史區間`,
+      },
+    })),
+  };
+
   // 5. 將處理好的陣列傳給 Client 端
-  return <LinePageClient lines={serializedLines} />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <LinePageClient lines={serializedLines} />
+    </>
+  );
 }

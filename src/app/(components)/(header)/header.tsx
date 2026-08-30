@@ -2,6 +2,7 @@
 
 import React, {
   useState,
+  useEffect,
   useSyncExternalStore,
   useCallback,
   memo,
@@ -20,14 +21,15 @@ const StyledComponentHeader = styled.header<{ $isMenuOpen: boolean }>`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 1.5rem;
+  line-height: 1;
   background-color: var(--bg-primary);
   box-shadow: 0px 8px 10px #ffffff40;
   box-sizing: border-box;
   width: 100%;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 100;
-  gap: 0.75rem;
+  gap: ${(props) => (props.$isMenuOpen ? "0.75rem" : "0")};
 
   @media (max-width: ${BREAKPOINT_MOBILE}) {
     flex-wrap: wrap; /* 允許手機端展開時下方內容往下推 */
@@ -92,6 +94,7 @@ const HighwayButton = styled(Link)`
   font-family: "Inter-Regular", Helvetica;
   font-size: 2rem;
   font-weight: 400;
+  line-height: 1;
   letter-spacing: 0;
   line-height: normal;
   margin-top: -1px;
@@ -116,6 +119,7 @@ const RailwayButton = styled(Link)`
   font-family: "Inter-Regular", Helvetica;
   font-size: 2rem;
   font-weight: 400;
+  line-height: 1;
   letter-spacing: 0;
   line-height: normal;
   margin-top: -1px;
@@ -185,7 +189,8 @@ const MenuContent = styled.div<{ $isMenuOpen: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  padding-top: ${(props) => (props.$isMenuOpen ? "0.75rem" : "0")};
+  gap: ${(props) => (props.$isMenuOpen ? "0.75rem" : "0")};
   width: 100%;
 
   /* 透明度與位移過渡效果 */
@@ -276,10 +281,31 @@ const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
     setIsMenuOpen(false);
   }, []);
 
+  // 🟢 新增：監聽螢幕寬度，當寬度 > 768px 時自動關閉選單
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 769px)");
+
+    const handleResize = (e: MediaQueryListEvent | MediaQueryList) => {
+      if (e.matches) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    // 初始化檢查一次
+    handleResize(mediaQuery);
+
+    // 監聽視窗尺寸改變
+    mediaQuery.addEventListener("change", handleResize);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleResize);
+    };
+  }, []);
+
   const isMounted = useSyncExternalStore(
     emptySubscribe,
-    () => true, // Client 端回傳 true
-    () => false, // Server 端 (SSR) 回傳 false
+    () => true,
+    () => false,
   );
 
   if (!isMounted) return null;

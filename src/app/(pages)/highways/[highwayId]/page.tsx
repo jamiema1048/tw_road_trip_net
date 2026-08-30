@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
 import HighwayContentClient from "@/src/app/(client)/(highways)/HighwayContentClient";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 import { Metadata } from "next";
 import { HighwaySchema } from "@/src/models/Highway";
 import { Types } from "mongoose";
@@ -45,6 +46,56 @@ export interface HighwayDoc {
 
 type PageParams = Promise<{ highwayId: string }>;
 
+// ----------------------------------------------------------------------
+// 1. React Cache 機制：封裝並共享同一次 Request 中的 DB 查詢
+// ----------------------------------------------------------------------
+const getHighwayData = cache(async (highwayId: number) => {
+  const { highwayConn } = await getConnections();
+
+  const HighwayModel =
+    highwayConn.models.Highway ||
+    highwayConn.model<HighwayDoc>("Highway", HighwaySchema, "highways");
+
+  const highwayData = await HighwayModel.findOne({
+    id: highwayId,
+  }).lean<HighwayDoc | null>();
+
+  return highwayData;
+});
+
+// ----------------------------------------------------------------------
+// 2. SSG / ISR 預先渲染設定
+// ----------------------------------------------------------------------
+// 允許未預渲染的公路頁面於首次造訪時動態生成
+export const dynamicParams = true;
+
+// 增量靜態再生 (ISR)：設定頁面快取過期時間（例如：24 小時）
+export const revalidate = 86400;
+
+export async function generateStaticParams() {
+  try {
+    const { highwayConn } = await getConnections();
+    const HighwayModel =
+      highwayConn.models.Highway ||
+      highwayConn.model<HighwayDoc>("Highway", HighwaySchema, "highways");
+
+    // 撈取所有公路 ID 預先渲染頁面
+    const highways = await HighwayModel.find({}).select("id").lean();
+
+    return highways
+      .map((h) => ({
+        highwayId: h.id?.toString() || "",
+      }))
+      .filter((p) => p.highwayId !== "");
+  } catch (error) {
+    console.error("generateStaticParams error:", error);
+    return [];
+  }
+}
+
+// ----------------------------------------------------------------------
+// 3. Metadata 動態生成 (共享 getHighwayData 快取)
+// ----------------------------------------------------------------------
 export async function generateMetadata({
   params,
 }: {
@@ -52,22 +103,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   try {
     const { highwayId } = await params;
-    const numericHighwayId = Number(highwayId); // 🟢 修正 3：明確轉為數字
+    const numericHighwayId = Number(highwayId);
 
-    // 🟢 修正 2：正確取得連線物件 (假設你 lib 是回傳 highwayConn)
-    const { highwayConn } = await getConnections();
+    if (isNaN(numericHighwayId)) return { title: "無效的公路 ID" };
 
-    const HighwayModel =
-      highwayConn.models.Highway ||
-      highwayConn.model<HighwayDoc>("Highway", HighwaySchema, "highways");
-
-    // 抓取公路資料
-    const highwayData = await HighwayModel.findOne({
-      id: numericHighwayId,
-    }).lean<HighwayDoc | null>();
+    const highwayData = await getHighwayData(numericHighwayId);
     if (!highwayData) return { title: "找不到公路資料" };
 
-    // 處理陣列與顯示文字（加入安全性檢查）
+    // 處理陣列與顯示文字（安全性檢查）
     const otherNames =
       Array.isArray(highwayData.otherName) && highwayData.otherName.length > 0
         ? `（${highwayData.otherName.join("、")}）`
@@ -104,7 +147,6 @@ export async function generateMetadata({
         title,
         description,
         type: "article",
-        // 🟢 修正 1：加上安全導航，防止 images 不存在
         images: highwayData.images?.[0]?.url
           ? [{ url: highwayData.images[0].url }]
           : [],
@@ -132,23 +174,13 @@ export default async function HighwayContentServer({
 
   let serializedHighway;
   try {
-    // 🟢 修正 2：正確取得連線物件
-    const { highwayConn } = await getConnections();
-
-    const HighwayModel =
-      highwayConn.models.Highway ||
-      highwayConn.model<HighwayDoc>("Highway", HighwaySchema, "highways");
-
-    // 1. 抓取公路資料（明確注入泛型型別）
-    const highwayData = await HighwayModel.findOne({
-      id: numericHighwayId,
-    }).lean<HighwayDoc | null>();
+    const highwayData = await getHighwayData(numericHighwayId);
 
     if (!highwayData) {
       notFound();
     }
 
-    // 2. 序列化處理 (Serialization)
+    // 序列化處理 (Serialization)
     serializedHighway = {
       _id: highwayData._id?.toString() || "",
       id: highwayData.id ?? numericHighwayId,
@@ -179,7 +211,6 @@ export default async function HighwayContentServer({
     };
   } catch (err: unknown) {
     const error = err as (Error & { digest?: string }) | null | undefined;
-    // 💡 建議：印出完整的錯誤訊息，幫你下次更好抓蟲
     if (
       error?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
       error?.message === "NEXT_NOT_FOUND"
@@ -188,8 +219,6 @@ export default async function HighwayContentServer({
     }
 
     console.error("載入公路頁面失敗，詳細錯誤原因:", err);
-
-    // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
     throw new Error(error?.message || "無法載入公路資料，請檢查資料庫連線。");
   }
   // 4. 將單一公路資料傳給 Client 渲染

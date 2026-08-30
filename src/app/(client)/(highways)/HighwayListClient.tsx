@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useContext } from "react";
-import Head from "next/head";
 import { usePathname } from "next/navigation";
 import styled from "styled-components";
 import { TitleContext } from "@/src/app/(context)/title/TitleContext";
@@ -84,7 +83,7 @@ const LoadingPlaceholder = styled(Loading)`
 
 export default function HighwayListClient({ highways }: Props) {
   const [loading, setLoading] = useState(false);
-  const { title, setTitle } = useContext(TitleContext);
+  const { setTitle } = useContext(TitleContext);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -99,28 +98,23 @@ export default function HighwayListClient({ highways }: Props) {
   }, [setTitle]);
 
   return (
-    <>
-      <Head>
-        <title>{title}</title>
-      </Head>
-      <HighwayListPageContainer>
-        <HighwayListContainer>
-          <PageTitleContainer>
-            <PageTitle>公路列表</PageTitle>
-          </PageTitleContainer>
-          <Breadcrumbs currentPath={pathname} />
-          <Divider />
-          {loading ? (
-            <LoadingPlaceholder />
-          ) : (
-            <HighwayContentContainer>
-              <Province highways={highways} />
-              <County highways={highways} />
-            </HighwayContentContainer>
-          )}
-        </HighwayListContainer>
-        <BottomNav />
-      </HighwayListPageContainer>
-    </>
+    <HighwayListPageContainer>
+      <HighwayListContainer>
+        <PageTitleContainer>
+          <PageTitle>公路列表</PageTitle>
+        </PageTitleContainer>
+        <Breadcrumbs currentPath={pathname} />
+        <Divider />
+        {loading ? (
+          <LoadingPlaceholder />
+        ) : (
+          <HighwayContentContainer>
+            <Province highways={highways} />
+            <County highways={highways} />
+          </HighwayContentContainer>
+        )}
+      </HighwayListContainer>
+      <BottomNav />
+    </HighwayListPageContainer>
   );
 }

@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import StationClient from "@/src/app/(client)/(stations)/StationClient";
 import { notFound } from "next/navigation";
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
+import { cache } from "react";
 import { RailwaySchema } from "@/src/models/Railway";
 import { StationSchema } from "@/src/models/Station";
 import {
@@ -19,46 +20,84 @@ interface MongoRawDistrict {
   _id?: import("mongoose").Types.ObjectId;
 }
 
-// interface MongoStation {
-//   _id: Types.ObjectId;
-//   id: number;
-//   name: string;
-//   status: "active" | "disused" | "plan";
-//   line: {
-//     lineID: number;
-//     lineDistrict: number | MongoDistrict | MongoDistrict[];
-//     _id?: Types.ObjectId;
-//   }[];
-//   prevStation?: number[] | number;
-//   nextStation?: number[] | number;
-//   images?: {
-//     _id?: Types.ObjectId;
-//     url: string;
-//     capturedAt?: Date | string;
-//   }[];
-//   // 補上其他可能缺少的欄位
-//   openDate?: string;
-//   closeDate?: string;
-//   originalName?: string;
-//   level?: string;
-//   miles?: string;
-//   height?: string;
-//   stationCode?: string;
-//   hasDetail?: boolean;
-// }
-
-// interface MongoRailway {
-//   _id: Types.ObjectId;
-//   id: number;
-//   name: string;
-//   co: number;
-//   systemName?: string;
-//   district: MongoDistrict[];
-// }
-// 定義 Params 的型別，這在 Next.js 15 是 Promise
 type PageParams = Promise<{ stationId: string }>;
 
-// --- Metadata 生成 ---
+// ----------------------------------------------------------------------
+// 1. React Cache 機制：封裝並共享同一次 Request 中的 DB 查詢
+// ----------------------------------------------------------------------
+const getStationData = cache(async (stationId: number) => {
+  const { railwayConn, stationConn } = await getConnections();
+  const RailwayModel =
+    railwayConn.models.Railway || railwayConn.model("Railway", RailwaySchema);
+  const StationModel =
+    stationConn.models.Station || stationConn.model("Station", StationSchema);
+
+  const [rawStation, allRailways] = await Promise.all([
+    StationModel.findOne({
+      id: stationId,
+    }).lean() as Promise<MongoStation | null>,
+    RailwayModel.find({}).lean() as Promise<RailwayData[]>,
+  ]);
+
+  if (!rawStation) return null;
+
+  // 處理鄰近車站 ID
+  const toArr = (val: number | number[] | undefined) =>
+    Array.isArray(val) ? val : val ? [val] : [];
+
+  const uniqueAdjacentIDs = [
+    ...new Set([
+      ...toArr(rawStation.prevStation),
+      ...toArr(rawStation.nextStation),
+    ]),
+  ].filter((id): id is number => id != null);
+
+  const rawAdjacentStations =
+    uniqueAdjacentIDs.length > 0
+      ? ((await StationModel.find({
+          id: { $in: uniqueAdjacentIDs },
+        }).lean()) as MongoStation[])
+      : [];
+
+  return {
+    rawStation,
+    allRailways,
+    rawAdjacentStations,
+  };
+});
+
+// ----------------------------------------------------------------------
+// 2. SSG / ISR 預先渲染設定
+// ----------------------------------------------------------------------
+// 允許未預渲染的車站頁面於首次造訪時動態生成
+export const dynamicParams = true;
+
+// 增量靜態再生 (ISR)：設定頁面快取過期時間（例如：24 小時）
+export const revalidate = 86400;
+
+export async function generateStaticParams() {
+  try {
+    const { stationConn } = await getConnections();
+    const StationModel =
+      stationConn.models.Station || stationConn.model("Station", StationSchema);
+
+    // 建議僅預渲染「有詳細考證資料」或「重點車站」，節省部署 Build 時間
+    const stations = await StationModel.find({ hasDetail: true })
+      .select("id")
+      .lean();
+
+    return stations.map((s: { id: number }) => ({
+      stationId: s.id.toString(),
+    }));
+  } catch (error) {
+    console.error("generateStaticParams error:", error);
+    return [];
+  }
+}
+
+// ----------------------------------------------------------------------
+// 3. Metadata 動態生成 (共享 getStationData 快取)
+// ----------------------------------------------------------------------
 export async function generateMetadata({
   params,
 }: {
@@ -67,43 +106,35 @@ export async function generateMetadata({
   try {
     const { stationId: rawId } = await params;
     const stationId = Number(rawId);
-    if (!stationId) return { title: "無效的車站 ID" };
+    if (!stationId || isNaN(stationId)) return { title: "無效的車站 ID" };
 
-    const { railwayConn, stationConn } = await getConnections();
-    const RailwayModel =
-      railwayConn.models.Railway || railwayConn.model("Railway", RailwaySchema);
-    const StationModel =
-      stationConn.models.Station || stationConn.model("Station", StationSchema);
+    const data = await getStationData(stationId);
+    if (!data || !data.rawStation) return { title: "找不到車站" };
 
-    const stationData = (await StationModel.findOne({
-      id: stationId,
-    }).lean()) as Station | null;
-    if (!stationData) return { title: "找不到車站" };
+    const { rawStation, allRailways } = data;
 
-    // 處理多路線
-    const lineIDs = stationData.line.map((l) => l.lineID);
-    const railways = (await RailwayModel.find({
-      id: { $in: lineIDs },
-    }).lean()) as RailwayData[];
-    const allLineNames = railways.map((r) => r.name).join("、");
+    // 匹配所屬路線名稱
+    const lineIDs = rawStation.line.map((l) => l.lineID);
+    const matchedRailways = allRailways.filter((r) => lineIDs.includes(r.id));
+    const allLineNames = matchedRailways.map((r) => r.name).join("、");
+    const primaryLine = matchedRailways[0]?.name || "未知路線";
 
-    const displayOpenDate = stationData.openDate?.[0] || "資料暫缺";
-    const displayCloseDate = stationData.closeDate?.[0] || "尚在使用中";
-    const displayOriginalName = stationData.originalName?.join("、") || "";
+    const displayOpenDate = rawStation.openDate?.[0] || "資料暫缺";
+    const displayCloseDate = rawStation.closeDate?.[0] || "尚在使用中";
+    const displayOriginalName = rawStation.originalName?.join("、") || "";
 
-    const isDisused = stationData.status === "disused";
-    const primaryLine = railways[0]?.name || "未知路線";
+    const isDisused = rawStation.status === "disused";
 
     const title = isDisused
-      ? `${railways.map((r) => r.name).join("、")}${stationData.name} | 廢線遺構與歷史紀錄`
-      : `${stationData.name} | 車站基本資料 - ${primaryLine}`;
+      ? `${allLineNames}${rawStation.name} | 廢線遺構與歷史紀錄`
+      : `${rawStation.name} | 車站基本資料 - ${primaryLine}`;
 
     const nameInfo = displayOriginalName
       ? `（舊名：${displayOriginalName}）`
       : "";
     const description = isDisused
-      ? `收錄已廢止的${allLineNames}${stationData.name}${nameInfo}。啟用於 ${displayOpenDate}、廢止於 ${displayCloseDate}。`
-      : `${stationData.name}${nameInfo}位於${allLineNames}。提供車站構造與歷史紀錄。`;
+      ? `收錄已廢止的${allLineNames}${rawStation.name}${nameInfo}。啟用於 ${displayOpenDate}、廢止於 ${displayCloseDate}。`
+      : `${rawStation.name}${nameInfo}位於${allLineNames}。提供車站構造與歷史紀錄。`;
 
     return {
       title,
@@ -112,8 +143,8 @@ export async function generateMetadata({
         title,
         description,
         type: "article",
-        images: stationData.images?.[0]?.url
-          ? [{ url: stationData.images[0].url }]
+        images: rawStation.images?.[0]?.url
+          ? [{ url: rawStation.images[0].url }]
           : [],
       },
     };
@@ -123,59 +154,34 @@ export async function generateMetadata({
   }
 }
 
-// --- 主頁面 ---
+// ----------------------------------------------------------------------
+// 4. 主頁面 (共享 getStationData 快取)
+// ----------------------------------------------------------------------
 export default async function StationPage({ params }: { params: PageParams }) {
   let station;
   let matchedRailways;
   let adjacentStations: Station[];
   try {
-    // ✨ 修正 2：解構名稱必須與資料夾名稱 [stationId] 一致
-    // 你原本寫 stationParams.stationId 會抓不到值
     const { stationId: rawStationId } = await params;
     const stationId = Number(rawStationId);
     if (isNaN(stationId)) {
       notFound();
     }
 
-    const { railwayConn, stationConn } = await getConnections();
-    const RailwayModel =
-      railwayConn.models.Railway || railwayConn.model("Railway", RailwaySchema);
-    const StationModel =
-      stationConn.models.Station || stationConn.model("Station", StationSchema);
-
-    const [rawStation, allRailways] = await Promise.all([
-      StationModel.findOne({
-        id: stationId,
-      }).lean() as Promise<MongoStation | null>,
-      RailwayModel.find({}).lean() as Promise<RailwayData[]>,
-    ]);
-
-    if (!rawStation) {
+    const data = await getStationData(stationId);
+    if (!data || !data.rawStation) {
       notFound();
     }
 
-    // 處理鄰近車站 ID
+    const { rawStation, allRailways, rawAdjacentStations } = data;
+
+    // 輔助函式
     const toArr = (val: number | number[] | undefined) =>
       Array.isArray(val) ? val : val ? [val] : [];
 
-    const uniqueAdjacentIDs = [
-      ...new Set([
-        ...toArr(rawStation.prevStation),
-        ...toArr(rawStation.nextStation),
-      ]),
-    ].filter((id): id is number => id != null);
-
-    const rawAdjacentStations =
-      uniqueAdjacentIDs.length > 0
-        ? ((await StationModel.find({
-            id: { $in: uniqueAdjacentIDs },
-          }).lean()) as MongoStation[])
-        : [];
-
-    // --- 強型別化脫水函式 ---
+    // 強型別脫水轉換
     const sanitizeStation = (s: MongoStation): Station => {
       return {
-        // 這裡不使用 ...s 是為了確保屬性轉換過程 100% 型別安全
         _id: s._id.toString(),
         id: s.id,
         name: s.name,
@@ -189,15 +195,12 @@ export default async function StationPage({ params }: { params: PageParams }) {
         stationCode: s.stationCode || "",
         hasDetail: !!s.hasDetail,
 
-        // 處理 line 陣列及其嵌套結構
         line: s.line.map((l): StationLine => {
           let normalized: StationLineDistrict[] = [];
 
           if (Array.isArray(l.lineDistrict)) {
             normalized = l.lineDistrict.map((d): StationLineDistrict => {
               if (typeof d === "number") return { id: d, order: 999 };
-
-              // 使用我們先前定義的內部介面 MongoRawDistrict 進行斷言，避開 any
               const dObj = d as MongoRawDistrict;
               return {
                 id: dObj.id ?? dObj.districtID ?? 0,
@@ -228,11 +231,7 @@ export default async function StationPage({ params }: { params: PageParams }) {
           };
         }),
 
-        // 處理圖片
         images: (s.images || []).map((img) => {
-          // 1. 處理 capturedAt：確保產出 Date (如果介面要求 Date)
-          // 或 string (如果介面要求 string)。
-          // 根據你的報錯 "assignable to Date"，你的介面目前應該是 Date。
           let finalDate: Date;
           if (img.capturedAt instanceof Date) {
             finalDate = img.capturedAt;
@@ -242,22 +241,17 @@ export default async function StationPage({ params }: { params: PageParams }) {
           ) {
             finalDate = new Date(img.capturedAt);
           } else {
-            finalDate = new Date(); // 或者給一個預設日期
+            finalDate = new Date();
           }
 
           return {
-            // 2. 處理 _id：報錯說不能是 undefined，所以給空字串作為 fallback
             _id: img._id?.toString() || "",
-
-            // 3. 處理 url 與 description：確保不是 undefined
             url: img.url || "",
             description: img.description || "",
-
-            capturedAt: finalDate, // 這裡現在是確定的 Date 物件
+            capturedAt: finalDate,
           };
         }),
 
-        // 使用 toArr 確保型別為 number[]
         prevStation: toArr(s.prevStation),
         nextStation: toArr(s.nextStation),
       };
@@ -266,7 +260,6 @@ export default async function StationPage({ params }: { params: PageParams }) {
     station = sanitizeStation(rawStation);
     adjacentStations = rawAdjacentStations.map(sanitizeStation);
 
-    // 匹配路線資料
     matchedRailways = station.line
       .map((l) => allRailways.find((r) => r.id === l.lineID))
       .filter((r): r is RailwayData => r !== undefined)
@@ -287,10 +280,8 @@ export default async function StationPage({ params }: { params: PageParams }) {
       throw err;
     }
 
-    console.error("載入公路頁面失敗，詳細錯誤原因:", err);
-
-    // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
-    throw new Error(error?.message || "無法載入公路資料，請檢查資料庫連線。");
+    console.error("載入車站頁面失敗，詳細錯誤原因:", err);
+    throw new Error(error?.message || "無法載入車站資料，請檢查資料庫連線。");
   }
   return (
     <StationClient
