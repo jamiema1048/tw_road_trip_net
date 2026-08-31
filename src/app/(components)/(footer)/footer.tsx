@@ -196,6 +196,7 @@ const TermsText = styled(Link)`
   line-height: normal;
   white-space: nowrap;
   cursor: pointer;
+  text-decoration: none;
 `;
 
 export interface ComponentFooterProps {
