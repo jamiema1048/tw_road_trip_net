@@ -1,7 +1,7 @@
 // src/app/highways/Province.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useTransition } from "react";
 import styled, { css } from "styled-components";
 import Link from "next/link";
 import Image from "next/image";
@@ -175,78 +175,96 @@ const HighwayText = styled.h3`
   }
 `;
 
+// 1. 簡化後的分組與渲染 Helper（移除多餘的二次 / 三次 sort）
+const renderGroupedHighways = (section: Highway[]) => {
+  // 只需要全域升冪排序一次
+  const sortedSection = [...section].sort((a, b) => a.id - b.id);
+
+  // 進行單次迭代分組
+  const grouped: Record<string, Highway[]> = {};
+  sortedSection.forEach((hwy) => {
+    const prefix = Math.floor(hwy.id / 100).toString();
+    if (!grouped[prefix]) grouped[prefix] = [];
+    grouped[prefix].push(hwy); // 壓入時已保持 sorted 順序
+  });
+
+  return Object.entries(grouped).map(([prefix, highwaysInGroup]) => (
+    <GroupedHighwaysArea key={prefix}>
+      {highwaysInGroup.map((hwy) => (
+        <GroupedHighwaysLink
+          key={hwy.id}
+          href={`/highways/${hwy.id}`}
+          $status={hwy.status}
+        >
+          <HighwayIcon
+            src={hwy.highwayIcon || `/highway_mark/${hwy.id}/${hwy.id}.svg`}
+            alt={`${hwy.name} 圖示`}
+            className="object-contain"
+          />
+          <HighwayText>{hwy.name}</HighwayText>
+        </GroupedHighwaysLink>
+      ))}
+    </GroupedHighwaysArea>
+  ));
+};
+
 export default function Province({ highways }: Props) {
   const [isProvinceShow, setIsProvinceShow] = useState(false);
   const [isProvinceShowXX, setIsProvinceShowXX] = useState(false);
   const [isProvinceShowC, setIsProvinceShowC] = useState(false);
 
-  // 過濾不同段的 highways
-  const section420 = highways.filter(
-    (hwy) => hwy.id / 100 >= 400 && hwy.id / 100 < 421,
-  );
-  const section440 = highways.filter(
-    (hwy) => hwy.id / 100 >= 421 && hwy.id / 100 < 500,
-  );
+  // 2. 引入 useTransition 優化 INP
+  const [isPending, startTransition] = useTransition();
 
-  // 分組函數
-  const groupByPrefix = (section: Highway[]): Record<string, Highway[]> => {
-    const grouped: Record<string, Highway[]> = {};
-    section.forEach((hwy) => {
-      const prefix = Math.floor(hwy.id / 100).toString();
-      if (!grouped[prefix]) grouped[prefix] = [];
-      grouped[prefix].push(hwy);
-    });
-    return grouped;
+  // 包裝 State 切換，讓 UI 展開渲染成為 Non-urgent Task
+  const toggleProvince = () => {
+    startTransition(() => setIsProvinceShow((prev) => !prev));
   };
 
-  const renderGroupedHighways = (section: Highway[]) => {
-    // 1. 先對整體資料依照 id 進行升冪排序 (1, 2, 3...)
-    const sortedSection = [...section].sort((a, b) => a.id - b.id);
-
-    // 2. 進行分組
-    const grouped = groupByPrefix(sortedSection);
-
-    // 3. 轉成陣列並針對每個 Group 內部的 highways 確保順序正確
-    return (
-      Object.entries(grouped)
-        // 可選：如果你希望「組別 (prefix)」本身也按 id 排序，可以在此對 entries 排序
-        .sort(
-          ([, aHighways], [, bHighways]) => aHighways[0].id - bHighways[0].id,
-        )
-        .map(([prefix, highways]) => {
-          // 確保該組內的公路也是照 id 排序
-          const sortedHighwaysInGroup = [...highways].sort(
-            (a, b) => a.id - b.id,
-          );
-
-          return (
-            <GroupedHighwaysArea key={prefix}>
-              {sortedHighwaysInGroup.map((hwy) => (
-                <GroupedHighwaysLink
-                  key={hwy.id}
-                  href={`/highways/${hwy.id}`}
-                  $status={hwy.status}
-                >
-                  <HighwayIcon
-                    src={
-                      hwy.highwayIcon || `/highway_mark/${hwy.id}/${hwy.id}.svg`
-                    }
-                    alt={`${hwy.name} 圖示`}
-                    className="object-contain"
-                  />
-                  <HighwayText>{hwy.name}</HighwayText>
-                </GroupedHighwaysLink>
-              ))}
-            </GroupedHighwaysArea>
-          );
-        })
-    );
+  const toggleProvinceXX = () => {
+    startTransition(() => setIsProvinceShowXX((prev) => !prev));
   };
+
+  const toggleProvinceC = () => {
+    startTransition(() => setIsProvinceShowC((prev) => !prev));
+  };
+
+  // 3. 使用 useMemo 快取過濾與分組結果
+  const section420 = useMemo(
+    () => highways.filter((hwy) => hwy.id / 100 >= 400 && hwy.id / 100 < 421),
+    [highways],
+  );
+
+  const section440 = useMemo(
+    () => highways.filter((hwy) => hwy.id / 100 >= 421 && hwy.id / 100 < 500),
+    [highways],
+  );
+
+  const content420 = useMemo(
+    () =>
+      section420.length > 0
+        ? renderGroupedHighways(section420)
+        : "No highways found",
+    [section420],
+  );
+
+  const content440 = useMemo(
+    () =>
+      section440.length > 0
+        ? renderGroupedHighways(section440)
+        : "No highways found",
+    [section440],
+  );
+
   console.log("Province rendered!");
 
   return (
-    <HighwayArea id="province" data-testid="province">
-      <HighwayAreaTitle onClick={() => setIsProvinceShow((prev) => !prev)}>
+    <HighwayArea
+      id="province"
+      data-testid="province"
+      style={{ opacity: isPending ? 0.7 : 1, transition: "opacity 0.15s" }}
+    >
+      <HighwayAreaTitle onClick={toggleProvince}>
         <HighwayAreaTitleText>省道</HighwayAreaTitleText>
         <TitleArrowIcon
           $isOpen={isProvinceShow}
@@ -268,9 +286,7 @@ export default function Province({ highways }: Props) {
       {isProvinceShow && (
         <>
           <NumberGroupedHighways>
-            <NumberGroupedHighwaysTitle
-              onClick={() => setIsProvinceShowXX((prev) => !prev)}
-            >
+            <NumberGroupedHighwaysTitle onClick={toggleProvinceXX}>
               <NumberGroupedHighwaysTitleText>
                 1~20
               </NumberGroupedHighwaysTitleText>
@@ -292,18 +308,12 @@ export default function Province({ highways }: Props) {
             </NumberGroupedHighwaysTitle>
 
             {isProvinceShowXX && (
-              <NumberGroupedHighways>
-                {section420.length > 0
-                  ? renderGroupedHighways(section420)
-                  : "No highways found"}
-              </NumberGroupedHighways>
+              <NumberGroupedHighways>{content420}</NumberGroupedHighways>
             )}
           </NumberGroupedHighways>
 
           <NumberGroupedHighways>
-            <NumberGroupedHighwaysTitle
-              onClick={() => setIsProvinceShowC((prev) => !prev)}
-            >
+            <NumberGroupedHighwaysTitle onClick={toggleProvinceC}>
               <NumberGroupedHighwaysTitleText>
                 21~
               </NumberGroupedHighwaysTitleText>
@@ -325,11 +335,7 @@ export default function Province({ highways }: Props) {
             </NumberGroupedHighwaysTitle>
 
             {isProvinceShowC && (
-              <NumberGroupedHighways>
-                {section440.length > 0
-                  ? renderGroupedHighways(section440)
-                  : "No highways found"}
-              </NumberGroupedHighways>
+              <NumberGroupedHighways>{content440}</NumberGroupedHighways>
             )}
           </NumberGroupedHighways>
         </>

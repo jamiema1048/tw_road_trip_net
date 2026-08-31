@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo, useTransition } from "react";
 import styled, { css } from "styled-components";
 import Link from "next/link";
 import Image from "next/image";
@@ -169,6 +169,39 @@ const HighwayText = styled.h3`
   }
 `;
 
+// 1. 簡化後的分組與渲染 Helper（移除多餘的二次 / 三次 sort）
+const renderGroupedHighways = (section: Highway[]) => {
+  // 只需要全域升冪排序一次
+  const sortedSection = [...section].sort((a, b) => a.id - b.id);
+
+  // 進行單次迭代分組
+  const grouped: Record<string, Highway[]> = {};
+  sortedSection.forEach((hwy) => {
+    const prefix = Math.floor(hwy.id / 100).toString();
+    if (!grouped[prefix]) grouped[prefix] = [];
+    grouped[prefix].push(hwy); // 壓入時已保持 sorted 順序
+  });
+
+  return Object.entries(grouped).map(([prefix, highwaysInGroup]) => (
+    <GroupedHighwaysArea key={prefix}>
+      {highwaysInGroup.map((hwy) => (
+        <GroupedHighwaysLink
+          key={hwy.id}
+          href={`/highways/${hwy.id}`}
+          $status={hwy.status}
+        >
+          <HighwayIcon
+            src={hwy.highwayIcon || `/highway_mark/${hwy.id}/${hwy.id}.svg`}
+            alt={`${hwy.name} 圖示`}
+            className="object-contain"
+          />
+          <HighwayText>{hwy.name}</HighwayText>
+        </GroupedHighwaysLink>
+      ))}
+    </GroupedHighwaysArea>
+  ));
+};
+
 export default function County({ highways }: Props) {
   const [isCountyShow, setIsCountyShow] = useState(false);
   const [isCountyShowCXX, setIsCountyShowCXX] = useState(false);
@@ -178,83 +211,125 @@ export default function County({ highways }: Props) {
   const [isCountyShowCC, setIsCountyShowCC] = useState(false);
   const [isCountyShowCCXX, setIsCountyShowCCXX] = useState(false);
 
+  // 2. 引入 useTransition 優化 INP
+  const [isPending, startTransition] = useTransition();
+
+  // 包裝 State 切換，讓 UI 展開渲染成為 Non-urgent Task
+  const toggleCounty = () => {
+    startTransition(() => setIsCountyShow((prev) => !prev));
+  };
+
+  const toggleCountyShowCXX = () => {
+    startTransition(() => setIsCountyShowCXX((prev) => !prev));
+  };
+
+  const toggleCountyShowCXL = () => {
+    startTransition(() => setIsCountyShowCXL((prev) => !prev));
+  };
+
+  const toggleCountyShowCLX = () => {
+    startTransition(() => setIsCountyShowCLX((prev) => !prev));
+  };
+
+  const toggleCountyShowCLXXX = () => {
+    startTransition(() => setIsCountyShowCLXXX((prev) => !prev));
+  };
+
+  const toggleCountyShowCC = () => {
+    startTransition(() => setIsCountyShowCC((prev) => !prev));
+  };
+
+  const toggleCountyShowCCXX = () => {
+    startTransition(() => setIsCountyShowCCXX((prev) => !prev));
+  };
+
   // 過濾不同段的 highways
-  const section120 = highways.filter(
-    (hwy) => hwy.id / 100 >= 100 && hwy.id / 100 < 121,
-  );
-  const section140 = highways.filter(
-    (hwy) => hwy.id / 100 >= 121 && hwy.id / 100 < 141,
-  );
-  const section160 = highways.filter(
-    (hwy) => hwy.id / 100 >= 141 && hwy.id / 100 < 161,
-  );
-  const section180 = highways.filter(
-    (hwy) => hwy.id / 100 >= 161 && hwy.id / 100 < 181,
-  );
-  const section200 = highways.filter(
-    (hwy) => hwy.id / 100 >= 181 && hwy.id / 100 < 201,
-  );
-  const section220 = highways.filter(
-    (hwy) => hwy.id / 100 >= 201 && hwy.id / 100 < 221,
+  // 3. 使用 useMemo 快取過濾與分組結果
+  const section120 = useMemo(
+    () => highways.filter((hwy) => hwy.id / 100 >= 100 && hwy.id / 100 < 121),
+    [highways],
   );
 
-  const groupByPrefix = (section: Highway[]) => {
-    const grouped: Record<number, Highway[]> = {};
-    section.forEach((h) => {
-      const prefix = Math.floor(h.id / 100);
-      if (!grouped[prefix]) grouped[prefix] = [];
-      grouped[prefix].push(h);
-    });
-    return grouped;
-  };
+  const section140 = useMemo(
+    () => highways.filter((hwy) => hwy.id / 100 >= 121 && hwy.id / 100 < 141),
+    [highways],
+  );
 
-  const renderGroupedHighways = (section: Highway[]) => {
-    // 1. 先對整體資料依照 id 進行升冪排序 (1, 2, 3...)
-    const sortedSection = [...section].sort((a, b) => a.id - b.id);
+  const section160 = useMemo(
+    () => highways.filter((hwy) => hwy.id / 100 >= 141 && hwy.id / 100 < 161),
+    [highways],
+  );
 
-    // 2. 進行分組
-    const grouped = groupByPrefix(sortedSection);
+  const section180 = useMemo(
+    () => highways.filter((hwy) => hwy.id / 100 >= 161 && hwy.id / 100 < 181),
+    [highways],
+  );
 
-    // 3. 轉成陣列並針對每個 Group 內部的 highways 確保順序正確
-    return (
-      Object.entries(grouped)
-        // 可選：如果你希望「組別 (prefix)」本身也按 id 排序，可以在此對 entries 排序
-        .sort(
-          ([, aHighways], [, bHighways]) => aHighways[0].id - bHighways[0].id,
-        )
-        .map(([prefix, highways]) => {
-          // 確保該組內的公路也是照 id 排序
-          const sortedHighwaysInGroup = [...highways].sort(
-            (a, b) => a.id - b.id,
-          );
+  const section200 = useMemo(
+    () => highways.filter((hwy) => hwy.id / 100 >= 181 && hwy.id / 100 < 201),
+    [highways],
+  );
 
-          return (
-            <GroupedHighwaysArea key={prefix}>
-              {sortedHighwaysInGroup.map((hwy) => (
-                <GroupedHighwaysLink
-                  key={hwy.id}
-                  href={`/highways/${hwy.id}`}
-                  $status={hwy.status}
-                >
-                  <HighwayIcon
-                    src={
-                      hwy.highwayIcon || `/highway_mark/${hwy.id}/${hwy.id}.svg`
-                    }
-                    alt={`${hwy.name} 圖示`}
-                    className="object-contain"
-                  />
-                  <HighwayText>{hwy.name}</HighwayText>
-                </GroupedHighwaysLink>
-              ))}
-            </GroupedHighwaysArea>
-          );
-        })
-    );
-  };
+  const section220 = useMemo(
+    () => highways.filter((hwy) => hwy.id / 100 >= 201 && hwy.id / 100 < 221),
+    [highways],
+  );
+
+  const content120 = useMemo(
+    () =>
+      section120.length > 0
+        ? renderGroupedHighways(section120)
+        : "No highways found",
+    [section120],
+  );
+
+  const content140 = useMemo(
+    () =>
+      section140.length > 0
+        ? renderGroupedHighways(section140)
+        : "No highways found",
+    [section140],
+  );
+
+  const content160 = useMemo(
+    () =>
+      section160.length > 0
+        ? renderGroupedHighways(section160)
+        : "No highways found",
+    [section160],
+  );
+
+  const content180 = useMemo(
+    () =>
+      section180.length > 0
+        ? renderGroupedHighways(section180)
+        : "No highways found",
+    [section180],
+  );
+
+  const content200 = useMemo(
+    () =>
+      section200.length > 0
+        ? renderGroupedHighways(section200)
+        : "No highways found",
+    [section200],
+  );
+
+  const content220 = useMemo(
+    () =>
+      section220.length > 0
+        ? renderGroupedHighways(section220)
+        : "No highways found",
+    [section220],
+  );
 
   return (
-    <HighwayArea id="county" data-testid="county">
-      <HighwayAreaTitle onClick={() => setIsCountyShow((prev) => !prev)}>
+    <HighwayArea
+      id="county"
+      data-testid="county"
+      style={{ opacity: isPending ? 0.7 : 1, transition: "opacity 0.15s" }}
+    >
+      <HighwayAreaTitle onClick={toggleCounty}>
         <HighwayAreaTitleText>縣市道</HighwayAreaTitleText>
         <TitleArrowIcon
           $isOpen={isCountyShow}
@@ -276,9 +351,7 @@ export default function County({ highways }: Props) {
       {isCountyShow && (
         <>
           <NumberGroupedHighways>
-            <NumberGroupedHighwaysTitle
-              onClick={() => setIsCountyShowCXX((prev) => !prev)}
-            >
+            <NumberGroupedHighwaysTitle onClick={toggleCountyShowCXX}>
               <NumberGroupedHighwaysTitleText>
                 101~120
               </NumberGroupedHighwaysTitleText>
@@ -299,18 +372,12 @@ export default function County({ highways }: Props) {
               </NumberTitleArrowIcon>
             </NumberGroupedHighwaysTitle>
             {isCountyShowCXX && (
-              <NumberGroupedHighways>
-                {section120.length > 0
-                  ? renderGroupedHighways(section120)
-                  : "No highways found"}
-              </NumberGroupedHighways>
+              <NumberGroupedHighways>{content120}</NumberGroupedHighways>
             )}
           </NumberGroupedHighways>
 
           <NumberGroupedHighways>
-            <NumberGroupedHighwaysTitle
-              onClick={() => setIsCountyShowCXL((prev) => !prev)}
-            >
+            <NumberGroupedHighwaysTitle onClick={toggleCountyShowCXL}>
               <NumberGroupedHighwaysTitleText>
                 121~140
               </NumberGroupedHighwaysTitleText>
@@ -331,17 +398,11 @@ export default function County({ highways }: Props) {
               </NumberTitleArrowIcon>
             </NumberGroupedHighwaysTitle>
             {isCountyShowCXL && (
-              <NumberGroupedHighways>
-                {section140.length > 0
-                  ? renderGroupedHighways(section140)
-                  : "No highways found"}
-              </NumberGroupedHighways>
+              <NumberGroupedHighways>{content140}</NumberGroupedHighways>
             )}
           </NumberGroupedHighways>
           <NumberGroupedHighways>
-            <NumberGroupedHighwaysTitle
-              onClick={() => setIsCountyShowCLX((prev) => !prev)}
-            >
+            <NumberGroupedHighwaysTitle onClick={toggleCountyShowCLX}>
               <NumberGroupedHighwaysTitleText>
                 141~160
               </NumberGroupedHighwaysTitleText>
@@ -362,17 +423,11 @@ export default function County({ highways }: Props) {
               </NumberTitleArrowIcon>
             </NumberGroupedHighwaysTitle>
             {isCountyShowCLX && (
-              <NumberGroupedHighways>
-                {section160.length > 0
-                  ? renderGroupedHighways(section160)
-                  : "No highways found"}
-              </NumberGroupedHighways>
+              <NumberGroupedHighways>{content160}</NumberGroupedHighways>
             )}
           </NumberGroupedHighways>
           <NumberGroupedHighways>
-            <NumberGroupedHighwaysTitle
-              onClick={() => setIsCountyShowCLXXX((prev) => !prev)}
-            >
+            <NumberGroupedHighwaysTitle onClick={toggleCountyShowCLXXX}>
               <NumberGroupedHighwaysTitleText>
                 161~180
               </NumberGroupedHighwaysTitleText>
@@ -393,17 +448,11 @@ export default function County({ highways }: Props) {
               </NumberTitleArrowIcon>
             </NumberGroupedHighwaysTitle>
             {isCountyShowCLXXX && (
-              <NumberGroupedHighways>
-                {section180.length > 0
-                  ? renderGroupedHighways(section180)
-                  : "No highways found"}
-              </NumberGroupedHighways>
+              <NumberGroupedHighways>{content180}</NumberGroupedHighways>
             )}
           </NumberGroupedHighways>
           <NumberGroupedHighways>
-            <NumberGroupedHighwaysTitle
-              onClick={() => setIsCountyShowCC((prev) => !prev)}
-            >
+            <NumberGroupedHighwaysTitle onClick={toggleCountyShowCC}>
               <NumberGroupedHighwaysTitleText>
                 181~200
               </NumberGroupedHighwaysTitleText>
@@ -424,17 +473,11 @@ export default function County({ highways }: Props) {
               </NumberTitleArrowIcon>
             </NumberGroupedHighwaysTitle>
             {isCountyShowCC && (
-              <NumberGroupedHighways>
-                {section200.length > 0
-                  ? renderGroupedHighways(section200)
-                  : "No highways found"}
-              </NumberGroupedHighways>
+              <NumberGroupedHighways>{content200}</NumberGroupedHighways>
             )}
           </NumberGroupedHighways>
           <NumberGroupedHighways>
-            <NumberGroupedHighwaysTitle
-              onClick={() => setIsCountyShowCCXX((prev) => !prev)}
-            >
+            <NumberGroupedHighwaysTitle onClick={toggleCountyShowCCXX}>
               <NumberGroupedHighwaysTitleText>
                 201~
               </NumberGroupedHighwaysTitleText>
@@ -455,11 +498,7 @@ export default function County({ highways }: Props) {
               </NumberTitleArrowIcon>
             </NumberGroupedHighwaysTitle>
             {isCountyShowCCXX && (
-              <NumberGroupedHighways>
-                {section220.length > 0
-                  ? renderGroupedHighways(section220)
-                  : "No highways found"}
-              </NumberGroupedHighways>
+              <NumberGroupedHighways>{content220}</NumberGroupedHighways>
             )}
           </NumberGroupedHighways>
         </>

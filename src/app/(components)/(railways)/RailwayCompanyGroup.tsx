@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 
@@ -185,12 +185,24 @@ export const RailwayCompanyGroup: React.FC<RailwayCompanyGroupProps> = ({
 }) => {
   // 每個公司獨立維護自己的開關狀態
   const [isRailwayShow, setIsRailwayShow] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  // 2. 處理點擊事件：立即切換開關，將 DOM 展開的渲染轉交給 Transition
+  const handleToggle = () => {
+    startTransition(() => {
+      setIsRailwayShow((prev) => !prev);
+    });
+  };
 
   return (
-    <RailwayGroup>
+    <RailwayGroup
+      style={{ opacity: isPending ? 0.7 : 1, transition: "opacity 0.15s" }}
+    >
       <div
-        onClick={() => setIsRailwayShow((prev) => !prev)}
+        onClick={handleToggle}
         style={{ cursor: "pointer" }}
+        role="button"
+        aria-expanded={isRailwayShow}
       >
         <RailwayCoTitle>
           <RailwayText>{companyMap[Number(co)] || `公司 ${co}`}</RailwayText>
@@ -215,7 +227,7 @@ export const RailwayCompanyGroup: React.FC<RailwayCompanyGroupProps> = ({
       {isRailwayShow && (
         <FrameContainer>
           {lineList.map((l) => (
-            <RouteCell href={`railways/${l.id}`} key={l.id}>
+            <RouteCell href={`/railways/${l.id}`} key={l.id}>
               <TransportIcon cop={Number(co)} />
               <RouteName>{l.name}</RouteName>
             </RouteCell>
