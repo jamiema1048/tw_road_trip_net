@@ -1,8 +1,5 @@
 "use client";
-
-import { useContext, useEffect } from "react";
-import { usePathname, notFound } from "next/navigation";
-import { TitleContext } from "@/src/app/(context)/title/TitleContext";
+import { notFound } from "next/navigation";
 import styled from "styled-components";
 import Image from "next/image";
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
@@ -205,18 +202,9 @@ const PhotoDescriptionText = styled.p`
 `;
 
 export default function HighwayContentClient({ highway }: Props) {
-  const { setTitle } = useContext(TitleContext);
-  const pathname = usePathname();
-
   if (!highway) {
     notFound();
   }
-
-  useEffect(() => {
-    const pageTitle = highway ? highway.name : "無法顯示";
-    setTitle(pageTitle);
-    document.title = pageTitle;
-  }, [highway, setTitle]);
 
   return (
     <HighwayPageContainer>
@@ -236,7 +224,6 @@ export default function HighwayContentClient({ highway }: Props) {
           <PageTitle>{highway.name}</PageTitle>
         </PageTitleContainer>
         <Breadcrumbs
-          currentPath={pathname}
           customNames={{
             [highway.id]: highway.name,
           }}

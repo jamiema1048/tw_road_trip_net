@@ -8,6 +8,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       attribute="data-theme"
       defaultTheme="dark"
       enableSystem={false}
+      disableTransitionOnChange
     >
       {/* 🟢 直接用 CSS 樣式，省去 styled-components 執行 JS 注入樣式的毫秒數 */}
       <div

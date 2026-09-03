@@ -1,10 +1,13 @@
 // src/app/railways/LinePageServer.tsx
-import LinePageClient from "@/src/app/(client)/(railways)/LinePageClient";
 import { notFound } from "next/navigation";
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
 import { RailwaySchema } from "@/src/models/Railway";
 import { Types } from "mongoose";
 import { Metadata } from "next";
+import styles from "@/src/styles/pages/railway/RailwayList.module.css";
+import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
+import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
+import { RailwayCompanyGroup } from "@/src/app/(components)/(railways)/RailwayCompanyGroup";
 
 export const metadata: Metadata = {
   title: "全台鐵路路線總覽｜台鐵、林鐵、糖鐵與廢線遺跡",
@@ -54,33 +57,26 @@ interface MongoRailway {
   district: MongoDistrict[];
 }
 
-export default async function LinePageServer() {
-  let serializedLines;
-  try {
-    // 1. 取得 railway 專屬連線
-    const { railwayConn } = await getConnections();
+const COMPANY_MAP: Record<number, string> = {
+  1: "台鐵",
+  2: "林業鐵路",
+  3: "糖業鐵路",
+  4: "其他鐵路",
+};
 
-    // 2. 建立/取得 Model (確保連線與 Schema 綁定)
+export default async function LinePageServer() {
+  let allRailways: MongoRailway[] = [];
+
+  try {
+    const { railwayConn } = await getConnections();
     const RailwayModel =
       railwayConn.models.Railway || railwayConn.model("Railway", RailwaySchema);
 
-    // 3. 抓取所有路線資料，並強型別斷言為 MongoRailway 陣列
-    const allRailways = (await RailwayModel.find({}).lean()) as MongoRailway[];
+    allRailways = (await RailwayModel.find({}).lean()) as MongoRailway[];
 
     if (!allRailways || allRailways.length === 0) {
       notFound();
     }
-
-    // 4. 資料標準化 (將所有的 ObjectId 轉成字串)
-    // 透過確切的介面定義，這裡不再需要 any
-    serializedLines = allRailways.map((line) => ({
-      ...line,
-      _id: line._id.toString(),
-      district: (line.district || []).map((d) => ({
-        ...d,
-        _id: d._id?.toString(),
-      })),
-    }));
   } catch (err: unknown) {
     const error = err as (Error & { digest?: string }) | null | undefined;
     if (
@@ -90,38 +86,71 @@ export default async function LinePageServer() {
       throw err;
     }
 
-    console.error("載入公路頁面失敗，詳細錯誤原因:", err);
-
-    // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
+    console.error("載入鐵路頁面失敗，詳細錯誤原因:", err);
     throw new Error(error?.message || "無法載入鐵路資料，請檢查資料庫連線。");
   }
 
-  // 🟢 2. 建立網頁結構化資料 (ItemList Schema)
+  // 🟢 將 MongoDB 的原始 BSON 物件轉為簡單的純 JavaScript 物件 (Plain Object)
+  const safeRailways = JSON.parse(
+    JSON.stringify(allRailways),
+  ) as MongoRailway[];
+
+  // 🟢 2. 確保陣列內部的每筆路線均依 id 升冪排序（雙重保險）
+  safeRailways.sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
+
+  // 3. 依據 co 分組
+  const groupedByCo = safeRailways.reduce<Record<number, MongoRailway[]>>(
+    (acc, line) => {
+      if (!acc[line.co]) acc[line.co] = [];
+      acc[line.co].push(line);
+      return acc;
+    },
+    {},
+  );
+
+  // 4. 建立網頁結構化資料
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: "全台鐵路路線與廢線目錄",
     description: "收錄全台台鐵、林鐵、糖鐵與廢線之路線清單",
-    numberOfItems: serializedLines.length,
-    itemListElement: serializedLines.map((line, index) => ({
+    numberOfItems: safeRailways.length,
+    itemListElement: safeRailways.map((line, index) => ({
       "@type": "ListItem",
       position: index + 1,
       item: {
         "@type": "Thing",
         name: line.name,
-        description: `包含 ${line.district.length} 個營運/歷史區間`,
+        description: `包含 ${line.district?.length || 0} 個營運/歷史區間`,
       },
     })),
   };
 
-  // 5. 將處理好的陣列傳給 Client 端
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <LinePageClient lines={serializedLines} />
+      <div className={styles.railwayListPageContainer}>
+        <div className={styles.railwayListContainer}>
+          <div className={styles.pageTitleContainer}>
+            <h1 className={styles.pageTitle}>🚉 鐵路總覽</h1>
+          </div>
+          <Breadcrumbs />
+          <div className={styles.divider} />
+
+          {Object.entries(groupedByCo).map(([co, lineList]) => (
+            <RailwayCompanyGroup
+              key={co}
+              co={co}
+              companyMap={COMPANY_MAP}
+              lineList={lineList}
+            />
+          ))}
+        </div>
+        <BottomNav />
+      </div>
     </>
   );
 }

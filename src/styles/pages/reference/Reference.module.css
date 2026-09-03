@@ -1,0 +1,118 @@
+.refPageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--background);
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+}
+
+.refContainer {
+  background-color: var(--background);
+  width: 100%;
+  padding: 1.75rem 3rem;
+}
+
+@media (max-width: 768px) {
+  .refContainer {
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+.refTitleContainer {
+  display: flex;
+  justify-content: center;
+  margin: 1.25rem auto;
+}
+
+.refPageTitle {
+  color: var(--text-white-aaaa);
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  font-size: 3rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-rendering: optimizeSpeed;
+}
+
+@media (max-width: 768px) {
+  .refPageTitle {
+    font-size: 2rem;
+  }
+}
+
+.refDivider {
+  background-color: var(--text-white-aaaa);
+  height: 1px;
+  margin: 1.25rem auto;
+  width: 100%;
+}
+
+.refInfoSection {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+  content-visibility: auto;
+}
+
+.refTitle {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 2.5rem;
+  font-weight: 400;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.refDetail {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: baseline;
+  content-visibility: auto;
+  contain-intrinsic-size: 100% 80px;
+  gap: 0.75rem;
+}
+
+.refHeadDot {
+  width: 2rem;
+  height: 2rem;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+}
+
+.refDetailText,
+.refDetailLink {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-rendering: optimizeSpeed;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.refDetailText strong,
+.refDetailLink strong {
+  font-weight: 700;
+  margin-right: 0.35em;
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+  .refTitle {
+    font-size: 1.75rem;
+  }
+  .refHeadDot {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  .refDetailText,
+  .refDetailLink {
+    font-size: 1.25rem;
+  }
+}

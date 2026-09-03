@@ -1,12 +1,10 @@
 "use client";
 
-import { useContext, useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useSearchParams, notFound } from "next/navigation";
 import styled from "styled-components";
-import { TitleContext } from "@/src/app/(context)/title/TitleContext";
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
-import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import { Station, RailwayData } from "@/src/types/railway";
@@ -337,7 +335,6 @@ export default function StationClient({
   railways: RailwayData[];
   adjacentStations: Station[];
 }) {
-  const { title, setTitle } = useContext(TitleContext);
   const searchParams = useSearchParams();
 
   const lineMap = useMemo(() => {
@@ -406,18 +403,10 @@ export default function StationClient({
       : "";
   };
 
-  useEffect(() => {
-    const pageTitle = station ? station.name : "無法顯示";
-    setTitle(pageTitle);
-    document.title = pageTitle;
-  }, [station, setTitle]);
   console.log(station);
 
   return (
     <>
-      <Head>
-        <title>{title}</title>
-      </Head>
       <StationPageContainer>
         <StationContainerArea>
           <PageTitleContainer>

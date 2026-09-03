@@ -79,37 +79,6 @@ const JourneyCards = styled.div`
   flex-wrap: wrap; /* 手機板自動換行豎排 */
 `;
 
-const StationJourneyCard = styled(Link)`
-  aspect-ratio: 1;
-  background-color: var(--text-white-aaaa);
-  border-radius: 24px;
-  box-shadow:
-    8px 8px 4px #ffffff40,
-    inset -4px 4px 4px #ffffff40;
-  width: min(100%, 360px);
-  overflow: hidden;
-  position: relative;
-
-  /* 🟢 確保 Link 是塊級元素，且游標顯示為手型 */
-  display: block;
-  cursor: pointer;
-  text-decoration: none;
-`;
-
-const StationJourneyImage = styled(Image)`
-  /* 🟢 移除 aspect-ratio，讓圖片貼滿卡片 */
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 1; /* 確保在背景層 */
-
-  /* 🟢 關鍵：讓圖片不攔截點擊事件，直接穿透給外層的 <Link> */
-  pointer-events: none;
-`;
-
 const StationJourneyLabel = styled.div`
   color: #ffffff;
   font-family: "Inter-Regular", Helvetica;
@@ -127,7 +96,7 @@ const StationJourneyLabel = styled.div`
   pointer-events: none;
 `;
 
-const RoadJourneyCard = styled(Link)`
+const JourneyCard = styled(Link)`
   aspect-ratio: 1;
   background-color: var(--text-white-aaaa);
   border-radius: 24px;
@@ -142,20 +111,6 @@ const RoadJourneyCard = styled(Link)`
   display: block;
   cursor: pointer;
   text-decoration: none;
-`;
-
-const RoadJourneyImage = styled(Image)`
-  /* 🟢 移除 aspect-ratio，讓圖片貼滿卡片 */
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 1; /* 確保在背景層 */
-
-  /* 🟢 關鍵：讓圖片不攔截點擊事件，直接穿透給外層的 <Link> */
-  pointer-events: none;
 `;
 
 const RoadJourneyLabel = styled.div`
@@ -189,24 +144,27 @@ export default function HomeContentClient(): React.ReactElement {
         </Description>
         <Divider />
         <JourneyCards>
-          <StationJourneyCard href="/railways">
-            <StationJourneyImage
+          <JourneyCard href="/railways">
+            <Image
               alt="車站旅途"
               src={TempImg}
+              fill
               priority
               sizes="(max-width: 768px) 100vw, 360px"
+              style={{ objectFit: "cover", pointerEvents: "none", zIndex: 1 }}
             />
             <StationJourneyLabel>車站旅途</StationJourneyLabel>
-          </StationJourneyCard>
-          <RoadJourneyCard href="/highways">
-            <RoadJourneyImage
+          </JourneyCard>
+          <JourneyCard href="/highways">
+            <Image
               alt="公路旅途"
               src={TempImg}
-              priority
+              fill
               sizes="(max-width: 768px) 100vw, 360px"
+              style={{ objectFit: "cover", pointerEvents: "none", zIndex: 1 }}
             />
             <RoadJourneyLabel>公路旅途</RoadJourneyLabel>
-          </RoadJourneyCard>
+          </JourneyCard>
         </JourneyCards>
       </ContentWrapper>
     </HomeContainer>

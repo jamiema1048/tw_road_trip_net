@@ -1,0 +1,136 @@
+.aboutPageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--background);
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+}
+
+.aboutPageContainer::-webkit-scrollbar {
+  display: none;
+  width: 0;
+}
+
+.aboutContainer {
+  background-color: var(--background);
+  width: 100%;
+  padding: 1.75rem 3rem;
+}
+
+@media (max-width: 768px) {
+  .aboutContainer {
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+.pageTitleContainer {
+  display: flex;
+  justify-content: center;
+  margin: 1.25rem auto;
+}
+
+.pageTitle {
+  color: var(--text-white-aaaa);
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  font-size: 3rem;
+  font-weight: 400;
+  line-height: normal;
+}
+
+@media (max-width: 768px) {
+  .pageTitle {
+    font-size: 2rem;
+  }
+}
+
+.divider {
+  background-color: var(--text-white-aaaa);
+  height: 1px;
+  margin: 1.25rem auto;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .divider {
+    margin: 0.75rem auto;
+  }
+}
+
+.aboutInfoSection {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+  content-visibility: auto;
+}
+
+@media (max-width: 768px) {
+  .aboutInfoSection {
+    gap: 1rem;
+  }
+}
+
+.aboutTitle {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .aboutTitle {
+    font-size: 1.75rem;
+  }
+}
+
+.aboutDetail {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .aboutDetail {
+    gap: 0.5rem;
+  }
+}
+
+.aboutHeadDot {
+  width: 2rem;
+  height: 2rem;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .aboutHeadDot {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.aboutDetailText {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+@media (max-width: 768px) {
+  .aboutDetailText {
+    font-size: 1.25rem;
+  }
+}

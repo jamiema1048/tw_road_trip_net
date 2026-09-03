@@ -1,6 +1,9 @@
 import { Metadata } from "next";
 // import { Types } from "mongoose"; // 用於定義 ObjectId
-import RailwayContentClient from "@/src/app/(client)/(railways)/(railway)/RailwayContentClient";
+import styles from "@/src/styles/pages/railway/RailwayContent.module.css";
+import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
+import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
+import DistrictGroupedStations from "@/src/app/(components)/(railways)/(railway)/DistrictGroupedStations";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
@@ -289,12 +292,26 @@ export default async function RailwayContentServer({
     );
   }
 
-  // 安全地位於 try...catch 外層，此時變數保證已成功賦值
   return (
-    <RailwayContentClient
-      data={serializedRailway}
-      stations={serializedStations}
-      railwayNameMap={railwayNameMap}
-    />
+    <div className={styles.stationListPageContainer}>
+      <div className={styles.railwayListContainerArea}>
+        <div className={styles.pageTitleContainer}>
+          <h1 className={styles.pageTitle}>{serializedRailway.name}</h1>
+        </div>
+        <Breadcrumbs
+          customNames={{
+            [serializedRailway.id]: serializedRailway.name,
+          }}
+        />
+        <div className={styles.divider} />
+        <DistrictGroupedStations
+          lineID={serializedRailway.id}
+          lineData={serializedRailway}
+          stations={serializedStations}
+          railwayNameMap={railwayNameMap}
+        />
+      </div>
+      <BottomNav />
+    </div>
   );
 }

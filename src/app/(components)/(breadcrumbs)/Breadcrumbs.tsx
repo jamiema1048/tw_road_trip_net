@@ -1,65 +1,8 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import styled from "styled-components";
-
-// ==================== Styled Components ====================
-
-const Nav = styled.nav`
-  padding: 0;
-`;
-
-const List = styled.ol`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-size: 1rem;
-`;
-
-const Item = styled.li`
-  display: flex;
-  align-items: center;
-`;
-
-const NavLink = styled(Link)`
-  color: var(--text-gray-aa);
-  text-decoration: none;
-  transition: color 0.2s;
-  font-weight: 500;
-  font-family: Inter;
-  font-size: 1.5rem;
-  font-style: normal;
-  line-height: normal;
-
-  &:hover {
-    color: var(--text-white-aaaa);
-    text-decoration: underline;
-  }
-  @media (max-width: 768px) {
-    font-size: 1rem;
-  }
-`;
-
-const CurrentPage = styled.span`
-  color: var(--text-white-aaaa);
-  font-weight: 500;
-  font-family: Inter;
-  font-size: 1.5rem;
-  font-style: normal;
-  line-height: normal;
-  @media (max-width: 768px) {
-    font-size: 1rem;
-  }
-`;
-
-const Separator = styled.svg`
-  width: 1.5rem;
-  height: 1.5rem;
-  aspect-ratio: 1/1;
-`;
+import styles from "@/src/styles/components/breadcrumbs/Breadcrumbs.module.css";
 
 // 🔴 關鍵 1：路徑對照表 (Path Name Dictionary)
 // 負責判斷 URL 英文片段對應到的中文名稱
@@ -110,20 +53,24 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
   ];
 
   return (
-    <Nav aria-label="breadcrumb">
-      <List>
+    <nav className={styles.nav} aria-label="breadcrumb">
+      <ol className={styles.list}>
         {breadcrumbItems.map((item, index) => {
           const isLast = index === breadcrumbItems.length - 1;
 
           return (
-            <Item key={item.url}>
+            <li key={item.url} className={styles.item}>
               {isLast ? (
-                // 最後一個節點（當前頁面）：不給連結，並加上 aria-current 增加無障礙支援
-                <CurrentPage aria-current="page">{item.name}</CurrentPage>
+                <span className={styles.currentPage} aria-current="page">
+                  {item.name}
+                </span>
               ) : (
                 <>
-                  <NavLink href={item.url}>{item.name}</NavLink>
-                  <Separator
+                  <Link href={item.url} className={styles.navLink}>
+                    {item.name}
+                  </Link>
+                  <svg
+                    className={styles.separator}
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -132,19 +79,19 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
                   >
                     <path
                       d="M9.5 6L15.5 12L9.5 18"
-                      stroke={"var(--text-white-aaaa)"}
+                      stroke="var(--text-white-aaaa)"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     />
-                  </Separator>
+                  </svg>
                 </>
               )}
-            </Item>
+            </li>
           );
         })}
-      </List>
-    </Nav>
+      </ol>
+    </nav>
   );
 };
 

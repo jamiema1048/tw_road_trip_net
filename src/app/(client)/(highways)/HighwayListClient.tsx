@@ -1,9 +1,5 @@
 "use client";
-
-import { useState, useEffect, useContext } from "react";
-import { usePathname } from "next/navigation";
 import styled from "styled-components";
-import { TitleContext } from "@/src/app/(context)/title/TitleContext";
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
 import Province from "@/src/app/(components)/(highways)/Province";
@@ -82,30 +78,15 @@ const LoadingPlaceholder = styled(Loading)`
 `;
 
 export default function HighwayListClient({ highways }: Props) {
-  const [loading, setLoading] = useState(false);
-  const { setTitle } = useContext(TitleContext);
-  const pathname = usePathname();
-
-  useEffect(() => {
-    // 模擬載入動畫
-    const timer = setTimeout(() => {
-      setLoading(false);
-      setTitle("公路列表");
-      document.title = "公路列表";
-    }, 100); // 可自行調整延遲，測試可縮短
-
-    return () => clearTimeout(timer);
-  }, [setTitle]);
-
   return (
     <HighwayListPageContainer>
       <HighwayListContainer>
         <PageTitleContainer>
           <PageTitle>公路列表</PageTitle>
         </PageTitleContainer>
-        <Breadcrumbs currentPath={pathname} />
+        <Breadcrumbs />
         <Divider />
-        {loading ? (
+        {highways.length === 0 ? (
           <LoadingPlaceholder />
         ) : (
           <HighwayContentContainer>

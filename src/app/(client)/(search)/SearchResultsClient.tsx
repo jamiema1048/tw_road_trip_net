@@ -1,10 +1,8 @@
 "use client";
 
-import { useState, useEffect, useContext } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import Head from "next/head";
 import styled from "styled-components";
-import { TitleContext } from "@/src/app/(context)/title/TitleContext";
 import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
 import { SearchResultItem } from "@/src/app/_lib/search";
 import SearchBar from "@/src/app/(components)/(search)/SearchBar";
@@ -21,7 +19,6 @@ export default function SearchResultsClient({ query, results }: Props) {
   const [activeTab, setActiveTab] = useState<
     "all" | "highway" | "railway" | "station"
   >("all");
-  const { title, setTitle } = useContext(TitleContext);
 
   const highwayList = results.filter((item) => item.type === "highway");
   const railwayList = results.filter((item) => item.type === "railway");
@@ -39,24 +36,8 @@ export default function SearchResultsClient({ query, results }: Props) {
     setLoading(true); // React 會自動併入同一次渲染批次，不會造成多餘的畫面閃爍
   }
 
-  // 🟢 2. Effect 只負責處理非同步的 timer 與外部系統 (document.title / Context)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-
-      const pageTitle = query ? `「${query}」的搜尋結果` : "全域搜尋";
-      setTitle(pageTitle);
-      document.title = pageTitle;
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, [query, setTitle]);
-
   return (
     <>
-      <Head>
-        <title>{title}</title>
-      </Head>
       <SearchResultsPageContainer>
         {!query ? (
           <Container>
