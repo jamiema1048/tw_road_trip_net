@@ -1,0 +1,114 @@
+.homeContainer {
+  background-color: var(--background);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+.title {
+  color: var(--text-white-aaaa);
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  font-size: clamp(32px, 5vw, 60px);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.2;
+  margin-top: 48px;
+  text-align: center;
+  width: 100%;
+  max-width: 720px;
+}
+
+.description {
+  color: var(--text-white-aaaa);
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  font-size: clamp(18px, 2.5vw, 32px);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.6;
+  margin-top: clamp(32px, 5vw, 72px);
+  text-align: center;
+  width: 100%;
+  max-width: 945px;
+}
+
+.divider {
+  background-color: var(--text-white-aaaa);
+  height: 1px;
+  margin-top: 48px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.journeyCards {
+  display: flex;
+  justify-content: center;
+  gap: clamp(32px, 6vw, 120px);
+  margin-top: 72px;
+  margin-bottom: 72px;
+  width: 100%;
+  max-width: 840px;
+  flex-wrap: wrap;
+}
+
+.journeyCard {
+  aspect-ratio: 1;
+  background-color: var(--text-white-aaaa);
+  border-radius: 24px;
+  box-shadow:
+    8px 8px 4px #ffffff40,
+    inset -4px 4px 4px #ffffff40;
+  width: min(100%, 360px);
+  overflow: hidden;
+  position: relative;
+  display: block;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.journeyLabel {
+  color: #ffffff;
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 400;
+  left: 10%;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 70%;
+  white-space: nowrap;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.cardImage {
+  object-fit: cover;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* RWD 響應式微調 */
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .description {
+    font-size: 1.25rem;
+  }
+}

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import styled from "styled-components";
+import styles from "@/src/styles/components/header/HeaderSearchBar.module.css";
 
 export default function HeaderSearchBar() {
   const router = useRouter();
@@ -69,17 +69,17 @@ export default function HeaderSearchBar() {
   };
 
   return (
-    <SearchContainer ref={containerRef}>
-      <Form onSubmit={handleSearch} $isOpen={isOpen}>
+    <div className={styles.searchContainer} ref={containerRef}>
+      <form className={styles.form} onSubmit={handleSearch} data-open={isOpen}>
         {/* 放大鏡按鈕 (未展開時顯示，展開時作為提交按鈕) */}
-        <SearchButton
+        <button
           type={isOpen ? "submit" : "button"}
-          className="logo"
+          className={`${styles.searchButton} logo`}
           aria-label="搜尋"
           onClick={!isOpen ? toggleOpen : undefined}
-          style={{ border: "none", cursor: "pointer", backgroundSize: "cover" }}
         >
-          <SearchButtonIcon
+          <svg
+            className={styles.searchButtonIcon}
             xmlns="http://www.w3.org/2000/svg"
             width="48"
             height="48"
@@ -88,28 +88,30 @@ export default function HeaderSearchBar() {
           >
             <path
               d="M42 41.9999L33.314 33.3139M33.314 33.3139C34.7998 31.8281 35.9784 30.0643 36.7825 28.123C37.5866 26.1818 38.0005 24.1011 38.0005 21.9999C38.0005 19.8987 37.5866 17.8181 36.7825 15.8768C35.9784 13.9356 34.7998 12.1717 33.314 10.6859C31.8283 9.20015 30.0644 8.02157 28.1231 7.21747C26.1819 6.41337 24.1012 5.99951 22 5.99951C19.8988 5.99951 17.8182 6.41337 15.877 7.21747C13.9357 8.02157 12.1718 9.20015 10.686 10.6859C7.68539 13.6866 5.99963 17.7564 5.99963 21.9999C5.99963 26.2435 7.68539 30.3133 10.686 33.3139C13.6867 36.3146 17.7565 38.0003 22 38.0003C26.2436 38.0003 30.3134 36.3146 33.314 33.3139Z"
-              stroke={"var(--text-white-aaaa)"}
+              stroke="var(--text-white-aaaa)"
               strokeWidth="5"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-          </SearchButtonIcon>
-        </SearchButton>
+          </svg>
+        </button>
 
         {/* 動態展開的輸入框 */}
-        <Input
+        <input
           ref={inputRef}
           type="text"
+          className={styles.input}
           placeholder="搜尋公路、車站..."
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
-          $isOpen={isOpen}
+          data-open={isOpen}
         />
 
         {/* 展開時顯示的清除/關閉按鈕 */}
         {isOpen && (
-          <CloseButton
+          <button
             type="button"
+            className={styles.closeButton}
             onClick={() => {
               setKeyword("");
               setIsOpen(false);
@@ -117,120 +119,9 @@ export default function HeaderSearchBar() {
             aria-label="關閉搜尋"
           >
             ✕
-          </CloseButton>
+          </button>
         )}
-      </Form>
-    </SearchContainer>
+      </form>
+    </div>
   );
 }
-
-/* Styled Components */
-
-const SearchContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-`;
-
-const Form = styled.form<{ $isOpen: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-  background-color: ${({ $isOpen }) =>
-    $isOpen ? "var(--background)" : "transparent"};
-  border: 2px solid
-    ${({ $isOpen }) => ($isOpen ? "var(--text-white-aaaa)" : "transparent")};
-  border-radius: 9999px;
-  padding: 0.5rem 1.25rem 0.5rem 1.25rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  width: ${({ $isOpen }) => ($isOpen ? "26rem" : "3rem")};
-  gap: 0.75rem;
-
-  @media (max-width: 768px) {
-    width: ${({ $isOpen }) => ($isOpen ? "12rem" : "1.5rem")};
-    gap: 0.5rem;
-    padding: 0.25rem 0.5rem 0.25rem 0.5rem;
-  }
-`;
-
-const SearchButton = styled.button`
-  display: flex;
-  width: 2rem;
-  height: 2rem;
-  flex-shrink: 0;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  aspect-ratio: 1/1;
-  background: transparent;
-  @media (max-width: 768px) {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-`;
-
-const SearchButtonIcon = styled.svg`
-  width: 2rem;
-  height: 2rem;
-  @media (max-width: 768px) {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-`;
-
-const Input = styled.input<{ $isOpen: boolean }>`
-  background: transparent;
-  border: none;
-  color: var(--text-white-aaaa);
-  font-size: 2rem;
-  outline: none;
-  width: 100%;
-  padding: 0 8px;
-  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
-  visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
-  transition:
-    opacity 0.2s ease-in-out,
-    visibility 0.2s;
-
-  &::placeholder {
-    color: var(--text-gray-aa);
-    text-align: start;
-    font-family: Inter;
-    font-size: 2rem;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    @media (max-width: 768px) {
-      font-size: 1.5rem;
-    }
-  }
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-  }
-`;
-
-const CloseButton = styled.button`
-  background: none;
-  border: none;
-  color: var(--text-white-aaaa);
-  font-size: 2rem;
-  width: 2rem;
-  height: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  border-radius: 50%;
-
-  &:hover {
-    color: var(--text-gray-aa);
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-`;

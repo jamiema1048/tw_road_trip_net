@@ -1,0 +1,37 @@
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  background-color: transparent;
+  gap: 3rem;
+}
+
+.loadingText {
+  color: var(--text-white-aaaa);
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.spinnerSvg {
+  animation: rotate 1.2s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

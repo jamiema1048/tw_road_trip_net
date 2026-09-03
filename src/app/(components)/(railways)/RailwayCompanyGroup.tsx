@@ -1,43 +1,20 @@
 "use client";
+
 import React, { useState, useTransition } from "react";
-import styled from "styled-components";
 import Link from "next/link";
+import styles from "@/src/styles/components/railway/RailwayGroup.module.css";
 
 interface Line {
   id: number;
   name: string;
   co: number;
-  district: {
-    districtID: number;
-    districtName: string;
-    prevArea?: number;
-    nextArea?: number;
-  }[];
 }
 
 interface RailwayCompanyGroupProps {
   co: string | number;
-  companyMap: Record<number, string>;
+  companyName: string;
   lineList: Line[];
 }
-
-interface TrainIconProps {
-  cop: string | number;
-}
-
-const TrainIcon = styled.svg`
-  /* 預設尺寸（螢幕寬度 >= 576px） */
-  width: 3rem;
-  height: 3rem;
-  flex-shrink: 0;
-  aspect-ratio: 1 / 1;
-
-  /* 螢幕寬度 < 576px 時調整尺寸 */
-  @media (max-width: 575.98px) {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-`;
 
 const PATH_MAP: Record<number | string, { d: string; fill: string }> = {
   1: {
@@ -58,182 +35,77 @@ const PATH_MAP: Record<number | string, { d: string; fill: string }> = {
   },
 };
 
-export const TransportIcon = ({ cop }: TrainIconProps) => {
-  // 取得對應 co 的 path 資料（若傳入未定義的值則預設退回 1）
+const TransportIcon = ({ cop }: { cop: string | number }) => {
   const currentPath = PATH_MAP[cop] || PATH_MAP[1];
-
   return (
-    <TrainIcon
+    <svg
+      className={styles.trainIcon}
       xmlns="http://www.w3.org/2000/svg"
-      width="48"
-      height="48"
       viewBox="0 0 48 48"
       fill="none"
     >
       <path d={currentPath.d} fill={currentPath.fill} />
-    </TrainIcon>
+    </svg>
   );
 };
 
-const RailwayGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin: 1.25rem 0;
-  gap: 1.75rem;
-  @media (max-width: 768px) {
-    gap: 1.25rem;
-    margin: 0 0;
-  }
-`;
-
-const RailwayCoTitle = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: 1rem;
-  @media (max-width: 768px) {
-    gap: 0.25rem;
-  }
-`;
-
-const RailwayText = styled.h2`
-  color: var(--text-white-aaaa);
-  font-family: "Inter-Regular", Helvetica;
-  display: flex;
-  align-items: center;
-  font-size: 2.5rem;
-  font-weight: 400;
-  height: 3rem;
-  letter-spacing: 0;
-  margin: 0;
-  line-height: normal;
-  white-space: nowrap;
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-  }
-`;
-
-const ArrowIcon = styled.svg<{ $isOpen: boolean }>`
-  width: 3rem;
-  height: 3rem;
-  transition: transform 0.2s ease-in-out;
-  transform: ${({ $isOpen }) => ($isOpen ? "rotate(180deg)" : "rotate(0deg)")};
-  @media (max-width: 768px) {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-`;
-
-const FrameContainer = styled.div`
-  display: grid;
-  width: 100%;
-  gap: 3rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  position: relative;
-  margin: 0;
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2.25rem;
-  }
-  @media (max-width: 576px) {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 1.5rem;
-  }
-`;
-const RouteCell = styled(Link)`
-  display: flex;
-  background-color: var(--text-gray-aaa);
-  border: 1px solid;
-  border-color: var(--border-route-cell);
-  border-radius: 1rem;
-  box-shadow:
-    6px 6px 6px #4a64f640,
-    inset 6px 6px 4px #0000040;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-  padding: 1.25rem;
-  padding: 0.5rem 1rem;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-  box-sizing: border-box;
-  text-decoration: none;
-  transition: all 0.2s ease-in-out;
-`;
-const RouteName = styled.h3`
-  color: var(--text-white-aaaa);
-  font-family: "Inter-Regular", Helvetica;
-  font-size: 1.75rem;
-  font-weight: 400;
-  letter-spacing: 0;
-  margin: 0;
-  font-style: normal;
-  line-height: normal;
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-  }
-`;
 export const RailwayCompanyGroup: React.FC<RailwayCompanyGroupProps> = ({
   co,
-  companyMap,
+  companyName,
   lineList,
 }) => {
-  // 每個公司獨立維護自己的開關狀態
   const [isRailwayShow, setIsRailwayShow] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  // 2. 處理點擊事件：立即切換開關，將 DOM 展開的渲染轉交給 Transition
   const handleToggle = () => {
     startTransition(() => {
       setIsRailwayShow((prev) => !prev);
     });
   };
 
+  const arrowClass = `${styles.arrowIcon} ${isRailwayShow ? styles.arrowIconOpen : styles.arrowIconClosed}`;
+
   return (
-    <RailwayGroup
+    <div
+      className={styles.railwayGroup}
       style={{ opacity: isPending ? 0.7 : 1, transition: "opacity 0.15s" }}
     >
-      <div
+      <button
         onClick={handleToggle}
-        style={{ cursor: "pointer" }}
-        role="button"
+        className={styles.railwayCoTitle}
+        type="button"
         aria-expanded={isRailwayShow}
       >
-        <RailwayCoTitle>
-          <RailwayText>{companyMap[Number(co)] || `公司 ${co}`}</RailwayText>
-          <ArrowIcon
-            $isOpen={isRailwayShow}
-            xmlns="http://www.w3.org/2000/svg"
-            width="48"
-            height="48"
-            viewBox="0 0 48 48"
-            fill="none"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M25.414 31.414C25.039 31.7889 24.5303 31.9995 24 31.9995C23.4697 31.9995 22.9611 31.7889 22.586 31.414L11.272 20.1C11.081 19.9155 10.9286 19.6948 10.8238 19.4508C10.719 19.2068 10.6638 18.9443 10.6615 18.6788C10.6592 18.4132 10.7098 18.1498 10.8104 17.904C10.9109 17.6583 11.0594 17.4349 11.2472 17.2472C11.435 17.0594 11.6583 16.9109 11.9041 16.8103C12.1499 16.7097 12.4133 16.6591 12.6788 16.6615C12.9444 16.6638 13.2068 16.7189 13.4508 16.8238C13.6948 16.9286 13.9155 17.0809 14.1 17.272L24 27.172L33.9 17.272C34.2772 16.9076 34.7824 16.706 35.3068 16.7106C35.8312 16.7152 36.3328 16.9255 36.7037 17.2963C37.0745 17.6671 37.2848 18.1688 37.2894 18.6932C37.2939 19.2175 37.0923 19.7227 36.728 20.1L25.414 31.414Z"
-              fill={"var(--text-white-aaaa)"}
-            />
-          </ArrowIcon>
-        </RailwayCoTitle>
-      </div>
+        <h2 className={styles.railwayText}>{companyName}</h2>
+        <svg
+          className={arrowClass}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 48 48"
+          fill="none"
+        >
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M25.414 31.414C25.039 31.7889 24.5303 31.9995 24 31.9995C23.4697 31.9995 22.9611 31.7889 22.586 31.414L11.272 20.1C11.081 19.9155 10.9286 19.6948 10.8238 19.4508C10.719 19.2068 10.6638 18.9443 10.6615 18.6788C10.6592 18.4132 10.7098 18.1498 10.8104 17.904C10.9109 17.6583 11.0594 17.4349 11.2472 17.2472C11.435 17.0594 11.6583 16.9109 11.9041 16.8103C12.1499 16.7097 12.4133 16.6591 12.6788 16.6615C12.9444 16.6638 13.2068 16.7189 13.4508 16.8238C13.6948 16.9286 13.9155 17.0809 14.1 17.272L24 27.172L33.9 17.272C34.2772 16.9076 34.7824 16.706 35.3068 16.7106C35.8312 16.7152 36.3328 16.9255 36.7037 17.2963C37.0745 17.6671 37.2848 18.1688 37.2894 18.6932C37.2939 19.2175 37.0923 19.7227 36.728 20.1L25.414 31.414Z"
+            fill="var(--text-white-aaaa)"
+          />
+        </svg>
+      </button>
 
       {isRailwayShow && (
-        <FrameContainer>
+        <div className={styles.frameContainer}>
           {lineList.map((l) => (
-            <RouteCell href={`/railways/${l.id}`} key={l.id}>
+            <Link
+              href={`/railways/${l.id}`}
+              key={l.id}
+              className={styles.routeCell}
+            >
               <TransportIcon cop={Number(co)} />
-              <RouteName>{l.name}</RouteName>
-            </RouteCell>
+              <h3 className={styles.routeName}>{l.name}</h3>
+            </Link>
           ))}
-        </FrameContainer>
+        </div>
       )}
-    </RailwayGroup>
+    </div>
   );
 };

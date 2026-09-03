@@ -1,0 +1,70 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--background);
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+  padding: 3rem;
+  gap: 1rem;
+  /* 隱藏 Scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.container::-webkit-scrollbar {
+  display: none;
+  width: 0;
+}
+
+.errorCode {
+  color: var(--text-white-aaaa);
+  font-family: "Highway Gothic Expanded", sans-serif;
+  font-size: 7.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin: 0;
+}
+
+.errorMessage {
+  color: var(--text-white-aaaa);
+  font-family: "Microsoft JhengHei", sans-serif;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin: 0;
+}
+
+.digestCode {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: var(--text-gray-aa);
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--text-gray-a);
+}
+
+.primaryButton {
+  display: block;
+  background: transparent;
+  border: none;
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  padding: 0;
+}
+
+.primaryButton:hover {
+  text-decoration: underline;
+  color: var(--text-success);
+}

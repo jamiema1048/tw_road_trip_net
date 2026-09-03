@@ -1,77 +1,10 @@
 "use client";
 import React, { useState, memo } from "react";
 import Link from "next/link";
-import styled from "styled-components";
+import styles from "@/src/styles/components/footer/Footer.module.css";
 import { ChevronRight, Copyright, Mail } from "lucide-react";
 
-/* 1. 外層容器：改為最大寬度 1440px，居中並隨螢幕縮放 */
-const StyledComponentFooter = styled.div`
-  width: 100%;
-  margin: auto auto 0 auto;
-`;
-
-/* 2. 主體區塊：改用 Padding 上下留白，替代原本死板的 height: 87.5% */
-const Frame = styled.div`
-  background-color: var(--bg-primary);
-  width: 100%;
-  padding: 2.5rem 1.5rem;
-  box-sizing: border-box;
-
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 2rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column-reverse;
-    align-items: center;
-    gap: 1.5rem;
-  }
-`;
-
-const ContactGroup = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-const ContactContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: flex-start;
-
-  @media (max-width: 768px) {
-    align-items: center;
-  }
-`;
-
-const TextWrapper = styled.p`
-  color: var(--text-white-aaaa);
-  font-family: "Inter-Regular", Helvetica;
-  display: flex;
-  align-items: center;
-  font-size: 1.25rem;
-  font-weight: 400;
-  letter-spacing: 0;
-  line-height: normal;
-  white-space: nowrap;
-`;
-
-const SocialIcons = styled.div`
-  display: flex;
-  gap: 1.5rem;
-`;
-
-const StyledEmail = styled(Mail)`
-  color: var(--text-white-aaaa);
-  aspect-ratio: 1 !important;
-  height: 1.5rem !important;
-  width: 1.5rem !important;
-  cursor: pointer;
-`;
-
-export const StyledGithub = styled((props: React.SVGProps<SVGSVGElement>) => (
+export const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     viewBox="0 0 24 24"
     width="24"
@@ -86,118 +19,7 @@ export const StyledGithub = styled((props: React.SVGProps<SVGSVGElement>) => (
     <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
     <path d="M9 18c-4.51 2-5-2-7-2" />
   </svg>
-))`
-  color: var(--text-white-aaaa);
-  aspect-ratio: 1 !important;
-  height: 1.5rem !important;
-  width: 1.5rem !important;
-  cursor: pointer;
-`;
-
-/* 3. 分隔線：電腦端為豎線，手機端轉為橫線 */
-const Divider = styled.div`
-  background-color: var(--text-gray-a);
-  height: 6rem;
-  width: 1px;
-
-  @media (max-width: 768px) {
-    height: 1px;
-    width: 80%;
-  }
-`;
-
-const NavigationGroup = styled.div`
-  display: flex;
-  gap: 3rem;
-
-  @media (max-width: 768px) {
-    gap: 2rem;
-  }
-`;
-
-const NavigationColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-`;
-
-const NavigationItem = styled(Link)`
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  cursor: pointer;
-  text-decoration: none;
-`;
-
-const StyledBreadcrumbRight = styled(ChevronRight)`
-  color: var(--text-white-aaaa);
-  aspect-ratio: 1 !important;
-  height: 1.25rem !important;
-  width: 1.25rem !important;
-`;
-
-/* 4. 底部 Copyright 欄位：隨螢幕居中縮放 */
-const BottomFrame = styled.div`
-  background-color: var(--text-gray-aaa);
-  width: 100%;
-  padding: 0.75rem 1.5rem;
-  box-sizing: border-box;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1.5rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-`;
-
-const CopyrightGroup = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-const CopyrightText = styled.div`
-  color: var(--text-white-aaaa);
-  font-family: "Inter-Regular", Helvetica;
-  font-size: 0.75rem;
-  font-weight: 400;
-  letter-spacing: 0;
-  line-height: normal;
-  white-space: nowrap;
-`;
-
-const StyledCopyright = styled(Copyright)`
-  color: var(--text-white-aaaa);
-  aspect-ratio: 1 !important;
-  height: 0.75rem !important;
-  width: 0.75rem !important;
-`;
-
-const BottomDivider = styled.div`
-  background-color: var(--text-gray-a);
-  height: 0.75rem;
-  width: 1px;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-
-const TermsText = styled(Link)`
-  color: var(--text-white-aaaa);
-  font-family: "Inter-Regular", Helvetica;
-  font-size: 0.75rem;
-  font-weight: 400;
-  letter-spacing: 0;
-  line-height: normal;
-  white-space: nowrap;
-  cursor: pointer;
-  text-decoration: none;
-`;
+);
 
 export interface ComponentFooterProps {
   device?: "desktop";
@@ -212,103 +34,98 @@ const ContactEmail = () => {
     e.preventDefault();
     navigator.clipboard.writeText(email);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000); // 2秒後提示消失
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div style={{ position: "relative" }}>
+    <div className={styles.emailWrapper}>
       <button
+        type="button"
         onClick={handleCopy}
         aria-label="複製 Email"
-        style={{
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          padding: 0,
-        }}
+        className={styles.emailButton}
       >
-        <StyledEmail className="icon-instance-node" />
+        <Mail className={styles.styledEmail} />
       </button>
 
-      {/* 複製成功提示小氣泡 */}
-      {copied && (
-        <span
-          style={{
-            position: "absolute",
-            top: "-30px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            backgroundColor: "#333",
-            color: "#fff",
-            padding: "4px 8px",
-            borderRadius: "4px",
-            fontSize: "12px",
-            whiteSpace: "nowrap",
-          }}
-        >
-          已複製信箱！
-        </span>
-      )}
+      {copied && <span className={styles.tooltip}>已複製信箱！</span>}
     </div>
   );
 };
 
 export const Footer = memo(function Footer(props: ComponentFooterProps) {
   return (
-    <StyledComponentFooter className={props.className}>
-      <Frame>
-        <NavigationGroup>
-          <NavigationColumn>
-            <NavigationItem href="/about">
-              <StyledBreadcrumbRight className="icon" size={16} />
-              <TextWrapper>關於我們</TextWrapper>
-            </NavigationItem>
-            <NavigationItem href="/reference">
-              <StyledBreadcrumbRight className="icon" size={16} />
-              <TextWrapper>參考資料</TextWrapper>
-            </NavigationItem>
-          </NavigationColumn>
-          <NavigationColumn>
-            <NavigationItem href="/railways">
-              <StyledBreadcrumbRight className="icon" size={16} />
-              <TextWrapper>車站旅途</TextWrapper>
-            </NavigationItem>
-            <NavigationItem href="/highways">
-              <StyledBreadcrumbRight className="icon" size={16} />
-              <TextWrapper>公路旅途</TextWrapper>
-            </NavigationItem>
-          </NavigationColumn>
-        </NavigationGroup>
+    <footer
+      className={`${styles.styledComponentFooter} ${props.className || ""}`.trim()}
+    >
+      <div className={styles.frame}>
+        <div className={styles.navigationGroup}>
+          <div className={styles.navigationColumn}>
+            <Link href="/about" className={styles.navigationItem}>
+              <ChevronRight
+                className={styles.styledBreadcrumbRight}
+                size={16}
+              />
+              <p className={styles.textWrapper}>關於我們</p>
+            </Link>
+            <Link href="/reference" className={styles.navigationItem}>
+              <ChevronRight
+                className={styles.styledBreadcrumbRight}
+                size={16}
+              />
+              <p className={styles.textWrapper}>參考資料</p>
+            </Link>
+          </div>
+          <div className={styles.navigationColumn}>
+            <Link href="/railways" className={styles.navigationItem}>
+              <ChevronRight
+                className={styles.styledBreadcrumbRight}
+                size={16}
+              />
+              <p className={styles.textWrapper}>車站旅途</p>
+            </Link>
+            <Link href="/highways" className={styles.navigationItem}>
+              <ChevronRight
+                className={styles.styledBreadcrumbRight}
+                size={16}
+              />
+              <p className={styles.textWrapper}>公路旅途</p>
+            </Link>
+          </div>
+        </div>
 
-        <Divider />
+        <div className={styles.divider} />
 
-        <ContactGroup>
-          <ContactContent>
-            <TextWrapper>聯絡我們</TextWrapper>
-            <SocialIcons>
+        <div className={styles.contactGroup}>
+          <div className={styles.contactContent}>
+            <p className={styles.textWrapper}>聯絡我們</p>
+            <div className={styles.socialIcons}>
               <ContactEmail />
               <Link
                 href="https://github.com/jamiema1048"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="前往 GitHub 主頁"
+                className={styles.iconLink}
               >
-                <StyledGithub className="icon-instance-node" />
+                <GithubIcon className={styles.styledGithub} />
               </Link>
-            </SocialIcons>
-          </ContactContent>
-        </ContactGroup>
-      </Frame>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <BottomFrame>
-        <CopyrightGroup>
-          <StyledCopyright className="icon-copyright" size={16} />
-          <CopyrightText>All Rights Reserved</CopyrightText>
-        </CopyrightGroup>
-        <BottomDivider />
-        <TermsText href="/terms">使用條款</TermsText>
-      </BottomFrame>
-    </StyledComponentFooter>
+      <div className={styles.bottomFrame}>
+        <div className={styles.copyrightGroup}>
+          <Copyright className={styles.styledCopyright} size={16} />
+          <div className={styles.copyrightText}>All Rights Reserved</div>
+        </div>
+        <div className={styles.bottomDivider} />
+        <Link href="/terms" className={styles.termsText}>
+          使用條款
+        </Link>
+      </div>
+    </footer>
   );
 });
 

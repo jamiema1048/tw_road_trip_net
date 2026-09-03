@@ -1,0 +1,193 @@
+.groupedStations {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+}
+
+.lineAreaContentContainer {
+  margin: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+
+.lineAreaTitle {
+  display: inline-flex;
+  align-items: center;
+}
+
+.lineAreaTitleDot {
+  width: 3rem;
+  height: 3rem;
+  aspect-ratio: 1 / 1;
+}
+
+.lineAreaTitleDotIcon {
+  width: 3rem;
+  height: 3rem;
+}
+
+.lineAreaTitleText {
+  color: var(--text-white-aaaa);
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  display: flex;
+  align-items: center;
+  font-size: 2.5rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  margin: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.lineAreaContentBlock {
+  display: flex;
+  align-items: flex-start;
+  margin: auto 1.75rem;
+  gap: 1.5rem;
+}
+
+.lineAreaDecoration {
+  width: 1px;
+  align-self: stretch;
+  background: var(--text-gray-a);
+}
+
+.lineAreaContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+
+.stationList {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding: 0;
+  margin: 0;
+}
+
+.stationsListItem {
+  list-style: none;
+}
+
+/* --- 車站狀態與區塊樣式 --- */
+.stationBlock {
+  font-size: 1.75rem;
+  transition: all 0.2s ease-in-out;
+  font-family: Inter, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.statusActive {
+  color: var(--background);
+}
+
+@media (prefers-color-scheme: dark) {
+  .statusActive {
+    color: var(--text-white-aaaa);
+  }
+}
+
+.statusDisused {
+  color: var(--text-gray-aa);
+  text-decoration: line-through;
+}
+
+.statusPlan {
+  color: var(--text-info);
+  font-style: italic;
+}
+
+/* --- 連結與停用狀態 --- */
+.adjacentAreaLink,
+.stationLink {
+  display: block;
+  transition: all 0.2s ease-in-out;
+  text-decoration: inherit;
+  color: inherit;
+}
+
+.adjacentAreaLink {
+  color: var(--background);
+  font-size: 1.75rem;
+  font-family: Inter, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .adjacentAreaLink {
+    color: var(--text-white-aaaa);
+  }
+}
+
+.adjacentAreaLink:hover,
+.stationLink:hover {
+  color: var(--text-success);
+  padding-left: 0.5rem;
+}
+
+.stationDisabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  color: var(--text-gray-aa);
+  user-select: none;
+  display: block;
+}
+
+.disabledBadge {
+  font-size: 1.75rem;
+  opacity: 0.8;
+  color: var(--text-gray-aa);
+  font-style: normal;
+}
+
+.emptyNotice {
+  color: var(--text-gray-aa);
+  font-style: italic;
+  font-size: 0.875rem;
+  list-style: none;
+}
+
+/* --- RWD 響應式調整 --- */
+@media (max-width: 768px) {
+  .lineAreaContentContainer {
+    margin: 0;
+    gap: 0.75rem;
+  }
+
+  .lineAreaTitleDot,
+  .lineAreaTitleDotIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .lineAreaTitleText {
+    font-size: 1.75rem;
+  }
+
+  .lineAreaContentBlock {
+    margin: auto 1rem;
+    gap: 1rem;
+  }
+
+  .lineAreaContent,
+  .stationList {
+    gap: 1rem;
+  }
+
+  .stationBlock,
+  .adjacentAreaLink,
+  .disabledBadge {
+    font-size: 1.25rem;
+  }
+}

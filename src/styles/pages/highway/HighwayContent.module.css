@@ -1,0 +1,210 @@
+.highwayPageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--background);
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.highwayPageContainer::-webkit-scrollbar {
+  display: none;
+  width: 0;
+}
+
+.highwayContainerArea {
+  background-color: var(--background);
+  align-items: center;
+  width: 100%;
+  padding: 1.75rem 3rem;
+}
+
+.pageTitleContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 1.25rem auto;
+  align-items: center;
+  gap: 1rem;
+}
+
+.highwayIcon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.pageTitle {
+  color: var(--text-white-aaaa);
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  font-size: 3rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.divider {
+  background-color: var(--text-white-aaaa);
+  height: 1px;
+  margin: 1.25rem auto;
+  width: 100%;
+}
+
+.routeInfoSection {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+}
+
+.highwayDataTitle {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 1rem;
+}
+
+.highwayDataDetail {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.highwayMediaGallerySection {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+}
+
+.highwayPhotoTitle {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 1rem;
+}
+
+.frameContainer {
+  display: grid;
+  width: 100%;
+  gap: 3rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  position: relative;
+}
+
+.photoFrame {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.photoBlock {
+  width: 100%;
+  border-radius: 2rem;
+  aspect-ratio: 4 / 3;
+  position: relative;
+  background-color: var(--bg-placeholder, #f0f0f0);
+  overflow: hidden;
+  box-shadow:
+    4px 4px 4px 0 rgba(0, 0, 0, 0.25) inset,
+    8px 8px 4px 0 rgba(255, 255, 255, 0.25);
+}
+
+.highwayPhoto {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.photoDescriptionContainer {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.photoDescriptionText {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 1.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+/* 響應式微調 */
+@media (max-width: 768px) {
+  .highwayContainerArea {
+    padding: 1.25rem 2.5rem;
+  }
+
+  .pageTitleContainer {
+    gap: 0.5rem;
+  }
+
+  .highwayIcon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .pageTitle {
+    font-size: 2rem;
+  }
+
+  .divider {
+    margin: 0.75rem auto;
+  }
+
+  .routeInfoSection {
+    gap: 1rem;
+  }
+
+  .highwayDataTitle {
+    font-size: 1.75rem;
+  }
+
+  .highwayDataDetail {
+    font-size: 1.25rem;
+  }
+
+  .frameContainer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 576px) {
+  .frameContainer {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .photoDescriptionContainer {
+    gap: 0.5rem;
+  }
+
+  .photoDescriptionText {
+    font-size: 1rem;
+  }
+}

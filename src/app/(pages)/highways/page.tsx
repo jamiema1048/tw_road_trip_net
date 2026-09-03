@@ -1,11 +1,19 @@
-import { getConnections } from "@/src/app/_lib/mongodb_connections";
-import { HighwaySchema } from "@/src/models/Highway";
 import { Types } from "mongoose";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import HighwayListClient from "@/src/app/(client)/(highways)/HighwayListClient";
 
-// 🟢 1. 設定符合 SEO 規範的 Metadata
+import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
+import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
+import Province from "@/src/app/(components)/(highways)/Province";
+import County from "@/src/app/(components)/(highways)/County";
+import Loading from "@/src/app/(pages)/highways/loading";
+import { getConnections } from "@/src/app/_lib/mongodb_connections";
+import { HighwaySchema } from "@/src/models/Highway";
+import { Highway } from "@/src/types/highway";
+
+import styles from "@/src/styles/pages/highway/HighwayList.module.css";
+
+// 🟢 1. SEO Metadata
 export const metadata: Metadata = {
   title: "省道與縣道公路列表｜公路與廢線遺跡資料庫",
   description:
@@ -34,83 +42,84 @@ export const metadata: Metadata = {
 
 interface HighwayImage {
   _id: Types.ObjectId;
-  url: string; // 圖片位址
-  description?: string; // 加 ? 代表選填
-  capturedAt?: Date; // 選填：拍攝日期
+  url: string;
+  description?: string;
+  capturedAt?: Date;
 }
 
 export type HighwayStatus = "active" | "disused" | "unlisted";
 
 export interface MongoHighway {
   _id: Types.ObjectId;
-  id: number; // 台1線編號，如 40100
-  name: string; // 台1線
+  id: number;
+  name: string;
   status: HighwayStatus;
   highwayIcon?: string;
-  routeName: string; // 台北－楓港
+  routeName: string;
   length: number;
   currentLength: number;
   start: string;
   currentStart: string;
   end: string;
   currentEnd: string;
-  otherName: string[]; // 🟢 陣列正確寫法：string[]
+  otherName: string[];
   highest: number;
   highestPlace: string;
   remark: string;
-  images: HighwayImage[]; // 🟢 嵌套陣列正確寫法：HighwayImage[]
+  images: HighwayImage[];
 }
 
-export default async function HighwayListServer() {
-  let detailedHighways;
-  try {
-    // 1. 連線到 MongoDB
-    const { highwayConn } = await getConnections();
+export const revalidate = 86400; // 靜態快取更新時間 (24 hrs)
 
-    // 2. 建立/取得 Model (確保連線與 Schema 綁定)
+const COUNTY_SECTION_CONFIGS = [
+  { id: "120", label: "101~120", min: 100, max: 121 },
+  { id: "140", label: "121~140", min: 121, max: 141 },
+  { id: "160", label: "141~160", min: 141, max: 161 },
+  { id: "180", label: "161~180", min: 161, max: 181 },
+  { id: "200", label: "181~200", min: 181, max: 201 },
+  { id: "220", label: "201~", min: 201, max: Infinity },
+];
+
+export default async function HighwayListPage() {
+  // 1. 在 try 外宣告變數，用於儲存處理完畢的資料
+  let detailedHighways: (Highway & { currentImageIndex?: number })[] | null =
+    null;
+
+  try {
+    const { highwayConn } = await getConnections();
     const HighwayModel =
       highwayConn.models.Highway || highwayConn.model("Highway", HighwaySchema);
 
-    // 3. 抓取所有路線資料，並強型別斷言為 MongoRailway 陣列
     const allHighways = (await HighwayModel.find({}).lean()) as MongoHighway[];
 
-    if (!allHighways || allHighways.length === 0) {
-      notFound();
+    if (allHighways && allHighways.length > 0) {
+      detailedHighways = allHighways.map((hwy) => ({
+        ...hwy,
+        _id: hwy._id.toString(),
+        status: hwy.status || "active",
+        highwayIcon: hwy.highwayIcon || `/icons/highways/${hwy.id}.svg`,
+        images: (hwy.images || []).map((img) => ({
+          ...img,
+          _id: img._id ? img._id.toString() : "",
+          capturedAt: img.capturedAt
+            ? new Date(img.capturedAt).toISOString()
+            : null,
+        })),
+        currentImageIndex: 0,
+      })) as unknown as (Highway & { currentImageIndex?: number })[];
     }
-    console.log(HighwayModel);
-
-    // 3. 格式化資料（處理 MongoDB 的 _id 與 Date 物件轉為純字串/數字）
-    detailedHighways = allHighways.map((hwy) => ({
-      ...hwy,
-      _id: hwy._id.toString(), // 把 ObjectId 轉成字串
-      status: hwy.status || "active",
-      highwayIcon: hwy.highwayIcon || `/icons/highways/${hwy.id}.svg`,
-      // 確保 images 裡的日期也能被 Client Component 讀取
-      images: hwy.images.map((img) => ({
-        ...img,
-        _id: img._id ? img._id.toString() : "",
-        capturedAt: img.capturedAt
-          ? new Date(img.capturedAt).toISOString()
-          : null,
-      })),
-      currentImageIndex: 0, // 為了你的 Client 端切換功能保留
-    }));
   } catch (err: unknown) {
-    const error = err as (Error & { digest?: string }) | null | undefined;
-    if (
-      error?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
-      error?.message === "NEXT_NOT_FOUND"
-    ) {
-      throw err;
-    }
-
     console.error("載入公路頁面失敗，詳細錯誤原因:", err);
-
-    // 🟢 4. 將「真正的錯誤訊息」傳遞給 error.tsx，方便除錯
+    const error = err as (Error & { digest?: string }) | null | undefined;
     throw new Error(error?.message || "無法載入公路資料，請檢查資料庫連線。");
   }
 
-  // 🟢 2. 建立動態 JSON-LD 結構化資料 (ItemList Schema)
+  // 2. 判斷無資料時，於 try/catch 外部觸發 Next.js notFound 機制
+  if (!detailedHighways || detailedHighways.length === 0) {
+    notFound();
+  }
+
+  // 3. 建立動態 JSON-LD 結構化資料
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -130,15 +139,56 @@ export default async function HighwayListServer() {
     })),
   };
 
-  // 4. 直接把完整的資料丟給 Client Component
+  const province420 = detailedHighways.filter(
+    (hwy) => hwy.id / 100 >= 400 && hwy.id / 100 < 421,
+  );
+
+  const province440 = detailedHighways.filter(
+    (hwy) => hwy.id / 100 >= 421 && hwy.id / 100 < 500,
+  );
+
+  // 在 Server 端預先分類縣市道資料
+  const countySections = COUNTY_SECTION_CONFIGS.map((config) => {
+    const highways = detailedHighways!.filter((hwy) => {
+      const val = hwy.id / 100;
+      return val >= config.min && val < config.max;
+    });
+
+    return {
+      id: config.id,
+      label: config.label,
+      highways,
+    };
+  });
+
+  // 4. 在 try/catch 外層進行渲染與 Return
   return (
-    <>
-      {/* 注入 Schema 結構化資料給 Google 爬蟲 */}
+    <div className={styles.highwayListPageContainer}>
+      {/* 注入 Schema 結構化資料 */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <HighwayListClient highways={detailedHighways} />
-    </>
+
+      <div className={styles.highwayListContainer}>
+        <div className={styles.pageTitleContainer}>
+          <h1 className={styles.pageTitle}>公路列表</h1>
+        </div>
+        <Breadcrumbs />
+        <div className={styles.divider} />
+
+        {detailedHighways.length === 0 ? (
+          <div className={styles.loadingPlaceholderWrapper}>
+            <Loading />
+          </div>
+        ) : (
+          <div className={styles.highwayContentContainer}>
+            <Province section420={province420} section440={province440} />
+            <County sections={countySections} />
+          </div>
+        )}
+      </div>
+      <BottomNav />
+    </div>
   );
 }

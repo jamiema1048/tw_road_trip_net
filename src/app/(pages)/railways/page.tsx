@@ -90,15 +90,14 @@ export default async function LinePageServer() {
     throw new Error(error?.message || "無法載入鐵路資料，請檢查資料庫連線。");
   }
 
-  // 🟢 將 MongoDB 的原始 BSON 物件轉為簡單的純 JavaScript 物件 (Plain Object)
+  // 純 JS 物件化並排序
   const safeRailways = JSON.parse(
     JSON.stringify(allRailways),
   ) as MongoRailway[];
 
-  // 🟢 2. 確保陣列內部的每筆路線均依 id 升冪排序（雙重保險）
   safeRailways.sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
 
-  // 3. 依據 co 分組
+  // 依據 co 分組
   const groupedByCo = safeRailways.reduce<Record<number, MongoRailway[]>>(
     (acc, line) => {
       if (!acc[line.co]) acc[line.co] = [];
@@ -108,7 +107,6 @@ export default async function LinePageServer() {
     {},
   );
 
-  // 4. 建立網頁結構化資料
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -144,7 +142,7 @@ export default async function LinePageServer() {
             <RailwayCompanyGroup
               key={co}
               co={co}
-              companyMap={COMPANY_MAP}
+              companyName={COMPANY_MAP[Number(co)] || `公司 ${co}`}
               lineList={lineList}
             />
           ))}

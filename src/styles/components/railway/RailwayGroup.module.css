@@ -1,0 +1,148 @@
+.railwayGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 1.25rem 0;
+  gap: 1.75rem;
+}
+
+@media (max-width: 768px) {
+  .railwayGroup {
+    gap: 1.25rem;
+    margin: 0;
+  }
+}
+
+.railwayCoTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .railwayCoTitle {
+    gap: 0.25rem;
+  }
+}
+
+.railwayText {
+  color: var(--text-white-aaaa);
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  display: flex;
+  align-items: center;
+  font-size: 2.5rem;
+  font-weight: 400;
+  height: 3rem;
+  margin: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .railwayText {
+    font-size: 1.5rem;
+  }
+}
+
+.arrowIcon {
+  width: 3rem;
+  height: 3rem;
+  transition: transform 0.2s ease-in-out;
+  flex-shrink: 0;
+}
+
+.arrowIconOpen {
+  transform: rotate(180deg);
+}
+
+.arrowIconClosed {
+  transform: rotate(0deg);
+}
+
+@media (max-width: 768px) {
+  .arrowIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.frameContainer {
+  display: grid;
+  width: 100%;
+  gap: 3rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  position: relative;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .frameContainer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.25rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .frameContainer {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+.routeCell {
+  display: flex;
+  background-color: var(--text-gray-aaa);
+  border: 1px solid var(--border-route-cell);
+  border-radius: 1rem;
+  box-shadow:
+    6px 6px 6px rgba(74, 100, 246, 0.25),
+    inset 6px 6px 4px rgba(0, 0, 0, 0.25);
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  padding: 0.5rem 1rem;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.routeName {
+  color: var(--text-white-aaaa);
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  font-size: 1.75rem;
+  font-weight: 400;
+  margin: 0;
+  line-height: normal;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+  .routeName {
+    font-size: 1.5rem;
+  }
+}
+
+.trainIcon {
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  aspect-ratio: 1 / 1;
+}
+
+@media (max-width: 575.98px) {
+  .trainIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}

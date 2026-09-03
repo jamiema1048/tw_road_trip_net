@@ -1,0 +1,287 @@
+.stationPageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--background);
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+}
+
+.stationPageContainer::-webkit-scrollbar {
+  display: none;
+  width: 0;
+}
+
+.stationContainerArea {
+  background-color: var(--background);
+  align-items: center;
+  width: 100%;
+  padding: 1.75rem 3rem;
+}
+
+@media (max-width: 768px) {
+  .stationContainerArea {
+    padding: 1.25rem 2.5rem;
+  }
+}
+
+.pageTitleContainer {
+  display: flex;
+  justify-content: center;
+  margin: 1.25rem auto;
+}
+
+.pageTitle {
+  color: var(--text-white-aaaa);
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  font-size: 3rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+@media (max-width: 768px) {
+  .pageTitle {
+    font-size: 2rem;
+  }
+}
+
+.divider {
+  background-color: var(--text-white-aaaa);
+  height: 1px;
+  margin: 1.25rem auto;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .divider {
+    margin: 0.75rem auto;
+  }
+}
+
+.routeInfoSection {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .routeInfoSection {
+    gap: 1rem;
+  }
+}
+
+.stationDataTitle {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .stationDataTitle {
+    font-size: 1.75rem;
+  }
+}
+
+.stationDataDetail {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+@media (max-width: 768px) {
+  .stationDataDetail {
+    font-size: 1.25rem;
+  }
+}
+
+.stationMediaGallerySection {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+}
+
+.stationPhotoTitle {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 1rem;
+}
+
+.frameContainer {
+  display: grid;
+  width: 100%;
+  gap: 3rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .frameContainer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 576px) {
+  .frameContainer {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+.photoFrame {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.photoBlock {
+  border-radius: 2rem;
+  overflow: hidden;
+  box-shadow:
+    4px 4px 4px 0 rgba(0, 0, 0, 0.25) inset,
+    8px 8px 4px 0 rgba(255, 255, 255, 0.25);
+  width: 100%;
+}
+
+.stationPhoto {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.photoDescriptionContainer {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+@media (max-width: 576px) {
+  .photoDescriptionContainer {
+    gap: 0.5rem;
+  }
+}
+
+.photoDescriptionText {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 1.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+@media (max-width: 576px) {
+  .photoDescriptionText {
+    font-size: 1rem;
+  }
+}
+
+.adjacentStationsSection {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.75rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 576px) {
+  .adjacentStationsSection {
+    gap: 1rem;
+  }
+}
+
+.prevStationsArea,
+.nextStationsArea {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+@media (max-width: 576px) {
+  .prevStationsArea,
+  .nextStationsArea {
+    gap: 1rem;
+  }
+}
+
+.prevStationsTitle,
+.nextStationsTitle {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 1.75rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+@media (max-width: 576px) {
+  .prevStationsTitle,
+  .nextStationsTitle {
+    font-size: 1.25rem;
+  }
+}
+
+.adjacentStationsLink {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 1.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.adjacentStationsLink:hover {
+  text-decoration: underline;
+  color: var(--text-success);
+}
+
+@media (max-width: 576px) {
+  .adjacentStationsLink {
+    font-size: 1.25rem;
+  }
+}
+
+.adjacentStationsDisableLinkText {
+  color: var(--text-gray-aa);
+  font-family: Inter, sans-serif;
+  font-size: 1.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  opacity: 0.6;
+}
+
+@media (max-width: 576px) {
+  .adjacentStationsDisableLinkText {
+    font-size: 1.25rem;
+  }
+}

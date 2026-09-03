@@ -1,0 +1,32 @@
+.switchButton {
+  display: flex;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 修正 SSR 預設骨架，確保與按鈕尺寸一致，防止版面跳動 */
+.skeleton {
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .switchButton,
+  .skeleton {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}

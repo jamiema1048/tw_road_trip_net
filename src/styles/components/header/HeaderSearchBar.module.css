@@ -1,0 +1,125 @@
+.searchContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  background-color: transparent;
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  padding: 0.5rem 1.25rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 3rem;
+  gap: 0.75rem;
+}
+
+/* 展開狀態的 Form 樣式 */
+.form[data-open="true"] {
+  background-color: var(--background);
+  border-color: var(--text-white-aaaa);
+  width: 26rem;
+}
+
+.searchButton {
+  display: flex;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1 / 1;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  background-size: cover;
+  padding: 0;
+}
+
+.searchButtonIcon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.input {
+  background: transparent;
+  border: none;
+  color: var(--text-white-aaaa);
+  font-size: 2rem;
+  outline: none;
+  width: 100%;
+  padding: 0 8px;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease-in-out,
+    visibility 0.2s;
+}
+
+/* 展開狀態的 Input 樣式 */
+.input[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+}
+
+.input::placeholder {
+  color: var(--text-gray-aa);
+  text-align: start;
+  font-family: Inter, sans-serif;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: var(--text-white-aaaa);
+  font-size: 2rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  border-radius: 50%;
+  padding: 0;
+}
+
+.closeButton:hover {
+  color: var(--text-gray-aa);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* RWD 響應式調整 */
+@media (max-width: 768px) {
+  .form {
+    width: 1.5rem;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .form[data-open="true"] {
+    width: 12rem;
+  }
+
+  .searchButton,
+  .searchButtonIcon,
+  .closeButton {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .input,
+  .input::placeholder,
+  .closeButton {
+    font-size: 1.5rem;
+  }
+}

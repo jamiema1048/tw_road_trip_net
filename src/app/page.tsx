@@ -1,6 +1,10 @@
 import React from "react";
 import { Metadata } from "next";
-import HomeContentClient from "@/src/app/(client)/(home)/HomeContentClient";
+import Image from "next/image";
+import Link from "next/link";
+import TempImg from "@/public/Logo/Header.png";
+import styles from "@/src/styles/pages/home/Home.module.css";
+
 export const metadata: Metadata = {
   title: "首頁 | 探索台灣鐵路與公路歷史遺蹟",
   description:
@@ -21,5 +25,42 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage(): React.ReactElement {
-  return <HomeContentClient />;
+  return (
+    <div className={styles.homeContainer}>
+      <main className={styles.contentWrapper}>
+        <h1 className={styles.title}>來場探索台灣交通的旅途吧</h1>
+        <div className={styles.description}>
+          小時候翻開地圖，心裡不禁疑問著，鐵路和公路，真的只有這些嗎?
+          <br />
+          意外找到了地圖上沒出現的廢棄火車站，讓我更篤定答案不只如此
+          <br />
+          揹起背包，就踏上了這條不回頭尋找答案的旅途了
+        </div>
+        <div className={styles.divider} />
+        <div className={styles.journeyCards}>
+          <Link href="/railways" className={styles.journeyCard}>
+            <Image
+              alt="車站旅途"
+              src={TempImg}
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 360px"
+              className={styles.cardImage}
+            />
+            <div className={styles.journeyLabel}>車站旅途</div>
+          </Link>
+          <Link href="/highways" className={styles.journeyCard}>
+            <Image
+              alt="公路旅途"
+              src={TempImg}
+              fill
+              sizes="(max-width: 768px) 100vw, 360px"
+              className={styles.cardImage}
+            />
+            <div className={styles.journeyLabel}>公路旅途</div>
+          </Link>
+        </div>
+      </main>
+    </div>
+  );
 }

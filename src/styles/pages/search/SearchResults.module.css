@@ -1,0 +1,248 @@
+.searchResultsPageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #000000;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.searchResultsPageContainer::-webkit-scrollbar {
+  display: none;
+  width: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 1.75rem 3rem;
+  overflow-y: auto;
+  position: relative;
+}
+
+.searchHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.title {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.highlight {
+  color: var(--text-info);
+}
+
+.subText {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 1.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.divider {
+  background-color: var(--text-white-aaaa);
+  height: 1px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.resultsContainerArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem;
+  width: 60%;
+}
+
+.tabContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.tabButton {
+  border-radius: 0.75rem;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0.5rem 1rem;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #333333;
+  background-color: var(--text-gray-aaa);
+  color: var(--text-gray-a);
+  transition: all 0.2s ease-in-out;
+}
+
+.tabButton:hover {
+  border-color: var(--border-route-cell);
+  color: var(--text-white-aaaa);
+}
+
+.tabButtonActive {
+  border-color: var(--border-route-cell);
+  background-color: #067ae0;
+  color: var(--text-white-aaaa);
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 1.5rem;
+}
+
+.resultCard {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+  padding: 1.25rem 2rem;
+  background-color: var(--background);
+  border: 1px solid var(--text-white-aaaa);
+  border-radius: 1.25rem;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.resultCard:hover {
+  border: 3px solid var(--text-info);
+  transform: translateY(-2px);
+}
+
+.resultCard:active {
+  border: 3px solid var(--text-white-aaaa);
+}
+
+.cardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cardTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-white-aaaa);
+}
+
+.cardSubtitle {
+  font-size: 1.75rem;
+  color: var(--text-gray-aa);
+}
+
+.cardSubtitleSeparator {
+  color: #666666;
+  margin: 0 4px;
+}
+
+.cardGoIconDiv {
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  aspect-ratio: 1/1;
+}
+
+.cardGoIcon {
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  aspect-ratio: 1/1;
+}
+
+.emptyBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  padding: 4rem 1rem;
+}
+
+.emptyIcon {
+  flex-shrink: 0;
+  aspect-ratio: 1/1;
+}
+
+/* RWD 響應式佈局 */
+@media (max-width: 768px) {
+  .container {
+    padding: 1.25rem 2.5rem;
+  }
+
+  .searchHeader {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .subText {
+    font-size: 1rem;
+  }
+
+  .resultsContainerArea {
+    padding: 1rem;
+    width: 100%;
+  }
+
+  .tabContainer {
+    gap: 0.75rem;
+  }
+
+  .tabButton {
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    padding: 0.25rem 1rem;
+  }
+
+  .resultCard {
+    border-radius: 1.25rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .cardInfo {
+    gap: 0.5rem;
+  }
+
+  .cardTitle {
+    font-size: 1.5rem;
+  }
+
+  .cardSubtitle {
+    font-size: 1rem;
+  }
+
+  .cardGoIconDiv,
+  .cardGoIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}

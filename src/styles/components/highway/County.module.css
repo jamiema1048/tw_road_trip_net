@@ -1,0 +1,180 @@
+/* 動態狀態樣式 */
+.statusActive {
+  color: var(--background);
+  font-family: Inter, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+@media (prefers-color-scheme: dark) {
+  .statusActive {
+    color: var(--text-white-aaaa);
+  }
+}
+
+.statusDisused {
+  color: var(--text-gray-aa);
+  text-decoration: line-through;
+  font-family: Inter, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.statusUnlisted {
+  color: var(--text-info);
+  font-style: italic;
+  font-family: Inter, sans-serif;
+  font-weight: 400;
+  line-height: normal;
+}
+
+/* 佈局與組件樣式 */
+.highwayArea {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  transition: opacity 0.15s ease;
+}
+
+.highwayAreaPending {
+  opacity: 0.7;
+}
+
+.highwayAreaTitle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 0;
+}
+
+.highwayAreaTitleText {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.titleArrowIcon {
+  transition: transform 0.2s ease-in-out;
+  width: 3rem;
+  height: 3rem;
+}
+
+.numberTitleArrowIcon {
+  transition: transform 0.2s ease-in-out;
+  width: 2rem;
+  height: 2rem;
+}
+
+.iconOpen {
+  transform: rotate(180deg);
+}
+
+.iconClosed {
+  transform: rotate(0deg);
+}
+
+.numberGroupedHighwaysTitle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 0;
+}
+
+.numberGroupedHighwaysTitleText {
+  color: var(--text-white-aaaa);
+  font-family: Inter, sans-serif;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.numberGroupedHighways {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2rem;
+  align-self: stretch;
+}
+
+.groupedHighwaysArea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.groupedHighwaysLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: stretch;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+}
+
+.groupedHighwaysLink:hover {
+  color: var(--text-success);
+}
+
+.highwayIcon {
+  width: 3rem;
+  height: 3rem;
+  aspect-ratio: 1 / 1;
+}
+
+.highwayText {
+  font-family: Inter, sans-serif;
+  font-size: 1.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+/* RWD 響應式微調 */
+@media (max-width: 768px) {
+  .titleArrowIcon {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .highwayAreaTitleText {
+    font-size: 2rem;
+  }
+
+  .numberGroupedHighwaysTitleText {
+    font-size: 1.5rem;
+  }
+
+  .numberTitleArrowIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .numberGroupedHighways {
+    gap: 1rem;
+  }
+
+  .groupedHighwaysArea {
+    gap: 1rem;
+  }
+
+  .groupedHighwaysLink {
+    gap: 0.25rem;
+  }
+
+  .highwayIcon {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .highwayText {
+    font-size: 1.25rem;
+  }
+}

@@ -1,23 +1,25 @@
-// src/app/highways/HighwayContentServer.tsx
-export const dynamic = "force-dynamic";
-import { getConnections } from "@/src/app/_lib/mongodb_connections";
-import HighwayContentClient from "@/src/app/(client)/(highways)/HighwayContentClient";
-import { notFound } from "next/navigation";
 import { cache } from "react";
 import { Metadata } from "next";
-import { HighwaySchema } from "@/src/models/Highway";
+import { notFound } from "next/navigation";
+import Image from "next/image";
 import { Types } from "mongoose";
 
-// 1. 定義單張圖片在 MongoDB 內的型別
+import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
+import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
+import { getConnections } from "@/src/app/_lib/mongodb_connections";
+import { HighwaySchema } from "@/src/models/Highway";
+import { Highway } from "@/src/types/highway";
+
+import styles from "@/src/styles/pages/highway/HighwayContent.module.css";
+
 export interface HighwayImageDoc {
   _id?: Types.ObjectId | string;
   url?: string;
   description?: string;
   capturedAt?: string | Date | null;
-  [key: string]: unknown; // 容許圖片可能包含的其他延伸欄位
+  [key: string]: unknown;
 }
 
-// 2. 定義 Highway Document 型別
 export interface HighwayDoc {
   _id?: Types.ObjectId | string;
   id?: number;
@@ -35,20 +37,13 @@ export interface HighwayDoc {
   highest?: number;
   highestPlace?: string;
   remark?: string;
-  images?: Array<{
-    _id?: Types.ObjectId | string;
-    url?: string;
-    description?: string;
-    capturedAt?: string | Date | null;
-  }>;
+  images?: HighwayImageDoc[];
   [key: string]: unknown;
 }
 
 type PageParams = Promise<{ highwayId: string }>;
 
-// ----------------------------------------------------------------------
-// 1. React Cache 機制：封裝並共享同一次 Request 中的 DB 查詢
-// ----------------------------------------------------------------------
+// 1. React Cache 機制：同一次 Request 內共享 DB 查詢
 const getHighwayData = cache(async (highwayId: number) => {
   const { highwayConn } = await getConnections();
 
@@ -56,21 +51,14 @@ const getHighwayData = cache(async (highwayId: number) => {
     highwayConn.models.Highway ||
     highwayConn.model<HighwayDoc>("Highway", HighwaySchema, "highways");
 
-  const highwayData = await HighwayModel.findOne({
+  return await HighwayModel.findOne({
     id: highwayId,
   }).lean<HighwayDoc | null>();
-
-  return highwayData;
 });
 
-// ----------------------------------------------------------------------
-// 2. SSG / ISR 預先渲染設定
-// ----------------------------------------------------------------------
-// 允許未預渲染的公路頁面於首次造訪時動態生成
+// 2. SSG / ISR 設定
 export const dynamicParams = true;
-
-// 增量靜態再生 (ISR)：設定頁面快取過期時間（例如：24 小時）
-export const revalidate = 86400;
+export const revalidate = 86400; // 快取過期時間 24 小時
 
 export async function generateStaticParams() {
   try {
@@ -79,7 +67,6 @@ export async function generateStaticParams() {
       highwayConn.models.Highway ||
       highwayConn.model<HighwayDoc>("Highway", HighwaySchema, "highways");
 
-    // 撈取所有公路 ID 預先渲染頁面
     const highways = await HighwayModel.find({}).select("id").lean();
 
     return highways
@@ -93,9 +80,7 @@ export async function generateStaticParams() {
   }
 }
 
-// ----------------------------------------------------------------------
-// 3. Metadata 動態生成 (共享 getHighwayData 快取)
-// ----------------------------------------------------------------------
+// 3. Dynamic Metadata 生成
 export async function generateMetadata({
   params,
 }: {
@@ -110,7 +95,6 @@ export async function generateMetadata({
     const highwayData = await getHighwayData(numericHighwayId);
     if (!highwayData) return { title: "找不到公路資料" };
 
-    // 處理陣列與顯示文字（安全性檢查）
     const otherNames =
       Array.isArray(highwayData.otherName) && highwayData.otherName.length > 0
         ? `（${highwayData.otherName.join("、")}）`
@@ -158,69 +142,185 @@ export async function generateMetadata({
   }
 }
 
-export default async function HighwayContentServer({
-  params,
-}: {
-  params: PageParams;
-}) {
+export default async function HighwayPage({ params }: { params: PageParams }) {
   const resolvedParams = await params;
-  const highwayIdStr = resolvedParams.highwayId;
+  const numericHighwayId = Number(resolvedParams.highwayId);
 
-  // 🟢 修正 3：明確轉為數字，並阻擋無效 ID
-  const numericHighwayId = Number(highwayIdStr);
+  // 阻擋非數字 ID
   if (isNaN(numericHighwayId)) {
     notFound();
   }
 
-  let serializedHighway;
+  // 1. 在 try 外宣告變數以利 try/catch 後調用
+  let serializedHighway: Highway | null = null;
+
   try {
     const highwayData = await getHighwayData(numericHighwayId);
 
-    if (!highwayData) {
-      notFound();
+    if (highwayData) {
+      serializedHighway = {
+        _id: highwayData._id?.toString() || "",
+        id: highwayData.id ?? numericHighwayId,
+        name: highwayData.name || "",
+        status: highwayData.status || "active",
+        highwayIcon: highwayData.highwayIcon || "/icons/highways/default.svg",
+        routeName: highwayData.routeName || "",
+        length: highwayData.length ?? 0,
+        currentLength: highwayData.currentLength ?? 0,
+        start: highwayData.start || "",
+        currentStart: highwayData.currentStart || "",
+        end: highwayData.end || "",
+        currentEnd: highwayData.currentEnd || "",
+        otherName: Array.isArray(highwayData.otherName)
+          ? highwayData.otherName
+          : [],
+        highest: highwayData.highest ?? 0,
+        highestPlace: highwayData.highestPlace || "",
+        remark: highwayData.remark || "",
+        images: (highwayData.images || []).map((img) => ({
+          _id: img._id?.toString() || "",
+          url: img.url || "",
+          description: img.description || "",
+          capturedAt: img.capturedAt
+            ? new Date(img.capturedAt).toISOString()
+            : null,
+        })),
+      } as unknown as Highway;
     }
-
-    // 序列化處理 (Serialization)
-    serializedHighway = {
-      _id: highwayData._id?.toString() || "",
-      id: highwayData.id ?? numericHighwayId,
-      name: highwayData.name || "",
-      status: highwayData.status || "active",
-      highwayIcon: highwayData.highwayIcon || "/icons/highways/default.svg",
-      routeName: highwayData.routeName || "",
-      length: highwayData.length ?? 0,
-      currentLength: highwayData.currentLength ?? 0,
-      start: highwayData.start || "",
-      currentStart: highwayData.currentStart || "",
-      end: highwayData.end || "",
-      currentEnd: highwayData.currentEnd || "",
-      otherName: Array.isArray(highwayData.otherName)
-        ? highwayData.otherName
-        : [],
-      highest: highwayData.highest ?? 0,
-      highestPlace: highwayData.highestPlace || "",
-      remark: highwayData.remark || "",
-      images: (highwayData.images || []).map((img) => ({
-        _id: img._id?.toString(),
-        url: img.url || "",
-        description: img.description || "",
-        capturedAt: img.capturedAt
-          ? new Date(img.capturedAt).toISOString()
-          : null,
-      })),
-    };
   } catch (err: unknown) {
-    const error = err as (Error & { digest?: string }) | null | undefined;
-    if (
-      error?.digest?.includes("NEXT_HTTP_ERROR_FALLBACK") ||
-      error?.message === "NEXT_NOT_FOUND"
-    ) {
-      throw err;
-    }
-
     console.error("載入公路頁面失敗，詳細錯誤原因:", err);
+    const error = err as (Error & { digest?: string }) | null | undefined;
     throw new Error(error?.message || "無法載入公路資料，請檢查資料庫連線。");
   }
-  // 4. 將單一公路資料傳給 Client 渲染
-  return <HighwayContentClient highway={serializedHighway} />;
+
+  // 2. 查無資料時於 try/catch 外部觸發 404
+  if (!serializedHighway) {
+    notFound();
+  }
+
+  const highway = serializedHighway;
+
+  // 3. 在 try/catch 外部進行渲染與 return JSX
+  return (
+    <div className={styles.highwayPageContainer}>
+      <div className={styles.highwayContainerArea}>
+        <div className={styles.pageTitleContainer}>
+          <Image
+            src={
+              highway.highwayIcon ||
+              `/highway_mark/${highway.id}/${highway.id}.svg`
+            }
+            alt={`${highway.name} 圖示`}
+            width={48}
+            height={48}
+            priority
+            className={styles.highwayIcon}
+          />
+          <h1 className={styles.pageTitle}>{highway.name}</h1>
+        </div>
+        <Breadcrumbs
+          customNames={{
+            [highway.id]: highway.name,
+          }}
+        />
+        <div className={styles.divider} />
+        <p className="text-black dark:text-white">
+          狀態：
+          {highway.status === "active"
+            ? "營運中"
+            : highway.status === "disused"
+              ? "已廢止"
+              : "規劃中"}
+        </p>
+
+        <section className={styles.routeInfoSection}>
+          <h2 className={styles.highwayDataTitle}>路線資料</h2>
+          {highway.routeName && (
+            <h3 className={styles.highwayDataDetail}>
+              <strong>路線名稱:</strong> {highway.routeName}
+            </h3>
+          )}
+          <h3 className={styles.highwayDataDetail}>
+            <strong>起點:</strong> {highway.start}
+          </h3>
+          {highway.currentStart && (
+            <h3 className={styles.highwayDataDetail}>
+              <strong>通車起點:</strong> {highway.currentStart}
+            </h3>
+          )}
+          <h3 className={styles.highwayDataDetail}>
+            <strong>終點:</strong> {highway.end}
+          </h3>
+          {highway.currentEnd && (
+            <h3 className={styles.highwayDataDetail}>
+              <strong>通車終點:</strong> {highway.currentEnd}
+            </h3>
+          )}
+          <h3 className={styles.highwayDataDetail}>
+            <strong>長度:</strong> {highway.length} km
+          </h3>
+          {highway.currentLength && (
+            <h3 className={styles.highwayDataDetail}>
+              <strong>通車長度:</strong> {highway.currentLength} km
+            </h3>
+          )}
+          {highway.highest && (
+            <h3 className={styles.highwayDataDetail}>
+              <strong>最高海拔:</strong> {highway.highest} m
+            </h3>
+          )}
+          {highway.highestPlace && (
+            <h3 className={styles.highwayDataDetail}>
+              <strong>最高點:</strong> {highway.highestPlace}
+            </h3>
+          )}
+          {highway.otherName && highway.otherName.length > 0 && (
+            <h3 className={styles.highwayDataDetail}>
+              <strong>別稱:</strong> {highway.otherName.join("、")}
+            </h3>
+          )}
+          {highway.remark && (
+            <h3 className={styles.highwayDataDetail}>
+              <strong>備註:</strong> {highway.remark}
+            </h3>
+          )}
+        </section>
+
+        <section className={styles.highwayMediaGallerySection}>
+          <h2 className={styles.highwayPhotoTitle}>Images and Descriptions</h2>
+          {highway.images && highway.images.length > 0 && (
+            <div className={styles.frameContainer}>
+              {highway.images.map((img, idx) => (
+                <div key={img._id || idx} className={styles.photoFrame}>
+                  <div className={styles.photoBlock}>
+                    <Image
+                      src={img.url}
+                      alt={`${highway.name} - ${idx}`}
+                      width={800}
+                      height={600}
+                      className={styles.highwayPhoto}
+                      priority
+                    />
+                  </div>
+                  <div className={styles.photoDescriptionContainer}>
+                    {img.description && (
+                      <p className={styles.photoDescriptionText}>
+                        {img.description}
+                      </p>
+                    )}
+                    {img.capturedAt && (
+                      <p className={styles.photoDescriptionText}>
+                        {new Date(img.capturedAt).toISOString().split("T")[0]}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
+      <BottomNav />
+    </div>
+  );
 }

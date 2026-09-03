@@ -1,3 +1,4 @@
+// page.tsx (Server Component)
 export const dynamic = "force-dynamic";
 
 import { Metadata } from "next";
@@ -8,7 +9,6 @@ type SearchPageProps = {
   searchParams: Promise<{ q?: string }>;
 };
 
-// 全域 SEO 動態標題
 export async function generateMetadata({
   searchParams,
 }: SearchPageProps): Promise<Metadata> {
@@ -19,11 +19,17 @@ export async function generateMetadata({
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const { q } = await searchParams;
-  const query = q?.trim() || "";
+  const resolvedParams = await searchParams;
+  const query = resolvedParams.q?.trim() || "";
+  let results: Awaited<ReturnType<typeof getGlobalSearchResults>> = [];
 
-  // 伺服器端直接取得 DB 資料（不透過 API Route HTTP 請求）
-  const results = query ? await getGlobalSearchResults(query) : [];
+  if (query) {
+    try {
+      results = await getGlobalSearchResults(query);
+    } catch (error) {
+      console.error("搜尋過程發生錯誤:", error);
+    }
+  }
 
   return <SearchResultsClient query={query} results={results} />;
 }

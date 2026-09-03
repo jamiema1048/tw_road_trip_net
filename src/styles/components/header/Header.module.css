@@ -1,0 +1,229 @@
+/* BREAKPOINT: 768px */
+
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 1rem 1.5rem;
+  line-height: 1;
+  background-color: var(--bg-primary);
+  box-shadow: 0px 8px 10px #ffffff40;
+  box-sizing: border-box;
+  width: 100%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  gap: 0;
+}
+
+.header.isMenuOpen {
+  gap: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-wrap: wrap;
+    padding: 0.5rem 1.5rem;
+  }
+}
+
+.headerMainArea {
+  align-items: center;
+  background-color: var(--bg-primary);
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 1024px) {
+  .headerMainArea :global(.frame) {
+    gap: 24px;
+  }
+  .headerMainArea :global(.text-wrapper) {
+    font-size: 28px;
+  }
+}
+
+.iconButton {
+  display: flex;
+  width: 3.5rem;
+  height: 3.5rem;
+  flex-shrink: 0;
+  background: transparent;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+  border: none;
+  cursor: pointer;
+  background-size: cover;
+}
+
+@media (max-width: 768px) {
+  .iconButton {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+}
+
+.headerTools {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+@media (max-width: 768px) {
+  .headerTools {
+    gap: 1.25rem;
+  }
+}
+
+.navTextButton {
+  display: flex;
+  color: var(--text-white-aaa);
+  font-family: "Inter-Regular", Helvetica;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: normal;
+  margin-top: -1px;
+  position: relative;
+  white-space: nowrap;
+  width: fit-content;
+  background: none;
+  text-decoration: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .navTextButton {
+    display: none;
+    font-size: 1.5rem;
+  }
+}
+
+.homeButton {
+  display: flex;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+  background: transparent;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .homeButton {
+    display: none;
+  }
+}
+
+.moreOptionButton {
+  display: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .moreOptionButton {
+    display: flex;
+  }
+}
+
+.menuContainer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+}
+
+.menuContainer.isMenuOpen {
+  grid-template-rows: 1fr;
+}
+
+.menuContent {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 0;
+  gap: 0;
+  width: 100%;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease,
+    padding-top 0.35s ease,
+    gap 0.35s ease;
+}
+
+.menuContent.isMenuOpen {
+  padding-top: 0.75rem;
+  gap: 0.75rem;
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+.dropListHomeButton {
+  display: none;
+  width: 100%;
+  height: 1.5rem;
+  flex-shrink: 0;
+  background: transparent;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .dropListHomeButton {
+    display: flex;
+  }
+}
+
+.dropListTextButton {
+  display: none;
+  color: var(--text-white-aaa);
+  font-family: "Inter-Regular", Helvetica;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: normal;
+  margin-top: -1px;
+  position: relative;
+  white-space: nowrap;
+  width: fit-content;
+  background: none;
+  text-decoration: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .dropListTextButton {
+    display: flex;
+  }
+}

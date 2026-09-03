@@ -1,0 +1,76 @@
+.highwayListPageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--background);
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.highwayListPageContainer::-webkit-scrollbar {
+  display: none;
+  width: 0;
+}
+
+.highwayListContainer {
+  background-color: var(--background);
+  width: 100%;
+  padding: 1.75rem 3rem;
+}
+
+.pageTitleContainer {
+  display: flex;
+  justify-content: center;
+  margin: 1.25rem auto;
+}
+
+.pageTitle {
+  color: var(--text-white-aaaa);
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  font-size: 3rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.divider {
+  background-color: var(--text-white-aaaa);
+  height: 1px;
+  margin: 1.25rem auto;
+  width: 100%;
+}
+
+.highwayContentContainer {
+  margin: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.loadingPlaceholderWrapper {
+  min-height: 400px; /* 預留列表高度，避免 CLS */
+}
+
+/* RWD 響應式佈局 */
+@media (max-width: 768px) {
+  .highwayListContainer {
+    padding: 1.25rem 2.5rem;
+  }
+
+  .pageTitle {
+    font-size: 2rem;
+  }
+
+  .divider {
+    margin: 0.75rem auto;
+  }
+
+  .highwayContentContainer {
+    margin: 0;
+  }
+}

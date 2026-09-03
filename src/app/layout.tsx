@@ -4,7 +4,6 @@ import "./globals.css";
 import { Providers } from "@/src/app/providers";
 import Header from "@/src/app/(components)/(header)/header";
 import { Footer } from "@/src/app/(components)/(footer)/footer";
-import StyledComponentsRegistry from "@/src/app/_lib/registry";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,13 +48,11 @@ export default function RootLayout({
     >
       <body suppressHydrationWarning>
         {/* 把 Providers 包在最外層，讓 Header、Footer、Children 都能共享 Theme 狀態 */}
-        <StyledComponentsRegistry>
-          <Providers>
-            <Header />
-            <main style={{ flex: 1 }}>{children}</main>
-            <Footer />
-          </Providers>
-        </StyledComponentsRegistry>
+        <Providers>
+          <Header />
+          <main style={{ flex: 1 }}>{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
