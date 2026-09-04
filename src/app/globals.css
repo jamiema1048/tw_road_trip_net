@@ -28,23 +28,6 @@
   --text-white-aaa: #2a2a2a;
   --text-white-aaaa: #030507;
 
-  /* 快捷別名映射 (維持原本 CSS Variables 命名相容性) */
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-bg-primary: var(--bg-primary);
-  --color-border-route-cell: var(--border-route-cell);
-
-  --color-text-success: var(--text-success);
-  --color-text-info: var(--text-info);
-  --color-text-warning: var(--text-warning);
-  --color-text-danger: var(--text-danger);
-
-  --color-text-gray-aaa: var(--text-gray-aaa);
-  --color-text-gray-aa: var(--text-gray-aa);
-  --color-text-gray-a: var(--text-gray-a);
-  --color-text-white-aaa: var(--text-white-aaa);
-  --color-text-white-aaaa: var(--text-white-aaaa);
-
   --font-sans: var(--font-geist-sans, Arial, Helvetica, sans-serif);
   --font-mono: var(--font-geist-mono, monospace);
 }
@@ -73,6 +56,8 @@ html,
 body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -81,7 +66,16 @@ body {
   font-family: var(--font-sans);
   width: 100%;
   overflow-x: hidden;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+  /* 🟢 移除 transition：全頁面顏色切換瞬間完成，0ms 排版計算開銷 */
+}
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1 0 auto; /* 🟢 確保 main 自動填滿剩餘高度，將 Footer 推至底部 */
+  width: 100%;
 }

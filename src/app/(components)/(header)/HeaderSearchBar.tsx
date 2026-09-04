@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "@/src/styles/components/header/HeaderSearchBar.module.css";
 
-export default function HeaderSearchBar() {
+// 1. 將包含 useSearchParams 的核心邏輯抽出來
+function HeaderSearchBarContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -71,7 +72,7 @@ export default function HeaderSearchBar() {
   return (
     <div className={styles.searchContainer} ref={containerRef}>
       <form className={styles.form} onSubmit={handleSearch} data-open={isOpen}>
-        {/* 放大鏡按鈕 (未展開時顯示，展開時作為提交按鈕) */}
+        {/* 放大鏡按鈕 */}
         <button
           type={isOpen ? "submit" : "button"}
           className={`${styles.searchButton} logo`}
@@ -123,5 +124,14 @@ export default function HeaderSearchBar() {
         )}
       </form>
     </div>
+  );
+}
+
+// 2. 主元件外層加上 Suspense 邊界導出
+export default function HeaderSearchBar() {
+  return (
+    <Suspense fallback={null}>
+      <HeaderSearchBarContent />
+    </Suspense>
   );
 }

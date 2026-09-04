@@ -1,12 +1,6 @@
 "use client";
 
-import React, {
-  useState,
-  useEffect,
-  useSyncExternalStore,
-  useCallback,
-  memo,
-} from "react";
+import React, { useState, useCallback, memo } from "react";
 import Link from "next/link";
 import HeaderSearchBar from "@/src/app/(components)/(header)/HeaderSearchBar";
 import { ThemeToggle } from "@/src/app/(components)/(header)/(button)/ThemeToggle";
@@ -17,8 +11,6 @@ export interface ComponentHeaderProps {
   listStatus?: "close";
   className?: string;
 }
-
-const emptySubscribe = () => () => {};
 
 const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,30 +23,8 @@ const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
     setIsMenuOpen(false);
   }, []);
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(min-width: 769px)");
-
-    const handleResize = (e: MediaQueryListEvent | MediaQueryList) => {
-      if (e.matches) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    handleResize(mediaQuery);
-    mediaQuery.addEventListener("change", handleResize);
-
-    return () => {
-      mediaQuery.removeEventListener("change", handleResize);
-    };
-  }, []);
-
-  const isMounted = useSyncExternalStore(
-    emptySubscribe,
-    () => true,
-    () => false,
-  );
-
-  if (!isMounted) return null;
+  // 🟢 徹底移除 isMounted 攔截與 window.matchMedia JS 監聽
+  // Header HTML 在 Server 端直接同步渲染完成，0 毫秒延遲！
 
   return (
     <header
@@ -132,7 +102,7 @@ const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
               fill="none"
             >
               <path
-                d="M12 38H18V28C18 27.4333 18.192 26.9587 18.576 26.576C18.96 26.1933 19.4347 26.0013 20 26H28C28.5667 26 29.042 26.192 29.426 26.576C29.81 26.96 30.0013 27.4347 30 28V38H36V20L24 11L12 20V38ZM8 38V20C8 19.3667 8.142 18.7667 8.426 18.2C8.71 17.6333 9.10133 17.1667 9.6 16.8L21.6 7.8C22.3 7.26667 23.1 7 24 7C24.9 7 25.7 7.26667 26.4 7.8L38.4 16.8C38.9 17.1667 39.292 17.6333 39.576 18.2C39.86 18.7667 40.0013 19.3667 40 20V38C40 39.1 39.608 40.042 38.824 40.826C38.04 41.61 37.0987 42.0013 36 42H28C27.4333 42 26.9587 41.808 26.576 41.424C26.1933 41.04 26.0013 40.5653 26 40V30H22V40C22 40.5667 21.808 41.042 21.424 41.426C21.04 41.81 20.5653 42.0013 20 42H12C10.9 42 9.95867 41.6087 9.176 40.826C8.39333 40.0433 8.00133 39.1013 8 38Z"
+                d="M12 38H18V28C18 27.4333 18.192 26.9587 18.576 26.576C18.96 26.1933 19.4347 26.0013 20 26H28C28.5667 26 29.042 26.192 29.426 26.576C29.81 26.96 30.0013 27.4347 30 28V38H36V20L24 11L12 20V38ZM8 38V20C8 19.3667 8.142 18.7667 8.426 18.2C8.71 17.6333 9.10133 17.1667 9.6 16.8L21.6 7.8C22.3 7.26667 23.1 7 24 7C24.9 7 25.7 7.26667 26.4 7.8L38.4 16.8C38.9 17.1667 39.292 17.6333 39.576 18.2C39.86 18.7667 40.0013 19.3667 40 20V38C40 39.1 39.608 40.042 38.824 40.826C38.04 41.61 37.0987 42.0013 36 42H28C27.4333 42 26.9587 41.808 26.576 41.424C26.1933 41.04 26.0013 40.5653 26 40V30H22V40C22 40.5667 21.808 41.042 21.424 41.424C21.04 41.81 20.5653 42.0013 20 42H12C10.9 42 9.95867 41.6087 9.176 40.826C8.39333 40.0433 8.00133 39.1013 8 38Z"
                 fill="var(--text-white-aaa)"
               />
             </svg>
@@ -141,7 +111,7 @@ const Header: React.FC<ComponentHeaderProps> = ({ className = "" }) => {
           <button
             type="button"
             className={`${styles.moreOptionButton} more-option`}
-            aria-label="回首頁"
+            aria-label="開啟選單"
             onClick={toggleMenu}
           >
             {isMenuOpen ? (

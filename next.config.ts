@@ -3,11 +3,13 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   compiler: {
     // 啟用 styled-components SSR 支援，保證 Client 與 Server 的 className 一致
-    styledComponents: true,
+  },
+  experimental: {
+    optimizePackageImports: ["lucide-react", "@iconify/react"],
   },
   images: {
     minimumCacheTTL: 31536000,
-    unoptimized: true,
+    unoptimized: false,
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {

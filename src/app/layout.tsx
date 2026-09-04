@@ -9,18 +9,21 @@ const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
   display: "swap",
+  adjustFontFallback: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
+  adjustFontFallback: true,
 });
 
 const inter = Inter({
   variable: "--font-inter", // 🟢 變數名稱改為 --font-inter
   subsets: ["latin"],
   display: "swap",
+  adjustFontFallback: true,
 });
 
 export const metadata: Metadata = {
@@ -50,7 +53,7 @@ export default function RootLayout({
         {/* 把 Providers 包在最外層，讓 Header、Footer、Children 都能共享 Theme 狀態 */}
         <Providers>
           <Header />
-          <main style={{ flex: 1 }}>{children}</main>
+          <main className="main-content">{children}</main>
           <Footer />
         </Providers>
       </body>

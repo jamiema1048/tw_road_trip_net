@@ -10,16 +10,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       enableSystem={false}
       disableTransitionOnChange
     >
-      {/* 🟢 直接用 CSS 樣式，省去 styled-components 執行 JS 注入樣式的毫秒數 */}
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {children}
-      </div>
+      <div className="app-container">{children}</div>
     </ThemeProvider>
   );
 }

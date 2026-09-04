@@ -158,6 +158,12 @@
   width: 100%;
 }
 
+@media (min-width: 768px) {
+  .menuContainer {
+    display: none !important;
+  }
+}
+
 .menuContainer.isMenuOpen {
   grid-template-rows: 1fr;
 }
