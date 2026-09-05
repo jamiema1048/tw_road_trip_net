@@ -11,6 +11,8 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 1.25rem;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 300px;
 }
 
 .lineAreaTitle {

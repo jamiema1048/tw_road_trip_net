@@ -78,6 +78,8 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   position: relative;
   margin: 0;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 150px;
 }
 
 @media (max-width: 768px) {

@@ -93,6 +93,7 @@
   text-rendering: optimizeSpeed;
   overflow-wrap: break-word;
   word-break: break-word;
+  content-visibility: auto;
 }
 
 .refDetailText strong,

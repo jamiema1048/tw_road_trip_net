@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
+import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem"; // 匯入 LazyItem
 import styles from "@/src/styles/components/railway/RailwayGroup.module.css";
 
 interface Line {
@@ -55,21 +56,18 @@ export const RailwayCompanyGroup: React.FC<RailwayCompanyGroupProps> = ({
   lineList,
 }) => {
   const [isRailwayShow, setIsRailwayShow] = useState(false);
-  const [isPending, startTransition] = useTransition();
 
+  // 移除 useTransition，回歸同步切換
   const handleToggle = () => {
-    startTransition(() => {
-      setIsRailwayShow((prev) => !prev);
-    });
+    setIsRailwayShow((prev) => !prev);
   };
 
-  const arrowClass = `${styles.arrowIcon} ${isRailwayShow ? styles.arrowIconOpen : styles.arrowIconClosed}`;
+  const arrowClass = `${styles.arrowIcon} ${
+    isRailwayShow ? styles.arrowIconOpen : styles.arrowIconClosed
+  }`;
 
   return (
-    <div
-      className={styles.railwayGroup}
-      style={{ opacity: isPending ? 0.7 : 1, transition: "opacity 0.15s" }}
-    >
+    <div className={styles.railwayGroup}>
       <button
         onClick={handleToggle}
         className={styles.railwayCoTitle}
@@ -95,14 +93,16 @@ export const RailwayCompanyGroup: React.FC<RailwayCompanyGroupProps> = ({
       {isRailwayShow && (
         <div className={styles.frameContainer}>
           {lineList.map((l) => (
-            <Link
-              href={`/railways/${l.id}`}
-              key={l.id}
-              className={styles.routeCell}
-            >
-              <TransportIcon cop={Number(co)} />
-              <h3 className={styles.routeName}>{l.name}</h3>
-            </Link>
+            <LazyItem key={l.id}>
+              <Link
+                href={`/railways/${l.id}`}
+                className={styles.routeCell}
+                prefetch={false}
+              >
+                <TransportIcon cop={Number(co)} />
+                <h3 className={styles.routeName}>{l.name}</h3>
+              </Link>
+            </LazyItem>
           ))}
         </div>
       )}

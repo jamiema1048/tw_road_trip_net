@@ -6,6 +6,7 @@ import { cache } from "react";
 
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
+import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem";
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
 import { RailwaySchema } from "@/src/models/Railway";
 import { StationSchema } from "@/src/models/Station";
@@ -344,155 +345,159 @@ export default async function StationPage({
           }}
         />
         <div className={styles.divider} />
-        <p className="text-black dark:text-white">
-          狀態：
-          {station.status === "active"
-            ? "營運中"
-            : station.status === "disused"
-              ? "已廢止"
-              : "規劃中"}
-        </p>
+        <LazyItem>
+          <p className="text-black dark:text-white">
+            狀態：
+            {station.status === "active"
+              ? "營運中"
+              : station.status === "disused"
+                ? "已廢止"
+                : "規劃中"}
+          </p>
 
-        <section className={styles.routeInfoSection}>
-          <h2 className={styles.stationDataTitle}>車站資料</h2>
-          {station.openDate.length > 0 && (
-            <h3 className={styles.stationDataDetail}>
-              <strong>設站日期:</strong> {station.openDate.join("、")}
-            </h3>
-          )}
-          {station.closeDate.length > 0 && (
-            <h3 className={styles.stationDataDetail}>
-              <strong>廢止日期:</strong> {station.closeDate.join("、")}
-            </h3>
-          )}
-          {station.originalName.length > 0 && (
-            <h3 className={styles.stationDataDetail}>
-              <strong>舊名:</strong> {station.originalName.join("、")}
-            </h3>
-          )}
-          {station.level && (
-            <h3 className={styles.stationDataDetail}>
-              <strong>站等:</strong> {station.level}
-            </h3>
-          )}
-          {station.miles.length > 0 && (
-            <h3 className={styles.stationDataDetail}>
-              <strong>里程:</strong> {station.miles.join("、")}
-            </h3>
-          )}
-          {station.height && (
-            <h3 className={styles.stationDataDetail}>
-              <strong>海拔高度:</strong> {station.height}
-            </h3>
-          )}
-          {station.stationCode && (
-            <h3 className={styles.stationDataDetail}>
-              <strong>代碼:</strong> {station.stationCode}
-            </h3>
-          )}
-        </section>
+          <section className={styles.routeInfoSection}>
+            <h2 className={styles.stationDataTitle}>車站資料</h2>
+            {station.openDate.length > 0 && (
+              <h3 className={styles.stationDataDetail}>
+                <strong>設站日期:</strong> {station.openDate.join("、")}
+              </h3>
+            )}
+            {station.closeDate.length > 0 && (
+              <h3 className={styles.stationDataDetail}>
+                <strong>廢止日期:</strong> {station.closeDate.join("、")}
+              </h3>
+            )}
+            {station.originalName.length > 0 && (
+              <h3 className={styles.stationDataDetail}>
+                <strong>舊名:</strong> {station.originalName.join("、")}
+              </h3>
+            )}
+            {station.level && (
+              <h3 className={styles.stationDataDetail}>
+                <strong>站等:</strong> {station.level}
+              </h3>
+            )}
+            {station.miles.length > 0 && (
+              <h3 className={styles.stationDataDetail}>
+                <strong>里程:</strong> {station.miles.join("、")}
+              </h3>
+            )}
+            {station.height && (
+              <h3 className={styles.stationDataDetail}>
+                <strong>海拔高度:</strong> {station.height}
+              </h3>
+            )}
+            {station.stationCode && (
+              <h3 className={styles.stationDataDetail}>
+                <strong>代碼:</strong> {station.stationCode}
+              </h3>
+            )}
+          </section>
 
-        <section className={styles.stationMediaGallerySection}>
-          <h2 className={styles.stationPhotoTitle}>Images and Descriptions</h2>
-          {station.images && station.images.length > 0 && (
-            <div className={styles.frameContainer}>
-              {station.images.map((img) => (
-                <div key={img._id} className={styles.photoFrame}>
-                  <div className={styles.photoBlock}>
-                    <Image
-                      src={img.url}
-                      alt={img.description}
-                      width={800}
-                      height={600}
-                      className={styles.stationPhoto}
-                      priority
-                    />
-                  </div>
-                  <div className={styles.photoDescriptionContainer}>
-                    {img.description && (
-                      <p className={styles.photoDescriptionText}>
-                        {img.description}
-                      </p>
-                    )}
-                    {img.capturedAt && (
-                      <p className={styles.photoDescriptionText}>
-                        {new Date(img.capturedAt).toISOString().split("T")[0]}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        <section className={styles.adjacentStationsSection}>
-          {station.prevStation && (
-            <div className={styles.prevStationsArea}>
-              <h3 className={styles.prevStationsTitle}>上一站：</h3>
-              {station.prevStation.map((id) => {
-                const match = adjacentStations.find(
-                  (s) => String(s.id) === String(id),
-                );
-                const targetLine = match ? getTargetLineParam(match) : "";
-
-                return match ? (
-                  match.hasDetail ? (
-                    <Link
-                      key={id}
-                      href={`/stations/${id}?line=${targetLine}`}
-                      className={styles.adjacentStationsLink}
-                    >
-                      {match.name}
-                    </Link>
-                  ) : (
-                    <div
-                      key={id}
-                      className={styles.adjacentStationsDisableLinkText}
-                    >
-                      {match.name}
+          <section className={styles.stationMediaGallerySection}>
+            <h2 className={styles.stationPhotoTitle}>
+              Images and Descriptions
+            </h2>
+            {station.images && station.images.length > 0 && (
+              <div className={styles.frameContainer}>
+                {station.images.map((img) => (
+                  <div key={img._id} className={styles.photoFrame}>
+                    <div className={styles.photoBlock}>
+                      <Image
+                        src={img.url}
+                        alt={img.description}
+                        width={800}
+                        height={600}
+                        className={styles.stationPhoto}
+                      />
                     </div>
-                  )
-                ) : (
-                  <span key={id}>ID: {id}</span>
-                );
-              })}
-            </div>
-          )}
-
-          {station.nextStation && (
-            <div className={styles.nextStationsArea}>
-              <h3 className={styles.nextStationsTitle}>下一站：</h3>
-              {station.nextStation.map((id) => {
-                const match = adjacentStations.find(
-                  (s) => String(s.id) === String(id),
-                );
-                const targetLine = match ? getTargetLineParam(match) : "";
-
-                return match ? (
-                  match.hasDetail ? (
-                    <Link
-                      key={id}
-                      href={`/stations/${id}?line=${targetLine}`}
-                      className={styles.adjacentStationsLink}
-                    >
-                      {match.name}
-                    </Link>
-                  ) : (
-                    <div
-                      key={id}
-                      className={styles.adjacentStationsDisableLinkText}
-                    >
-                      {match.name}
+                    <div className={styles.photoDescriptionContainer}>
+                      {img.description && (
+                        <p className={styles.photoDescriptionText}>
+                          {img.description}
+                        </p>
+                      )}
+                      {img.capturedAt && (
+                        <p className={styles.photoDescriptionText}>
+                          {new Date(img.capturedAt).toISOString().split("T")[0]}
+                        </p>
+                      )}
                     </div>
-                  )
-                ) : (
-                  <span key={id}>ID: {id}</span>
-                );
-              })}
-            </div>
-          )}
-        </section>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className={styles.adjacentStationsSection}>
+            {station.prevStation && (
+              <div className={styles.prevStationsArea}>
+                <h3 className={styles.prevStationsTitle}>上一站：</h3>
+                {station.prevStation.map((id) => {
+                  const match = adjacentStations.find(
+                    (s) => String(s.id) === String(id),
+                  );
+                  const targetLine = match ? getTargetLineParam(match) : "";
+
+                  return match ? (
+                    match.hasDetail ? (
+                      <Link
+                        key={id}
+                        href={`/stations/${id}?line=${targetLine}`}
+                        className={styles.adjacentStationsLink}
+                        prefetch={false}
+                      >
+                        {match.name}
+                      </Link>
+                    ) : (
+                      <div
+                        key={id}
+                        className={styles.adjacentStationsDisableLinkText}
+                      >
+                        {match.name}
+                      </div>
+                    )
+                  ) : (
+                    <span key={id}>ID: {id}</span>
+                  );
+                })}
+              </div>
+            )}
+
+            {station.nextStation && (
+              <div className={styles.nextStationsArea}>
+                <h3 className={styles.nextStationsTitle}>下一站：</h3>
+                {station.nextStation.map((id) => {
+                  const match = adjacentStations.find(
+                    (s) => String(s.id) === String(id),
+                  );
+                  const targetLine = match ? getTargetLineParam(match) : "";
+
+                  return match ? (
+                    match.hasDetail ? (
+                      <Link
+                        key={id}
+                        href={`/stations/${id}?line=${targetLine}`}
+                        className={styles.adjacentStationsLink}
+                      >
+                        {match.name}
+                      </Link>
+                    ) : (
+                      <div
+                        key={id}
+                        className={styles.adjacentStationsDisableLinkText}
+                      >
+                        {match.name}
+                      </div>
+                    )
+                  ) : (
+                    <span key={id}>ID: {id}</span>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+        </LazyItem>
       </div>
 
       <BottomNav station={station} railways={matchedRailways} />

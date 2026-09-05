@@ -101,6 +101,8 @@
   align-items: flex-start;
   gap: 2rem;
   align-self: stretch;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 200px;
 }
 
 .groupedHighwaysArea {
@@ -108,6 +110,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 1.5rem;
+  content-visibility: auto;
 }
 
 .groupedHighwaysLink {
@@ -117,10 +120,40 @@
   align-self: stretch;
   transition: all 0.2s ease-in-out;
   text-decoration: none;
+  content-visibility: auto;
 }
 
 .groupedHighwaysLink:hover {
   color: var(--text-success);
+}
+
+/* 狀態樣式 (Status) */
+.statusActive {
+  color: var(--background);
+  font-family: Inter, sans-serif;
+  text-decoration: none;
+  font-weight: 400;
+}
+
+@media (prefers-color-scheme: dark) {
+  .statusActive {
+    color: var(--text-white-aaaa);
+  }
+}
+
+.statusDisused {
+  color: var(--text-gray-aa);
+  text-decoration: line-through;
+  font-family: Inter, sans-serif;
+  font-weight: 400;
+}
+
+.statusUnlisted {
+  color: var(--text-info);
+  font-style: italic;
+  font-family: Inter, sans-serif;
+  text-decoration: none;
+  font-weight: 400;
 }
 
 .highwayIcon {

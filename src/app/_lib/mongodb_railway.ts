@@ -33,6 +33,8 @@ export const connectToRailwayDatabase = async (): Promise<Connection> => {
     const opts = {
       bufferCommands: false,
       maxPoolSize: 10, // 限制連線數，對 Vercel 友善
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
     };
 
     // 使用 createConnection 而非 connect，確保多資料庫環境不衝突

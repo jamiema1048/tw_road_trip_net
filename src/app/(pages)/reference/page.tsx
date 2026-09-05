@@ -1,10 +1,19 @@
 import React from "react";
 import { Metadata } from "next";
 import Link from "next/link";
-import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
+import dynamic from "next/dynamic";
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import { Reference_DATA } from "@/src/data/referenceData";
+import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem";
 import styles from "@/src/styles/pages/reference/Reference.module.css";
+
+const BottomNav = dynamic(
+  () => import("@/src/app/(components)/(bottomnav)/BottomNav"),
+  {
+    loading: () => <div className="h-16 w-full bg-transparent" />,
+    ssr: true,
+  },
+);
 
 export const metadata: Metadata = {
   title: "參考資料與引用文獻｜台灣鐵道與公路歷史資料庫",
@@ -73,41 +82,43 @@ export default function ReferencePage() {
           const sectionKey = section.id || `ref-section-${sIndex}`;
 
           return (
-            <section key={sectionKey} className={styles.refInfoSection}>
-              <h2 className={styles.refTitle}>{section.title}</h2>
+            <LazyItem key={sectionKey}>
+              <section className={styles.refInfoSection}>
+                <h2 className={styles.refTitle}>{section.title}</h2>
 
-              {section.subtitle && (
-                <p className={styles.refDetailText}>{section.subtitle}</p>
-              )}
+                {section.subtitle && (
+                  <p className={styles.refDetailText}>{section.subtitle}</p>
+                )}
 
-              {section.items.map((item, iIndex) => {
-                const itemKey = item.id || `ref-item-${iIndex}`;
+                {section.items.map((item, iIndex) => {
+                  const itemKey = item.id || `ref-item-${iIndex}`;
 
-                return (
-                  <div key={itemKey} className={styles.refDetail}>
-                    <ReferenceHeadIcon />
+                  return (
+                    <div key={itemKey} className={styles.refDetail}>
+                      <ReferenceHeadIcon />
 
-                    {item.link ? (
-                      <Link
-                        className={styles.refDetailLink}
-                        href={item.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        prefetch={false}
-                      >
-                        {item.subtitle && <strong>{item.subtitle}</strong>}
-                        {item.content}
-                      </Link>
-                    ) : (
-                      <div className={styles.refDetailText}>
-                        {item.subtitle && <strong>{item.subtitle}</strong>}
-                        {item.content}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </section>
+                      {item.link ? (
+                        <Link
+                          className={styles.refDetailLink}
+                          href={item.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          prefetch={false}
+                        >
+                          {item.subtitle && <strong>{item.subtitle}</strong>}
+                          {item.content}
+                        </Link>
+                      ) : (
+                        <div className={styles.refDetailText}>
+                          {item.subtitle && <strong>{item.subtitle}</strong>}
+                          {item.content}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </section>
+            </LazyItem>
           );
         })}
       </div>

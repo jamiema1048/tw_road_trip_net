@@ -1,9 +1,21 @@
 import React from "react";
-import styles from "@/src/styles/pages/terms/Terms.module.css";
-import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
-import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import { Metadata } from "next";
+import dynamic from "next/dynamic";
+
+import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
+import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem";
 import { TERMS_DATA } from "@/src/data/termsData";
+import styles from "@/src/styles/pages/terms/Terms.module.css";
+
+// 動態載入 BottomNav，獨立拆分 Bundle 降低首屏 TBT
+const BottomNav = dynamic(
+  () => import("@/src/app/(components)/(bottomnav)/BottomNav"),
+  {
+    loading: () => <div className="h-16 w-full bg-transparent" />,
+    ssr: true,
+  },
+);
+
 export const metadata: Metadata = {
   title: "使用條款與隱私權政策｜台灣鐵道與公路歷史資料庫",
   description:
@@ -54,6 +66,7 @@ export default function TermsPage() {
   return (
     <div className={styles.termsPageContainer}>
       <div className={styles.termsContainer}>
+        {/* 首屏頂部資訊：立即渲染 */}
         <div className={styles.pageTitleContainer}>
           <h1 className={styles.pageTitle}>
             使用條款與免責聲明（Terms of Service & Disclaimer）
@@ -63,27 +76,30 @@ export default function TermsPage() {
         <Breadcrumbs />
         <div className={styles.divider} />
 
+        {/* 條款內容區塊使用 LazyItem 延遲渲染 */}
         {sections.map((section, sIndex) => {
           const sectionKey = section.id || `section-${sIndex}`;
 
           return (
-            <section key={sectionKey} className={styles.termsInfoSection}>
-              <h2 className={styles.termsTitle}>{section.title}</h2>
+            <LazyItem key={sectionKey}>
+              <section className={styles.termsInfoSection}>
+                <h2 className={styles.termsTitle}>{section.title}</h2>
 
-              {section.items.map((item, iIndex) => {
-                const itemKey = item.id || `item-${iIndex}`;
+                {section.items.map((item, iIndex) => {
+                  const itemKey = item.id || `item-${iIndex}`;
 
-                return (
-                  <div key={itemKey} className={styles.termsDetail}>
-                    <TermsHeadIcon />
-                    <p className={styles.termsDetailText}>
-                      <strong>{item.subtitle}</strong>
-                      {item.content}
-                    </p>
-                  </div>
-                );
-              })}
-            </section>
+                  return (
+                    <div key={itemKey} className={styles.termsDetail}>
+                      <TermsHeadIcon />
+                      <p className={styles.termsDetailText}>
+                        <strong>{item.subtitle}</strong>
+                        {item.content}
+                      </p>
+                    </div>
+                  );
+                })}
+              </section>
+            </LazyItem>
           );
         })}
       </div>

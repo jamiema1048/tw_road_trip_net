@@ -38,7 +38,11 @@ export default function HomePage(): React.ReactElement {
         </div>
         <div className={styles.divider} />
         <div className={styles.journeyCards}>
-          <Link href="/railways" className={styles.journeyCard}>
+          <Link
+            href="/railways"
+            className={styles.journeyCard}
+            prefetch={false}
+          >
             <Image
               alt="車站旅途"
               src={TempImg}
@@ -49,7 +53,11 @@ export default function HomePage(): React.ReactElement {
             />
             <div className={styles.journeyLabel}>車站旅途</div>
           </Link>
-          <Link href="/highways" className={styles.journeyCard}>
+          <Link
+            href="/highways"
+            className={styles.journeyCard}
+            prefetch={false}
+          >
             <Image
               alt="公路旅途"
               src={TempImg}

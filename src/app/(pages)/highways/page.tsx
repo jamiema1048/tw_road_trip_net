@@ -77,7 +77,7 @@ const COUNTY_SECTION_CONFIGS = [
   { id: "160", label: "141~160", min: 141, max: 161 },
   { id: "180", label: "161~180", min: 161, max: 181 },
   { id: "200", label: "181~200", min: 181, max: 201 },
-  { id: "220", label: "201~", min: 201, max: Infinity },
+  { id: "220", label: "201~", min: 201, max: 221 },
 ];
 
 export default async function HighwayListPage() {

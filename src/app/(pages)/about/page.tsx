@@ -1,9 +1,21 @@
 import React from "react";
 import { Metadata } from "next";
-import styles from "@/src/styles/pages/about/About.module.css";
+import dynamic from "next/dynamic";
+
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
-import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
-import { ABOUT_DATA } from "@/src/data/aboutData"; // 引入靜態資料
+import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem";
+import { ABOUT_DATA } from "@/src/data/aboutData";
+import styles from "@/src/styles/pages/about/About.module.css";
+
+// 動態載入 BottomNav，獨立拆分 Client Bundle
+const BottomNav = dynamic(
+  () => import("@/src/app/(components)/(bottomnav)/BottomNav"),
+  {
+    loading: () => <div className="h-16 w-full bg-transparent" />,
+    ssr: true,
+  },
+);
+
 export const metadata: Metadata = {
   title: "關於我們｜台灣鐵道與公路歷史資料庫",
   description:
@@ -20,7 +32,6 @@ export const metadata: Metadata = {
   },
 };
 
-// 1. 定義資料型態
 export interface AboutItem {
   id?: string;
   subtitle?: string;
@@ -58,40 +69,45 @@ export default function AboutPage() {
   return (
     <div className={styles.aboutPageContainer}>
       <div className={styles.aboutContainer}>
+        {/* 首屏頂部資訊：立即渲染 */}
         <div className={styles.pageTitleContainer}>
           <h1 className={styles.pageTitle}>關於我們（About Us）</h1>
         </div>
         <Breadcrumbs />
         <div className={styles.divider} />
 
+        {/* 內容區塊使用 LazyItem 延遲渲染 */}
         {sections.map((section, sIndex) => {
           const sectionKey = section.id || `section-${sIndex}`;
 
           return (
-            <section key={sectionKey} className={styles.aboutInfoSection}>
-              <h2 className={styles.aboutTitle}>{section.title}</h2>
+            <LazyItem key={sectionKey}>
+              <section className={styles.aboutInfoSection}>
+                <h2 className={styles.aboutTitle}>{section.title}</h2>
 
-              {section.subtitle && (
-                <p className={styles.aboutDetailText}>{section.subtitle}</p>
-              )}
+                {section.subtitle && (
+                  <p className={styles.aboutDetailText}>{section.subtitle}</p>
+                )}
 
-              {section.items.map((item, iIndex) => {
-                const itemKey = item.id || `item-${iIndex}`;
+                {section.items.map((item, iIndex) => {
+                  const itemKey = item.id || `item-${iIndex}`;
 
-                return (
-                  <div key={itemKey} className={styles.aboutDetail}>
-                    <AboutHeadIcon />
-                    <p className={styles.aboutDetailText}>
-                      {item.subtitle && <strong>{item.subtitle}</strong>}
-                      {item.content}
-                    </p>
-                  </div>
-                );
-              })}
-            </section>
+                  return (
+                    <div key={itemKey} className={styles.aboutDetail}>
+                      <AboutHeadIcon />
+                      <p className={styles.aboutDetailText}>
+                        {item.subtitle && <strong>{item.subtitle}</strong>}
+                        {item.content}
+                      </p>
+                    </div>
+                  );
+                })}
+              </section>
+            </LazyItem>
           );
         })}
       </div>
+
       <BottomNav />
     </div>
   );

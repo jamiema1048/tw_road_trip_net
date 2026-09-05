@@ -1,5 +1,23 @@
 /* BREAKPOINT: 768px */
 
+/* 🟢 通用 SVG 防抖動約束 (極致效能關鍵) */
+.svgIcon,
+.svgStrokeIcon {
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none; /* 阻止滑鼠事件進入 SVG path 內部量測 */
+  fill: var(--text-white-aaa); /* 統一由父層傳遞 fill */
+}
+
+.svgStrokeIcon {
+  fill: none;
+  stroke: var(--text-white-aaa);
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .header {
   position: relative;
   display: flex;
@@ -11,7 +29,11 @@
   box-shadow: 0px 8px 10px #ffffff40;
   box-sizing: border-box;
   width: 100%;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* 🟢 將 transition: all 改為具體的 transform/opacity/background-color，防止引發 Reflow */
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    gap 0.3s ease;
   z-index: 100;
   gap: 0;
 }
@@ -37,7 +59,6 @@
   width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @media (max-width: 1024px) {
@@ -60,7 +81,8 @@
   aspect-ratio: 1/1;
   border: none;
   cursor: pointer;
-  background-size: cover;
+  overflow: hidden; /* 🟢 鎖死邊界，阻止內容推高 */
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
@@ -119,6 +141,8 @@
   aspect-ratio: 1/1;
   background: transparent;
   cursor: pointer;
+  overflow: hidden; /* 🟢 鎖死邊界 */
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
@@ -143,6 +167,8 @@
   padding: 0;
   -webkit-tap-highlight-color: transparent;
   cursor: pointer;
+  overflow: hidden; /* 🟢 鎖死邊界 */
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
@@ -202,6 +228,7 @@
   align-items: center;
   aspect-ratio: 1/1;
   cursor: pointer;
+  overflow: hidden; /* 🟢 鎖死邊界 */
 }
 
 @media (max-width: 768px) {

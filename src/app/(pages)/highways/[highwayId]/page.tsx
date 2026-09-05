@@ -6,6 +6,7 @@ import { Types } from "mongoose";
 
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
+import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem"; // 匯入 LazyItem
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
 import { HighwaySchema } from "@/src/models/Highway";
 import { Highway } from "@/src/types/highway";
@@ -204,6 +205,7 @@ export default async function HighwayPage({ params }: { params: PageParams }) {
   return (
     <div className={styles.highwayPageContainer}>
       <div className={styles.highwayContainerArea}>
+        {/* 首屏核心資訊：保持直接渲染，確保 LCP 速度與 SEO */}
         <div className={styles.pageTitleContainer}>
           <Image
             src={
@@ -213,7 +215,6 @@ export default async function HighwayPage({ params }: { params: PageParams }) {
             alt={`${highway.name} 圖示`}
             width={48}
             height={48}
-            priority
             className={styles.highwayIcon}
           />
           <h1 className={styles.pageTitle}>{highway.name}</h1>
@@ -233,92 +234,100 @@ export default async function HighwayPage({ params }: { params: PageParams }) {
               : "規劃中"}
         </p>
 
-        <section className={styles.routeInfoSection}>
-          <h2 className={styles.highwayDataTitle}>路線資料</h2>
-          {highway.routeName && (
+        {/* 路線資料區塊 */}
+        <LazyItem>
+          <section className={styles.routeInfoSection}>
+            <h2 className={styles.highwayDataTitle}>路線資料</h2>
+            {highway.routeName && (
+              <h3 className={styles.highwayDataDetail}>
+                <strong>路線名稱:</strong> {highway.routeName}
+              </h3>
+            )}
             <h3 className={styles.highwayDataDetail}>
-              <strong>路線名稱:</strong> {highway.routeName}
+              <strong>起點:</strong> {highway.start}
             </h3>
-          )}
-          <h3 className={styles.highwayDataDetail}>
-            <strong>起點:</strong> {highway.start}
-          </h3>
-          {highway.currentStart && (
+            {highway.currentStart && (
+              <h3 className={styles.highwayDataDetail}>
+                <strong>通車起點:</strong> {highway.currentStart}
+              </h3>
+            )}
             <h3 className={styles.highwayDataDetail}>
-              <strong>通車起點:</strong> {highway.currentStart}
+              <strong>終點:</strong> {highway.end}
             </h3>
-          )}
-          <h3 className={styles.highwayDataDetail}>
-            <strong>終點:</strong> {highway.end}
-          </h3>
-          {highway.currentEnd && (
+            {highway.currentEnd && (
+              <h3 className={styles.highwayDataDetail}>
+                <strong>通車終點:</strong> {highway.currentEnd}
+              </h3>
+            )}
             <h3 className={styles.highwayDataDetail}>
-              <strong>通車終點:</strong> {highway.currentEnd}
+              <strong>長度:</strong> {highway.length} km
             </h3>
-          )}
-          <h3 className={styles.highwayDataDetail}>
-            <strong>長度:</strong> {highway.length} km
-          </h3>
-          {highway.currentLength && (
-            <h3 className={styles.highwayDataDetail}>
-              <strong>通車長度:</strong> {highway.currentLength} km
-            </h3>
-          )}
-          {highway.highest && (
-            <h3 className={styles.highwayDataDetail}>
-              <strong>最高海拔:</strong> {highway.highest} m
-            </h3>
-          )}
-          {highway.highestPlace && (
-            <h3 className={styles.highwayDataDetail}>
-              <strong>最高點:</strong> {highway.highestPlace}
-            </h3>
-          )}
-          {highway.otherName && highway.otherName.length > 0 && (
-            <h3 className={styles.highwayDataDetail}>
-              <strong>別稱:</strong> {highway.otherName.join("、")}
-            </h3>
-          )}
-          {highway.remark && (
-            <h3 className={styles.highwayDataDetail}>
-              <strong>備註:</strong> {highway.remark}
-            </h3>
-          )}
-        </section>
+            {highway.currentLength && (
+              <h3 className={styles.highwayDataDetail}>
+                <strong>通車長度:</strong> {highway.currentLength} km
+              </h3>
+            )}
+            {highway.highest && (
+              <h3 className={styles.highwayDataDetail}>
+                <strong>最高海拔:</strong> {highway.highest} m
+              </h3>
+            )}
+            {highway.highestPlace && (
+              <h3 className={styles.highwayDataDetail}>
+                <strong>最高點:</strong> {highway.highestPlace}
+              </h3>
+            )}
+            {highway.otherName && highway.otherName.length > 0 && (
+              <h3 className={styles.highwayDataDetail}>
+                <strong>別稱:</strong> {highway.otherName.join("、")}
+              </h3>
+            )}
+            {highway.remark && (
+              <h3 className={styles.highwayDataDetail}>
+                <strong>備註:</strong> {highway.remark}
+              </h3>
+            )}
+          </section>
+        </LazyItem>
 
-        <section className={styles.highwayMediaGallerySection}>
-          <h2 className={styles.highwayPhotoTitle}>Images and Descriptions</h2>
-          {highway.images && highway.images.length > 0 && (
-            <div className={styles.frameContainer}>
-              {highway.images.map((img, idx) => (
-                <div key={img._id || idx} className={styles.photoFrame}>
-                  <div className={styles.photoBlock}>
-                    <Image
-                      src={img.url}
-                      alt={`${highway.name} - ${idx}`}
-                      width={800}
-                      height={600}
-                      className={styles.highwayPhoto}
-                      priority
-                    />
+        {/* 實地探查影像區塊 */}
+        {highway.images && highway.images.length > 0 && (
+          <LazyItem>
+            <section className={styles.highwayMediaGallerySection}>
+              <h2 className={styles.highwayPhotoTitle}>
+                Images and Descriptions
+              </h2>
+              <div className={styles.frameContainer}>
+                {highway.images.map((img, idx) => (
+                  <div key={img._id || idx} className={styles.photoFrame}>
+                    <div className={styles.photoBlock}>
+                      <Image
+                        src={img.url}
+                        alt={`${highway.name} - ${idx}`}
+                        width={800}
+                        height={600}
+                        className={styles.highwayPhoto}
+                        priority
+                      />
+                    </div>
+                    <div className={styles.photoDescriptionContainer}>
+                      {img.description && (
+                        <p className={styles.photoDescriptionText}>
+                          {img.description}
+                        </p>
+                      )}
+                      {img.capturedAt && (
+                        <p className={styles.photoDescriptionText}>
+                          {new Date(img.capturedAt).toISOString().split("T")[0]}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  <div className={styles.photoDescriptionContainer}>
-                    {img.description && (
-                      <p className={styles.photoDescriptionText}>
-                        {img.description}
-                      </p>
-                    )}
-                    {img.capturedAt && (
-                      <p className={styles.photoDescriptionText}>
-                        {new Date(img.capturedAt).toISOString().split("T")[0]}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
+                ))}
+              </div>
+            </section>
+          </LazyItem>
+        )}
       </div>
       <BottomNav />
     </div>

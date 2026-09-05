@@ -61,14 +61,22 @@ export const Footer = memo(function Footer(props: ComponentFooterProps) {
       <div className={styles.frame}>
         <div className={styles.navigationGroup}>
           <div className={styles.navigationColumn}>
-            <Link href="/about" className={styles.navigationItem}>
+            <Link
+              href="/about"
+              className={styles.navigationItem}
+              prefetch={false}
+            >
               <ChevronRight
                 className={styles.styledBreadcrumbRight}
                 size={16}
               />
               <p className={styles.textWrapper}>關於我們</p>
             </Link>
-            <Link href="/reference" className={styles.navigationItem}>
+            <Link
+              href="/reference"
+              className={styles.navigationItem}
+              prefetch={false}
+            >
               <ChevronRight
                 className={styles.styledBreadcrumbRight}
                 size={16}
@@ -77,14 +85,22 @@ export const Footer = memo(function Footer(props: ComponentFooterProps) {
             </Link>
           </div>
           <div className={styles.navigationColumn}>
-            <Link href="/railways" className={styles.navigationItem}>
+            <Link
+              href="/railways"
+              className={styles.navigationItem}
+              prefetch={false}
+            >
               <ChevronRight
                 className={styles.styledBreadcrumbRight}
                 size={16}
               />
               <p className={styles.textWrapper}>車站旅途</p>
             </Link>
-            <Link href="/highways" className={styles.navigationItem}>
+            <Link
+              href="/highways"
+              className={styles.navigationItem}
+              prefetch={false}
+            >
               <ChevronRight
                 className={styles.styledBreadcrumbRight}
                 size={16}
@@ -107,6 +123,7 @@ export const Footer = memo(function Footer(props: ComponentFooterProps) {
                 rel="noopener noreferrer"
                 aria-label="前往 GitHub 主頁"
                 className={styles.iconLink}
+                prefetch={false}
               >
                 <GithubIcon className={styles.styledGithub} />
               </Link>
@@ -121,7 +138,7 @@ export const Footer = memo(function Footer(props: ComponentFooterProps) {
           <div className={styles.copyrightText}>All Rights Reserved</div>
         </div>
         <div className={styles.bottomDivider} />
-        <Link href="/terms" className={styles.termsText}>
+        <Link href="/terms" className={styles.termsText} prefetch={false}>
           使用條款
         </Link>
       </div>

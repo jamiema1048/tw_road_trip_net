@@ -37,6 +37,8 @@ export async function getConnections() {
     bufferCommands: false,
     // 在 Serverless 環境中，建議限制連線池大小
     maxPoolSize: 10,
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
   };
 
   // --- 處理 Railway 連線 ---

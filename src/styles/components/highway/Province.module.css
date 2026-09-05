@@ -59,6 +59,8 @@
   align-items: flex-start;
   gap: 2rem;
   align-self: stretch;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 200px;
 }
 
 .groupedHighwaysArea {
@@ -74,7 +76,8 @@
   gap: 0.5rem;
   align-self: stretch;
   transition: all 0.2s ease-in-out;
-  text-decoration: none;
+
+  content-visibility: auto;
 }
 
 .groupedHighwaysLink:hover {
@@ -85,6 +88,7 @@
 .statusActive {
   color: var(--background);
   font-family: Inter, sans-serif;
+  text-decoration: none;
   font-weight: 400;
 }
 
@@ -105,6 +109,7 @@
   color: var(--text-info);
   font-style: italic;
   font-family: Inter, sans-serif;
+  text-decoration: none;
   font-weight: 400;
 }
 

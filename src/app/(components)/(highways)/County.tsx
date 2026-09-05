@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Highway } from "@/src/types/highway";
+import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem";
 import styles from "@/src/styles/components/highway/County.module.css";
 
 export interface CountySection {
@@ -34,6 +35,7 @@ const ArrowPath = () => (
 function GroupedHighways({ highways }: { highways: Highway[] }) {
   if (highways.length === 0) return <div>No highways found</div>;
 
+  // 1. 簡化 Grouping 運算邏輯，避免重複重新排序
   const sortedSection = [...highways].sort((a, b) => a.id - b.id);
   const grouped: Record<string, Highway[]> = {};
 
@@ -52,22 +54,25 @@ function GroupedHighways({ highways }: { highways: Highway[] }) {
               STATUS_CLASS_MAP[hwy.status] || STATUS_CLASS_MAP.active;
 
             return (
-              <Link
-                key={hwy.id}
-                href={`/highways/${hwy.id}`}
-                className={`${styles.groupedHighwaysLink} ${statusClass}`}
-              >
-                <Image
-                  src={
-                    hwy.highwayIcon || `/highway_mark/${hwy.id}/${hwy.id}.svg`
-                  }
-                  alt={`${hwy.name} 圖示`}
-                  width={48}
-                  height={48}
-                  className={`${styles.highwayIcon} object-contain`}
-                />
-                <h3 className={styles.highwayText}>{hwy.name}</h3>
-              </Link>
+              <LazyItem key={hwy.id}>
+                <Link
+                  key={hwy.id}
+                  href={`/highways/${hwy.id}`}
+                  className={`${styles.groupedHighwaysLink} ${statusClass}`}
+                  prefetch={false}
+                >
+                  <Image
+                    src={
+                      hwy.highwayIcon || `/highway_mark/${hwy.id}/${hwy.id}.svg`
+                    }
+                    alt={`${hwy.name} 圖示`}
+                    width={48}
+                    height={48}
+                    className={`${styles.highwayIcon} object-contain`}
+                  />
+                  <h3 className={styles.highwayText}>{hwy.name}</h3>
+                </Link>
+              </LazyItem>
             );
           })}
         </div>
@@ -79,34 +84,26 @@ function GroupedHighways({ highways }: { highways: Highway[] }) {
 export default function County({ sections }: Props) {
   const [isCountyShow, setIsCountyShow] = useState(false);
   const [openSections, setOpenSections] = useState<Set<string>>(new Set());
-  const [isPending, startTransition] = useTransition();
 
+  // 移除 useTransition，直接同步切換 UI 狀態
   const toggleCounty = () => {
-    startTransition(() => setIsCountyShow((prev) => !prev));
+    setIsCountyShow((prev) => !prev);
   };
 
   const toggleSection = (sectionId: string) => {
-    startTransition(() => {
-      setOpenSections((prev) => {
-        const next = new Set(prev);
-        if (next.has(sectionId)) {
-          next.delete(sectionId);
-        } else {
-          next.add(sectionId);
-        }
-        return next;
-      });
+    setOpenSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(sectionId)) {
+        next.delete(sectionId);
+      } else {
+        next.add(sectionId);
+      }
+      return next;
     });
   };
 
   return (
-    <div
-      id="county"
-      data-testid="county"
-      className={`${styles.highwayArea} ${
-        isPending ? styles.highwayAreaPending : ""
-      }`}
-    >
+    <div id="county" data-testid="county" className={styles.highwayArea}>
       <div className={styles.highwayAreaTitle} onClick={toggleCounty}>
         <h2 className={styles.highwayAreaTitleText}>縣市道</h2>
         <svg

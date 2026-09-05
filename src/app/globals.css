@@ -52,9 +52,14 @@
 }
 
 /* 4. 全域 Body 樣式 */
+
+html {
+  scrollbar-gutter: stable;
+}
+
 html,
 body {
-  min-height: 100vh;
+  min-height: 100%;
   -webkit-font-smoothing: antialiased;
   margin: 0;
   padding: 0;
