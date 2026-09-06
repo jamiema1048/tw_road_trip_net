@@ -1,0 +1,21 @@
+/* src/app/(components)/(ui)/Skeleton.module.css */
+
+.skeleton {
+  width: 100%;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.06);
+  /* 使用 CSS 動畫達到閃爍 (Pulse) 效果 */
+  animation: skeletonPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes skeletonPulse {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}

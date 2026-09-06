@@ -11,7 +11,15 @@ import styles from "@/src/styles/pages/about/About.module.css";
 const BottomNav = dynamic(
   () => import("@/src/app/(components)/(bottomnav)/BottomNav"),
   {
-    loading: () => <div className="h-16 w-full bg-transparent" />,
+    loading: () => (
+      <div
+        style={{
+          height: "64px",
+          width: "100%",
+          backgroundColor: "transparent",
+        }}
+      />
+    ),
     ssr: true,
   },
 );
@@ -63,52 +71,66 @@ function AboutHeadIcon() {
   );
 }
 
+// 抽離單一 Section UI 元件
+function SectionBlock({ section }: { section: AboutSection }) {
+  return (
+    <section className={styles.aboutInfoSection}>
+      <h2 className={styles.aboutTitle}>{section.title}</h2>
+
+      {section.subtitle && (
+        <p className={styles.aboutDetailText}>{section.subtitle}</p>
+      )}
+
+      {section.items.map((item, iIndex) => {
+        const itemKey = item.id || `item-${iIndex}`;
+        return (
+          <div key={itemKey} className={styles.aboutDetail}>
+            <AboutHeadIcon />
+            <p className={styles.aboutDetailText}>
+              {item.subtitle && <strong>{item.subtitle}</strong>}
+              {item.content}
+            </p>
+          </div>
+        );
+      })}
+    </section>
+  );
+}
+
 export default function AboutPage() {
   const sections = ABOUT_DATA as AboutSection[];
 
   return (
     <div className={styles.aboutPageContainer}>
       <div className={styles.aboutContainer}>
-        {/* 首屏頂部資訊：立即渲染 */}
+        {/* 首屏頂部資訊：Server 端靜態直出 */}
         <div className={styles.pageTitleContainer}>
           <h1 className={styles.pageTitle}>關於我們（About Us）</h1>
         </div>
         <Breadcrumbs />
         <div className={styles.divider} />
 
-        {/* 內容區塊使用 LazyItem 延遲渲染 */}
+        {/* 內容區塊渲染 */}
         {sections.map((section, sIndex) => {
           const sectionKey = section.id || `section-${sIndex}`;
 
+          // 首屏前 2 個區塊直接 Server 直出，提升 FCP / LCP，避開 Hydration 延遲
+          if (sIndex < 2) {
+            return <SectionBlock key={sectionKey} section={section} />;
+          }
+
+          // 第 3 個區塊開始採用「離屏按需渲染」，帶有預估高度防 CLS
           return (
-            <LazyItem key={sectionKey}>
-              <section className={styles.aboutInfoSection}>
-                <h2 className={styles.aboutTitle}>{section.title}</h2>
-
-                {section.subtitle && (
-                  <p className={styles.aboutDetailText}>{section.subtitle}</p>
-                )}
-
-                {section.items.map((item, iIndex) => {
-                  const itemKey = item.id || `item-${iIndex}`;
-
-                  return (
-                    <div key={itemKey} className={styles.aboutDetail}>
-                      <AboutHeadIcon />
-                      <p className={styles.aboutDetailText}>
-                        {item.subtitle && <strong>{item.subtitle}</strong>}
-                        {item.content}
-                      </p>
-                    </div>
-                  );
-                })}
-              </section>
+            <LazyItem key={sectionKey} minHeight="240px">
+              <SectionBlock section={section} />
             </LazyItem>
           );
         })}
       </div>
 
-      <BottomNav />
+      <LazyItem minHeight="64px">
+        <BottomNav />
+      </LazyItem>
     </div>
   );
 }

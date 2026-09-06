@@ -70,22 +70,24 @@ export const dynamicParams = true;
 export const revalidate = 86400;
 
 export async function generateStaticParams() {
-  try {
-    const { stationConn } = await getConnections();
-    const StationModel =
-      stationConn.models.Station || stationConn.model("Station", StationSchema);
+  const targetIds = [
+    "18",
+    "31",
+    "55",
+    "94",
+    "106",
+    "159",
+    "178",
+    "198",
+    "221",
+    "250",
+    "265",
+    "327",
+  ];
 
-    const stations = await StationModel.find({ hasDetail: true })
-      .select("id")
-      .lean();
-
-    return stations.map((s: { id: number }) => ({
-      stationId: s.id.toString(),
-    }));
-  } catch (error) {
-    console.error("generateStaticParams error:", error);
-    return [];
-  }
+  return targetIds.map((stationId) => ({
+    stationId,
+  }));
 }
 
 export async function generateMetadata({
@@ -393,43 +395,52 @@ export default async function StationPage({
               </h3>
             )}
           </section>
+        </LazyItem>
 
-          <section className={styles.stationMediaGallerySection}>
-            <h2 className={styles.stationPhotoTitle}>
-              Images and Descriptions
-            </h2>
-            {station.images && station.images.length > 0 && (
-              <div className={styles.frameContainer}>
-                {station.images.map((img) => (
-                  <div key={img._id} className={styles.photoFrame}>
-                    <div className={styles.photoBlock}>
-                      <Image
-                        src={img.url}
-                        alt={img.description}
-                        width={800}
-                        height={600}
-                        className={styles.stationPhoto}
-                      />
+        <section className={styles.stationMediaGallerySection}>
+          <h2 className={styles.stationPhotoTitle}>Images and Descriptions</h2>
+          {station.images && station.images.length > 0 && (
+            <div className={styles.frameContainer}>
+              {station.images.map((img) => {
+                const imgKey = img._id;
+                return (
+                  <LazyItem key={imgKey} minHeight="400px">
+                    <div className={styles.photoFrame}>
+                      <div className={styles.photoBlock}>
+                        <Image
+                          src={img.url}
+                          alt={img.description}
+                          width={800}
+                          height={600}
+                          className={styles.stationPhoto}
+                        />
+                      </div>
+                      <div className={styles.photoDescriptionContainer}>
+                        {img.description && (
+                          <p className={styles.photoDescriptionText}>
+                            {img.description}
+                          </p>
+                        )}
+                        {img.capturedAt && (
+                          <p className={styles.photoDescriptionText}>
+                            {
+                              new Date(img.capturedAt)
+                                .toISOString()
+                                .split("T")[0]
+                            }
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    <div className={styles.photoDescriptionContainer}>
-                      {img.description && (
-                        <p className={styles.photoDescriptionText}>
-                          {img.description}
-                        </p>
-                      )}
-                      {img.capturedAt && (
-                        <p className={styles.photoDescriptionText}>
-                          {new Date(img.capturedAt).toISOString().split("T")[0]}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
+                  </LazyItem>
+                );
+              })}
+            </div>
+          )}
+        </section>
 
-          <section className={styles.adjacentStationsSection}>
+        <section className={styles.adjacentStationsSection}>
+          <LazyItem minHeight="64px">
             {station.prevStation && (
               <div className={styles.prevStationsArea}>
                 <h3 className={styles.prevStationsTitle}>上一站：</h3>
@@ -463,7 +474,8 @@ export default async function StationPage({
                 })}
               </div>
             )}
-
+          </LazyItem>
+          <LazyItem minHeight="64px">
             {station.nextStation && (
               <div className={styles.nextStationsArea}>
                 <h3 className={styles.nextStationsTitle}>下一站：</h3>
@@ -496,11 +508,13 @@ export default async function StationPage({
                 })}
               </div>
             )}
-          </section>
-        </LazyItem>
+          </LazyItem>
+        </section>
       </div>
 
-      <BottomNav station={station} railways={matchedRailways} />
+      <LazyItem minHeight="64px">
+        <BottomNav station={station} railways={matchedRailways} />
+      </LazyItem>
     </div>
   );
 }

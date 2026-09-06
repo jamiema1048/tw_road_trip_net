@@ -96,6 +96,7 @@
   flex-direction: row;
   align-items: baseline;
   gap: 0.75rem;
+  contain: layout style;
 }
 
 @media (max-width: 768px) {

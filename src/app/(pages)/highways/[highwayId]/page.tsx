@@ -3,15 +3,29 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Types } from "mongoose";
-
+import dynamic from "next/dynamic";
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
-import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
 import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem"; // 匯入 LazyItem
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
 import { HighwaySchema } from "@/src/models/Highway";
 import { Highway } from "@/src/types/highway";
 
 import styles from "@/src/styles/pages/highway/HighwayContent.module.css";
+const BottomNav = dynamic(
+  () => import("@/src/app/(components)/(bottomnav)/BottomNav"),
+  {
+    loading: () => (
+      <div
+        style={{
+          height: "64px",
+          width: "100%",
+          backgroundColor: "transparent",
+        }}
+      />
+    ),
+    ssr: true,
+  },
+);
 
 export interface HighwayImageDoc {
   _id?: Types.ObjectId | string;
@@ -62,23 +76,11 @@ export const dynamicParams = true;
 export const revalidate = 86400; // 快取過期時間 24 小時
 
 export async function generateStaticParams() {
-  try {
-    const { highwayConn } = await getConnections();
-    const HighwayModel =
-      highwayConn.models.Highway ||
-      highwayConn.model<HighwayDoc>("Highway", HighwaySchema, "highways");
+  const targetIds = ["40100", "40300", "40800", "40900", "41401", "42000"];
 
-    const highways = await HighwayModel.find({}).select("id").lean();
-
-    return highways
-      .map((h) => ({
-        highwayId: h.id?.toString() || "",
-      }))
-      .filter((p) => p.highwayId !== "");
-  } catch (error) {
-    console.error("generateStaticParams error:", error);
-    return [];
-  }
+  return targetIds.map((highwayId) => ({
+    highwayId,
+  }));
 }
 
 // 3. Dynamic Metadata 生成
@@ -235,7 +237,7 @@ export default async function HighwayPage({ params }: { params: PageParams }) {
         </p>
 
         {/* 路線資料區塊 */}
-        <LazyItem>
+        <LazyItem minHeight="200px">
           <section className={styles.routeInfoSection}>
             <h2 className={styles.highwayDataTitle}>路線資料</h2>
             {highway.routeName && (
@@ -292,44 +294,52 @@ export default async function HighwayPage({ params }: { params: PageParams }) {
 
         {/* 實地探查影像區塊 */}
         {highway.images && highway.images.length > 0 && (
-          <LazyItem>
-            <section className={styles.highwayMediaGallerySection}>
-              <h2 className={styles.highwayPhotoTitle}>
-                Images and Descriptions
-              </h2>
-              <div className={styles.frameContainer}>
-                {highway.images.map((img, idx) => (
-                  <div key={img._id || idx} className={styles.photoFrame}>
-                    <div className={styles.photoBlock}>
-                      <Image
-                        src={img.url}
-                        alt={`${highway.name} - ${idx}`}
-                        width={800}
-                        height={600}
-                        className={styles.highwayPhoto}
-                        priority
-                      />
+          <section className={styles.highwayMediaGallerySection}>
+            <h2 className={styles.highwayPhotoTitle}>
+              Images and Descriptions
+            </h2>
+            <div className={styles.frameContainer}>
+              {highway.images.map((img, idx) => {
+                const imgKey = img._id || `photo-${idx}`;
+                return (
+                  <LazyItem key={imgKey} minHeight="400px">
+                    <div key={img._id || idx} className={styles.photoFrame}>
+                      <div className={styles.photoBlock}>
+                        <Image
+                          src={img.url}
+                          alt={`${highway.name} - ${idx}`}
+                          width={800}
+                          height={600}
+                          className={styles.highwayPhoto}
+                        />
+                      </div>
+                      <div className={styles.photoDescriptionContainer}>
+                        {img.description && (
+                          <p className={styles.photoDescriptionText}>
+                            {img.description}
+                          </p>
+                        )}
+                        {img.capturedAt && (
+                          <p className={styles.photoDescriptionText}>
+                            {
+                              new Date(img.capturedAt)
+                                .toISOString()
+                                .split("T")[0]
+                            }
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    <div className={styles.photoDescriptionContainer}>
-                      {img.description && (
-                        <p className={styles.photoDescriptionText}>
-                          {img.description}
-                        </p>
-                      )}
-                      {img.capturedAt && (
-                        <p className={styles.photoDescriptionText}>
-                          {new Date(img.capturedAt).toISOString().split("T")[0]}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          </LazyItem>
+                  </LazyItem>
+                );
+              })}
+            </div>
+          </section>
         )}
       </div>
-      <BottomNav />
+      <LazyItem minHeight="64px">
+        <BottomNav />
+      </LazyItem>
     </div>
   );
 }

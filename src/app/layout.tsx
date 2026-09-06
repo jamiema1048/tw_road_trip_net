@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/src/app/providers";
+import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem";
 import Header from "@/src/app/(components)/(header)/header";
 import { Footer } from "@/src/app/(components)/(footer)/footer";
 
@@ -54,7 +55,9 @@ export default function RootLayout({
         <Providers>
           <Header />
           <main className="main-content">{children}</main>
-          <Footer />
+          <LazyItem minHeight="64px">
+            <Footer />
+          </LazyItem>
         </Providers>
       </body>
     </html>
