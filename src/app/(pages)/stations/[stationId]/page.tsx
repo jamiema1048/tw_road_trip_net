@@ -92,11 +92,23 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: PageParams;
+  searchParams: SearchParams;
 }): Promise<Metadata> {
   try {
     const { stationId: rawId } = await params;
+
+    // 安全存取 searchParams，SSG 靜態建置時忽略動態參數錯誤
+    let urlLineID: string | undefined = undefined;
+    try {
+      const sp = await searchParams;
+      urlLineID = sp?.line;
+    } catch {
+      // Build 階段解析 searchParams 會觸發 Dynamic Error，吞掉改用預設值
+    }
+
     const stationId = Number(rawId);
     if (!stationId || isNaN(stationId)) return { title: "無效的車站 ID" };
 
@@ -104,10 +116,17 @@ export async function generateMetadata({
     if (!data || !data.rawStation) return { title: "找不到車站" };
 
     const { rawStation, allRailways } = data;
-    const lineIDs = rawStation.line.map((l) => l.lineID);
-    const matchedRailways = allRailways.filter((r) => lineIDs.includes(r.id));
+    const lineIDs = rawStation.line.map((l) => String(l.lineID));
+    const matchedRailways = allRailways.filter((r) =>
+      lineIDs.includes(String(r.id)),
+    );
+
+    const currentRailway =
+      matchedRailways.find((r) => String(r.id) === urlLineID) ||
+      matchedRailways[0];
+
+    const primaryLine = currentRailway?.name || "鐵道線路";
     const allLineNames = matchedRailways.map((r) => r.name).join("、");
-    const primaryLine = matchedRailways[0]?.name || "未知路線";
 
     const displayOpenDate = rawStation.openDate?.[0] || "資料暫缺";
     const displayCloseDate = rawStation.closeDate?.[0] || "尚在使用中";
@@ -143,8 +162,6 @@ export async function generateMetadata({
   }
 }
 
-export const dynamic = "force-dynamic";
-
 export default async function StationPage({
   params,
   searchParams,
@@ -163,8 +180,16 @@ export default async function StationPage({
   } | null = null;
 
   try {
-    const [{ stationId: rawStationId }, { line: urlLineID }] =
-      await Promise.all([params, searchParams]);
+    const { stationId: rawStationId } = await params;
+
+    // 2. 安全存取 searchParams，SSG 預建置時若拋出錯誤則無視並給予 undefined
+    let urlLineID: string | undefined = undefined;
+    try {
+      const sp = await searchParams;
+      urlLineID = sp?.line;
+    } catch {
+      // 靜態建置階段（Build time）存取 searchParams 會觸發 Dynamic Error，吞掉即可
+    }
 
     const stationId = Number(rawStationId);
     if (isNaN(stationId)) {
@@ -347,55 +372,53 @@ export default async function StationPage({
           }}
         />
         <div className={styles.divider} />
-        <LazyItem>
-          <p className="text-black dark:text-white">
-            狀態：
-            {station.status === "active"
-              ? "營運中"
-              : station.status === "disused"
-                ? "已廢止"
-                : "規劃中"}
-          </p>
+        <p className="text-black dark:text-white">
+          狀態：
+          {station.status === "active"
+            ? "營運中"
+            : station.status === "disused"
+              ? "已廢止"
+              : "規劃中"}
+        </p>
 
-          <section className={styles.routeInfoSection}>
-            <h2 className={styles.stationDataTitle}>車站資料</h2>
-            {station.openDate.length > 0 && (
-              <h3 className={styles.stationDataDetail}>
-                <strong>設站日期:</strong> {station.openDate.join("、")}
-              </h3>
-            )}
-            {station.closeDate.length > 0 && (
-              <h3 className={styles.stationDataDetail}>
-                <strong>廢止日期:</strong> {station.closeDate.join("、")}
-              </h3>
-            )}
-            {station.originalName.length > 0 && (
-              <h3 className={styles.stationDataDetail}>
-                <strong>舊名:</strong> {station.originalName.join("、")}
-              </h3>
-            )}
-            {station.level && (
-              <h3 className={styles.stationDataDetail}>
-                <strong>站等:</strong> {station.level}
-              </h3>
-            )}
-            {station.miles.length > 0 && (
-              <h3 className={styles.stationDataDetail}>
-                <strong>里程:</strong> {station.miles.join("、")}
-              </h3>
-            )}
-            {station.height && (
-              <h3 className={styles.stationDataDetail}>
-                <strong>海拔高度:</strong> {station.height}
-              </h3>
-            )}
-            {station.stationCode && (
-              <h3 className={styles.stationDataDetail}>
-                <strong>代碼:</strong> {station.stationCode}
-              </h3>
-            )}
-          </section>
-        </LazyItem>
+        <section className={styles.routeInfoSection}>
+          <h2 className={styles.stationDataTitle}>車站資料</h2>
+          {station.openDate.length > 0 && (
+            <h3 className={styles.stationDataDetail}>
+              <strong>設站日期:</strong> {station.openDate.join("、")}
+            </h3>
+          )}
+          {station.closeDate.length > 0 && (
+            <h3 className={styles.stationDataDetail}>
+              <strong>廢止日期:</strong> {station.closeDate.join("、")}
+            </h3>
+          )}
+          {station.originalName.length > 0 && (
+            <h3 className={styles.stationDataDetail}>
+              <strong>舊名:</strong> {station.originalName.join("、")}
+            </h3>
+          )}
+          {station.level && (
+            <h3 className={styles.stationDataDetail}>
+              <strong>站等:</strong> {station.level}
+            </h3>
+          )}
+          {station.miles.length > 0 && (
+            <h3 className={styles.stationDataDetail}>
+              <strong>里程:</strong> {station.miles.join("、")}
+            </h3>
+          )}
+          {station.height && (
+            <h3 className={styles.stationDataDetail}>
+              <strong>海拔高度:</strong> {station.height}
+            </h3>
+          )}
+          {station.stationCode && (
+            <h3 className={styles.stationDataDetail}>
+              <strong>代碼:</strong> {station.stationCode}
+            </h3>
+          )}
+        </section>
 
         <section className={styles.stationMediaGallerySection}>
           <h2 className={styles.stationPhotoTitle}>Images and Descriptions</h2>

@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     // 啟用 styled-components SSR 支援，保證 Client 與 Server 的 className 一致
   },
   experimental: {
+    inlineCss: true,
     optimizePackageImports: ["lucide-react", "@iconify/react"],
   },
   images: {

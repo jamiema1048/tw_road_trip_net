@@ -2,7 +2,7 @@ import { Metadata } from "next";
 // import { Types } from "mongoose"; // 用於定義 ObjectId
 import styles from "@/src/styles/pages/railway/RailwayContent.module.css";
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
-import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
+import dynamic from "next/dynamic";
 import DistrictGroupedStations from "@/src/app/(components)/(railways)/(railway)/DistrictGroupedStations";
 import { notFound } from "next/navigation";
 import { cache } from "react";
@@ -16,6 +16,21 @@ import {
   RailwayData,
   MongoStation,
 } from "@/src/types/railway";
+const BottomNav = dynamic(
+  () => import("@/src/app/(components)/(bottomnav)/BottomNav"),
+  {
+    loading: () => (
+      <div
+        style={{
+          height: "64px",
+          width: "100%",
+          backgroundColor: "transparent",
+        }}
+      />
+    ),
+    ssr: true,
+  },
+);
 
 interface MongoRawDistrict {
   id?: number;
@@ -75,23 +90,13 @@ export const dynamicParams = true;
 
 // 增量靜態再生 (ISR)：設定頁面快取過期時間（例如：24 小時）
 export const revalidate = 86400;
-
 export async function generateStaticParams() {
-  try {
-    const { railwayConn } = await getConnections();
-    const RailwayModel =
-      railwayConn.models.Railway || railwayConn.model("Railway", RailwaySchema);
+  // 僅預先渲染少數核心/熱門路線（可根據實際 ID 自行調整）
+  const targetRailwayIds = ["100", "200", "300", "400", "500"];
 
-    // 撈取所有路線 ID 預先渲染頁面
-    const railways = await RailwayModel.find({}).select("id").lean();
-
-    return railways.map((r: { id: number }) => ({
-      railwayId: r.id.toString(),
-    }));
-  } catch (error) {
-    console.error("generateStaticParams error:", error);
-    return [];
-  }
+  return targetRailwayIds.map((railwayId) => ({
+    railwayId,
+  }));
 }
 
 // ----------------------------------------------------------------------

@@ -7,21 +7,9 @@ import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem";
 import { ABOUT_DATA } from "@/src/data/aboutData";
 import styles from "@/src/styles/pages/about/About.module.css";
 
-// 動態載入 BottomNav，獨立拆分 Client Bundle
+// 簡化 BottomNav 的 dynamic 載入，去除重複的 loading 佔位
 const BottomNav = dynamic(
   () => import("@/src/app/(components)/(bottomnav)/BottomNav"),
-  {
-    loading: () => (
-      <div
-        style={{
-          height: "64px",
-          width: "100%",
-          backgroundColor: "transparent",
-        }}
-      />
-    ),
-    ssr: true,
-  },
 );
 
 export const metadata: Metadata = {
@@ -71,10 +59,20 @@ function AboutHeadIcon() {
   );
 }
 
-// 抽離單一 Section UI 元件
-function SectionBlock({ section }: { section: AboutSection }) {
+// 增加 isFirst 參數，讓首屏 Section 不套用 content-visibility
+function SectionBlock({
+  section,
+  isFirst = false,
+}: {
+  section: AboutSection;
+  isFirst?: boolean;
+}) {
   return (
-    <section className={styles.aboutInfoSection}>
+    <section
+      className={`${styles.aboutInfoSection} ${
+        isFirst ? styles.firstSection : ""
+      }`}
+    >
       <h2 className={styles.aboutTitle}>{section.title}</h2>
 
       {section.subtitle && (
@@ -99,29 +97,32 @@ function SectionBlock({ section }: { section: AboutSection }) {
 
 export default function AboutPage() {
   const sections = ABOUT_DATA as AboutSection[];
-
+  const ESTIMATED_HEIGHTS = [460, 470, 340, 1140];
   return (
     <div className={styles.aboutPageContainer}>
       <div className={styles.aboutContainer}>
-        {/* 首屏頂部資訊：Server 端靜態直出 */}
+        {/* 首屏頂部：純靜態 SSR 直出 */}
         <div className={styles.pageTitleContainer}>
           <h1 className={styles.pageTitle}>關於我們（About Us）</h1>
         </div>
         <Breadcrumbs />
         <div className={styles.divider} />
 
-        {/* 內容區塊渲染 */}
+        {/* 內容區塊 */}
         {sections.map((section, sIndex) => {
           const sectionKey = section.id || `section-${sIndex}`;
 
-          // 首屏前 2 個區塊直接 Server 直出，提升 FCP / LCP，避開 Hydration 延遲
+          // 前 2 個區塊純 SSR 直出，完全不走任何 Lazy 邏輯
           if (sIndex < 2) {
-            return <SectionBlock key={sectionKey} section={section} />;
+            return (
+              <SectionBlock key={sectionKey} section={section} isFirst={true} />
+            );
           }
+          const minHeight = `${ESTIMATED_HEIGHTS[sIndex] || 400}px`;
 
-          // 第 3 個區塊開始採用「離屏按需渲染」，帶有預估高度防 CLS
+          // 第 3 個區塊起交給 IntersectionObserver Lazy 化
           return (
-            <LazyItem key={sectionKey} minHeight="240px">
+            <LazyItem key={sectionKey} minHeight={minHeight}>
               <SectionBlock section={section} />
             </LazyItem>
           );

@@ -237,60 +237,58 @@ export default async function HighwayPage({ params }: { params: PageParams }) {
         </p>
 
         {/* 路線資料區塊 */}
-        <LazyItem minHeight="200px">
-          <section className={styles.routeInfoSection}>
-            <h2 className={styles.highwayDataTitle}>路線資料</h2>
-            {highway.routeName && (
-              <h3 className={styles.highwayDataDetail}>
-                <strong>路線名稱:</strong> {highway.routeName}
-              </h3>
-            )}
+        <section className={styles.routeInfoSection}>
+          <h2 className={styles.highwayDataTitle}>路線資料</h2>
+          {highway.routeName && (
             <h3 className={styles.highwayDataDetail}>
-              <strong>起點:</strong> {highway.start}
+              <strong>路線名稱:</strong> {highway.routeName}
             </h3>
-            {highway.currentStart && (
-              <h3 className={styles.highwayDataDetail}>
-                <strong>通車起點:</strong> {highway.currentStart}
-              </h3>
-            )}
+          )}
+          <h3 className={styles.highwayDataDetail}>
+            <strong>起點:</strong> {highway.start}
+          </h3>
+          {highway.currentStart && (
             <h3 className={styles.highwayDataDetail}>
-              <strong>終點:</strong> {highway.end}
+              <strong>通車起點:</strong> {highway.currentStart}
             </h3>
-            {highway.currentEnd && (
-              <h3 className={styles.highwayDataDetail}>
-                <strong>通車終點:</strong> {highway.currentEnd}
-              </h3>
-            )}
+          )}
+          <h3 className={styles.highwayDataDetail}>
+            <strong>終點:</strong> {highway.end}
+          </h3>
+          {highway.currentEnd && (
             <h3 className={styles.highwayDataDetail}>
-              <strong>長度:</strong> {highway.length} km
+              <strong>通車終點:</strong> {highway.currentEnd}
             </h3>
-            {highway.currentLength && (
-              <h3 className={styles.highwayDataDetail}>
-                <strong>通車長度:</strong> {highway.currentLength} km
-              </h3>
-            )}
-            {highway.highest && (
-              <h3 className={styles.highwayDataDetail}>
-                <strong>最高海拔:</strong> {highway.highest} m
-              </h3>
-            )}
-            {highway.highestPlace && (
-              <h3 className={styles.highwayDataDetail}>
-                <strong>最高點:</strong> {highway.highestPlace}
-              </h3>
-            )}
-            {highway.otherName && highway.otherName.length > 0 && (
-              <h3 className={styles.highwayDataDetail}>
-                <strong>別稱:</strong> {highway.otherName.join("、")}
-              </h3>
-            )}
-            {highway.remark && (
-              <h3 className={styles.highwayDataDetail}>
-                <strong>備註:</strong> {highway.remark}
-              </h3>
-            )}
-          </section>
-        </LazyItem>
+          )}
+          <h3 className={styles.highwayDataDetail}>
+            <strong>長度:</strong> {highway.length} km
+          </h3>
+          {highway.currentLength && (
+            <h3 className={styles.highwayDataDetail}>
+              <strong>通車長度:</strong> {highway.currentLength} km
+            </h3>
+          )}
+          {highway.highest && (
+            <h3 className={styles.highwayDataDetail}>
+              <strong>最高海拔:</strong> {highway.highest} m
+            </h3>
+          )}
+          {highway.highestPlace && (
+            <h3 className={styles.highwayDataDetail}>
+              <strong>最高點:</strong> {highway.highestPlace}
+            </h3>
+          )}
+          {highway.otherName && highway.otherName.length > 0 && (
+            <h3 className={styles.highwayDataDetail}>
+              <strong>別稱:</strong> {highway.otherName.join("、")}
+            </h3>
+          )}
+          {highway.remark && (
+            <h3 className={styles.highwayDataDetail}>
+              <strong>備註:</strong> {highway.remark}
+            </h3>
+          )}
+        </section>
 
         {/* 實地探查影像區塊 */}
         {highway.images && highway.images.length > 0 && (
