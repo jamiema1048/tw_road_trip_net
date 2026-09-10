@@ -29,9 +29,11 @@
   --text-white-aaaa: #030507;
 
   --font-sans:
-    var(--font-inter), var(--font-geist-sans), "Microsoft JhengHei",
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: var(--font-geist-mono, monospace);
+    var(--font-inter), "Microsoft JhengHei", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  /* 長篇中文靜態內容不等待 Web Font，避免 fallback 換字型時整段重排。 */
+  --font-content:
+    "Microsoft JhengHei", "Noto Sans TC", "PingFang TC", system-ui, sans-serif;
 }
 
 /* 3. Dark Mode (當 html 上有 [data-theme="dark"] 時覆蓋) */

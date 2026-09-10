@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // 車站、道路與鐵路頁面的 title/description 由資料庫動態產生。
+  // SEO crawler 與 Lighthouse 需要在初始 <head> 就讀得到它們，而不是等待
+  // Next 的 metadata streaming 將標籤追加到 <body>。
+  htmlLimitedBots: /.*/,
   compiler: {
     // 啟用 styled-components SSR 支援，保證 Client 與 Server 的 className 一致
   },

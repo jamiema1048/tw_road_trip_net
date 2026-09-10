@@ -54,10 +54,14 @@ const getRailwayData = cache(async (railwayId: number) => {
 
   // 平行查詢路線資料、該路線所有車站、以及全線 ID-Name 對照表
   const [rawRailway, rawStations, allRailways] = await Promise.all([
-    RailwayModel.findOne({
-      id: railwayId,
-    }).lean() as Promise<RailwayData | null>,
-    StationModel.find({ "line.lineID": railwayId }).lean() as Promise<
+    RailwayModel.findOne({ id: railwayId })
+      .select(
+        "id name co systemName district.districtID district.districtName district.prevArea district.nextArea",
+      )
+      .lean() as Promise<RailwayData | null>,
+    StationModel.find({ "line.lineID": railwayId })
+      .select("id name status hasDetail line.lineID line.lineDistrict")
+      .lean() as Promise<
       MongoStation[]
     >,
     RailwayModel.find({}, "id name").lean() as Promise<

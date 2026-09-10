@@ -39,6 +39,15 @@
   transition: opacity 0.15s ease;
 }
 
+.deferredContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  width: 100%;
+  gap: 1.5rem;
+}
+
 .highwayAreaPending {
   opacity: 0.7;
 }
@@ -101,8 +110,6 @@
   align-items: flex-start;
   gap: 2rem;
   align-self: stretch;
-  content-visibility: auto;
-  contain-intrinsic-size: 0 200px;
 }
 
 .groupedHighwaysArea {
@@ -110,7 +117,6 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 1.5rem;
-  content-visibility: auto;
 }
 
 .groupedHighwaysLink {
@@ -120,7 +126,6 @@
   align-self: stretch;
   transition: all 0.2s ease-in-out;
   text-decoration: none;
-  content-visibility: auto;
 }
 
 .groupedHighwaysLink:hover {

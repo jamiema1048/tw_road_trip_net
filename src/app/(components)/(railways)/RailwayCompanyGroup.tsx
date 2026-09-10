@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem"; // 匯入 LazyItem
 import styles from "@/src/styles/components/railway/RailwayGroup.module.css";
 
 interface Line {
@@ -15,6 +14,8 @@ interface RailwayCompanyGroupProps {
   co: string | number;
   companyName: string;
   lineList: Line[];
+  hideTitle?: boolean;
+  initiallyOpen?: boolean;
 }
 
 const PATH_MAP: Record<number | string, { d: string; fill: string }> = {
@@ -54,8 +55,10 @@ export const RailwayCompanyGroup: React.FC<RailwayCompanyGroupProps> = ({
   co,
   companyName,
   lineList,
+  hideTitle = false,
+  initiallyOpen = false,
 }) => {
-  const [isRailwayShow, setIsRailwayShow] = useState(false);
+  const [isRailwayShow, setIsRailwayShow] = useState(initiallyOpen);
 
   // 移除 useTransition，回歸同步切換
   const handleToggle = () => {
@@ -67,8 +70,8 @@ export const RailwayCompanyGroup: React.FC<RailwayCompanyGroupProps> = ({
   }`;
 
   return (
-    <div className={styles.railwayGroup}>
-      <button
+    <div className={hideTitle ? styles.deferredContent : styles.railwayGroup}>
+      {!hideTitle && <button
         onClick={handleToggle}
         className={styles.railwayCoTitle}
         type="button"
@@ -88,12 +91,12 @@ export const RailwayCompanyGroup: React.FC<RailwayCompanyGroupProps> = ({
             fill="var(--text-white-aaaa)"
           />
         </svg>
-      </button>
+      </button>}
 
       {isRailwayShow && (
         <div className={styles.frameContainer}>
           {lineList.map((l) => (
-            <LazyItem key={l.id}>
+            <div className={styles.routeItem} key={l.id}>
               <Link
                 href={`/railways/${l.id}`}
                 className={styles.routeCell}
@@ -102,7 +105,7 @@ export const RailwayCompanyGroup: React.FC<RailwayCompanyGroupProps> = ({
                 <TransportIcon cop={Number(co)} />
                 <h3 className={styles.routeName}>{l.name}</h3>
               </Link>
-            </LazyItem>
+            </div>
           ))}
         </div>
       )}

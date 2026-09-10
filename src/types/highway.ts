@@ -25,3 +25,9 @@ export interface Highway {
   images: HighwayImageClient[]; // 💡 使用支援字串日期的 Client 型別
   currentImageIndex?: number;
 }
+
+/** The fields rendered by the highways list client components. */
+export type HighwayListItem = Pick<
+  Highway,
+  "id" | "name" | "status" | "highwayIcon"
+>;

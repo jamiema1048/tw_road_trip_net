@@ -33,7 +33,7 @@
 
 .pageTitle {
   color: var(--text-white-aaaa);
-  font-family: "Inter-Regular", Helvetica, sans-serif;
+  font-family: var(--font-content);
   font-size: 3rem;
   font-weight: 400;
   letter-spacing: 0;
@@ -67,6 +67,8 @@
   gap: 1.5rem;
   margin-top: 1.25rem;
   content-visibility: auto;
+  contain-intrinsic-size: auto 400px;
+  contain: layout paint;
 }
 
 @media (max-width: 768px) {
@@ -75,9 +77,21 @@
   }
 }
 
+.termsInfoSection ul {
+  margin-left: 1.5rem;
+  gap: 1.5rem;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .termsInfoSection ul {
+    gap: 1rem;
+  }
+}
+
 .termsTitle {
   color: var(--text-white-aaaa);
-  font-family: Inter, sans-serif;
+  font-family: var(--font-content);
   font-size: 2.5rem;
   font-style: normal;
   font-weight: 400;
@@ -92,7 +106,7 @@
 }
 
 .termsDetail {
-  display: flex;
+  display: list-item;
   width: 100%;
   flex-direction: row;
   align-items: baseline;
@@ -105,23 +119,9 @@
   }
 }
 
-.termsHeadDot {
-  width: 2rem;
-  height: 2rem;
-  aspect-ratio: 1 / 1;
-  flex-shrink: 0;
-}
-
-@media (max-width: 768px) {
-  .termsHeadDot {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-}
-
 .termsDetailText {
   color: var(--text-white-aaaa);
-  font-family: Inter, sans-serif;
+  font-family: var(--font-content);
   font-size: 2rem;
   font-style: normal;
   font-weight: 400;

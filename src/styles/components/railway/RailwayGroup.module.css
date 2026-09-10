@@ -6,6 +6,10 @@
   gap: 1.75rem;
 }
 
+.deferredContent {
+  width: 100%;
+}
+
 @media (max-width: 768px) {
   .railwayGroup {
     gap: 1.25rem;
@@ -72,18 +76,46 @@
 }
 
 .frameContainer {
+  --route-item-height: 4rem;
   display: grid;
   width: 100%;
   gap: 3rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   position: relative;
   margin: 0;
-  content-visibility: auto;
-  contain-intrinsic-size: 0 150px;
+}
+
+.routeItem {
+  height: var(--route-item-height);
+}
+
+.openingLoader {
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-white-aaaa);
+  font-size: 0.875rem;
+}
+
+.loadingSpinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--text-gray-aa);
+  border-top-color: var(--text-white-aaaa);
+  border-radius: 50%;
+  animation: railway-loading-spin 0.7s linear infinite;
+}
+
+@keyframes railway-loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 768px) {
   .frameContainer {
+    --route-item-height: 2.5rem;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 2.25rem;
   }
@@ -142,7 +174,7 @@
   aspect-ratio: 1 / 1;
 }
 
-@media (max-width: 575.98px) {
+@media (max-width: 768px) {
   .trainIcon {
     width: 1.5rem;
     height: 1.5rem;

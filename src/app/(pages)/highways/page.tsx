@@ -1,15 +1,14 @@
-import { Types } from "mongoose";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
-import Province from "@/src/app/(components)/(highways)/Province";
-import County from "@/src/app/(components)/(highways)/County";
+import Province from "@/src/app/(components)/(highways)/ProvinceShell";
+import County from "@/src/app/(components)/(highways)/CountyShell";
 import Loading from "@/src/app/(pages)/highways/loading";
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
 import { HighwaySchema } from "@/src/models/Highway";
-import { Highway } from "@/src/types/highway";
+import type { Highway, HighwayListItem } from "@/src/types/highway";
 
 import styles from "@/src/styles/pages/highway/HighwayList.module.css";
 
@@ -40,34 +39,34 @@ export const metadata: Metadata = {
   },
 };
 
-interface HighwayImage {
-  _id: Types.ObjectId;
-  url: string;
-  description?: string;
-  capturedAt?: Date;
-}
-
 export type HighwayStatus = "active" | "disused" | "unlisted";
 
-export interface MongoHighway {
-  _id: Types.ObjectId;
-  id: number;
-  name: string;
-  status: HighwayStatus;
+type HighwayListDocument = Omit<
+  Pick<
+    Highway,
+    | "id"
+    | "name"
+    | "routeName"
+    | "length"
+    | "currentLength"
+    | "start"
+    | "currentStart"
+    | "end"
+    | "currentEnd"
+  >,
+  "status" | "highwayIcon"
+> & {
+  status?: HighwayStatus;
   highwayIcon?: string;
-  routeName: string;
-  length: number;
-  currentLength: number;
-  start: string;
-  currentStart: string;
-  end: string;
-  currentEnd: string;
-  otherName: string[];
-  highest: number;
-  highestPlace: string;
-  remark: string;
-  images: HighwayImage[];
-}
+};
+
+type HighwayPageData = Omit<
+  HighwayListDocument,
+  "status" | "highwayIcon"
+> & {
+  status: HighwayStatus;
+  highwayIcon: string;
+};
 
 export const revalidate = 86400; // 靜態快取更新時間 (24 hrs)
 
@@ -80,33 +79,34 @@ const COUNTY_SECTION_CONFIGS = [
   { id: "220", label: "201~", min: 201, max: 221 },
 ];
 
+const toHighwayListItem = ({
+  id,
+  name,
+  status,
+  highwayIcon,
+}: HighwayListItem): HighwayListItem => ({ id, name, status, highwayIcon });
+
 export default async function HighwayListPage() {
   // 1. 在 try 外宣告變數，用於儲存處理完畢的資料
-  let detailedHighways: (Highway & { currentImageIndex?: number })[] | null =
-    null;
+  let detailedHighways: HighwayPageData[] | null = null;
 
   try {
     const { highwayConn } = await getConnections();
     const HighwayModel =
       highwayConn.models.Highway || highwayConn.model("Highway", HighwaySchema);
 
-    const allHighways = (await HighwayModel.find({}).lean()) as MongoHighway[];
+    const allHighways = (await HighwayModel.find({})
+      .select(
+        "id name status highwayIcon routeName length currentLength start currentStart end currentEnd -_id",
+      )
+      .lean()) as HighwayListDocument[];
 
     if (allHighways && allHighways.length > 0) {
       detailedHighways = allHighways.map((hwy) => ({
         ...hwy,
-        _id: hwy._id.toString(),
         status: hwy.status || "active",
-        highwayIcon: hwy.highwayIcon || `/icons/highways/${hwy.id}.svg`,
-        images: (hwy.images || []).map((img) => ({
-          ...img,
-          _id: img._id ? img._id.toString() : "",
-          capturedAt: img.capturedAt
-            ? new Date(img.capturedAt).toISOString()
-            : null,
-        })),
-        currentImageIndex: 0,
-      })) as unknown as (Highway & { currentImageIndex?: number })[];
+        highwayIcon: hwy.highwayIcon || "/icons/highways/" + hwy.id + ".svg",
+      }));
     }
   } catch (err: unknown) {
     console.error("載入公路頁面失敗，詳細錯誤原因:", err);
@@ -139,20 +139,22 @@ export default async function HighwayListPage() {
     })),
   };
 
-  const province420 = detailedHighways.filter(
-    (hwy) => hwy.id / 100 >= 400 && hwy.id / 100 < 421,
-  );
+  const province420 = detailedHighways
+    .filter((hwy) => hwy.id / 100 >= 400 && hwy.id / 100 < 421)
+    .map(toHighwayListItem);
 
-  const province440 = detailedHighways.filter(
-    (hwy) => hwy.id / 100 >= 421 && hwy.id / 100 < 500,
-  );
+  const province440 = detailedHighways
+    .filter((hwy) => hwy.id / 100 >= 421 && hwy.id / 100 < 500)
+    .map(toHighwayListItem);
 
   // 在 Server 端預先分類縣市道資料
   const countySections = COUNTY_SECTION_CONFIGS.map((config) => {
-    const highways = detailedHighways!.filter((hwy) => {
-      const val = hwy.id / 100;
-      return val >= config.min && val < config.max;
-    });
+    const highways = detailedHighways!
+      .filter((hwy) => {
+        const val = hwy.id / 100;
+        return val >= config.min && val < config.max;
+      })
+      .map(toHighwayListItem);
 
     return {
       id: config.id,

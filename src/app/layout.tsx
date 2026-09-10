@@ -1,27 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/src/app/providers";
 import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem";
 import Header from "@/src/app/(components)/(header)/header";
 import { Footer } from "@/src/app/(components)/(footer)/footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-  adjustFontFallback: true,
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-  adjustFontFallback: true,
-});
-
 const inter = Inter({
-  variable: "--font-inter", // 🟢 變數名稱改為 --font-inter
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
   adjustFontFallback: true,
@@ -47,7 +33,7 @@ export default function RootLayout({
   return (
     <html
       lang="zh-TW"
-      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable}`}
+      className={inter.variable}
       suppressHydrationWarning
     >
       <body suppressHydrationWarning>

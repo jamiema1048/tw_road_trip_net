@@ -3,21 +3,23 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Highway } from "@/src/types/highway";
+import type { HighwayListItem } from "@/src/types/highway";
 import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem";
 import styles from "@/src/styles/components/highway/County.module.css";
 
 export interface CountySection {
   id: string;
   label: string;
-  highways: Highway[];
+  highways: HighwayListItem[];
 }
 
 interface Props {
   sections: CountySection[];
+  hideTitle?: boolean;
+  initiallyOpen?: boolean;
 }
 
-const STATUS_CLASS_MAP: Record<Highway["status"], string> = {
+const STATUS_CLASS_MAP: Record<HighwayListItem["status"], string> = {
   active: styles.statusActive,
   disused: styles.statusDisused,
   unlisted: styles.statusUnlisted,
@@ -32,12 +34,12 @@ const ArrowPath = () => (
   />
 );
 
-function GroupedHighways({ highways }: { highways: Highway[] }) {
+function GroupedHighways({ highways }: { highways: HighwayListItem[] }) {
   if (highways.length === 0) return <div>No highways found</div>;
 
   // 1. 簡化 Grouping 運算邏輯，避免重複重新排序
   const sortedSection = [...highways].sort((a, b) => a.id - b.id);
-  const grouped: Record<string, Highway[]> = {};
+  const grouped: Record<string, HighwayListItem[]> = {};
 
   sortedSection.forEach((hwy) => {
     const prefix = Math.floor(hwy.id / 100).toString();
@@ -54,7 +56,7 @@ function GroupedHighways({ highways }: { highways: Highway[] }) {
               STATUS_CLASS_MAP[hwy.status] || STATUS_CLASS_MAP.active;
 
             return (
-              <LazyItem key={hwy.id}>
+              <LazyItem key={hwy.id} minHeight="48px">
                 <Link
                   key={hwy.id}
                   href={`/highways/${hwy.id}`}
@@ -81,8 +83,12 @@ function GroupedHighways({ highways }: { highways: Highway[] }) {
   );
 }
 
-export default function County({ sections }: Props) {
-  const [isCountyShow, setIsCountyShow] = useState(false);
+export default function County({
+  sections,
+  hideTitle = false,
+  initiallyOpen = false,
+}: Props) {
+  const [isCountyShow, setIsCountyShow] = useState(initiallyOpen);
   const [openSections, setOpenSections] = useState<Set<string>>(new Set());
 
   // 移除 useTransition，直接同步切換 UI 狀態
@@ -103,8 +109,12 @@ export default function County({ sections }: Props) {
   };
 
   return (
-    <div id="county" data-testid="county" className={styles.highwayArea}>
-      <div className={styles.highwayAreaTitle} onClick={toggleCounty}>
+    <div
+      id={hideTitle ? undefined : "county"}
+      data-testid={hideTitle ? undefined : "county"}
+      className={hideTitle ? styles.deferredContent : styles.highwayArea}
+    >
+      {!hideTitle && <div className={styles.highwayAreaTitle} onClick={toggleCounty}>
         <h2 className={styles.highwayAreaTitleText}>縣市道</h2>
         <svg
           className={`${styles.titleArrowIcon} ${
@@ -121,7 +131,7 @@ export default function County({ sections }: Props) {
             fill="var(--text-white-aaaa)"
           />
         </svg>
-      </div>
+      </div>}
 
       {isCountyShow &&
         sections.map((sec) => {

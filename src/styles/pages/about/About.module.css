@@ -28,7 +28,7 @@
 
 .pageTitle {
   color: var(--text-white-aaaa);
-  font-family: var(--font-sans);
+  font-family: var(--font-content);
   font-size: 3rem;
   font-weight: 400;
   line-height: 1.2;
@@ -61,8 +61,10 @@
   align-items: flex-start;
   gap: 1.5rem;
   margin-top: 1.25rem;
-  content-visibility: visible;
-  contain-intrinsic-size: 1px 300px; /* 預估高度，防止佈局重繪 */
+  min-height: 280px;
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 400px; /* 預估高度，防止佈局重繪 */
+  contain: layout paint;
 }
 
 /* 首屏元件：強制不使用 content-visibility */
@@ -76,10 +78,20 @@
     gap: 1rem;
   }
 }
+.aboutInfoSection ul {
+  margin-left: 1.5rem;
+  gap: 1.5rem;
+  flex-direction: column;
+}
+@media (max-width: 768px) {
+  .aboutInfoSection ul {
+    gap: 1rem;
+  }
+}
 
 .aboutTitle {
   color: var(--text-white-aaaa);
-  font-family: var(--font-sans);
+  font-family: var(--font-content);
   font-size: 2.5rem;
   font-style: normal;
   font-weight: 400;
@@ -95,10 +107,8 @@
 
 /* 移除引發 Layout 警告的 contain 屬性 */
 .aboutDetail {
-  display: flex;
+  display: list-item;
   width: 100%;
-  flex-direction: row;
-  align-items: baseline;
   gap: 0.75rem;
 }
 
@@ -108,23 +118,9 @@
   }
 }
 
-.aboutHeadDot {
-  width: 2rem;
-  height: 2rem;
-  aspect-ratio: 1 / 1;
-  flex-shrink: 0;
-}
-
-@media (max-width: 768px) {
-  .aboutHeadDot {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-}
-
 .aboutDetailText {
   color: var(--text-white-aaaa);
-  font-family: var(--font-sans);
+  font-family: var(--font-content);
   font-size: 2rem;
   font-style: normal;
   font-weight: 400;

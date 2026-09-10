@@ -10,6 +10,10 @@ import styles from "@/src/styles/pages/about/About.module.css";
 // 簡化 BottomNav 的 dynamic 載入，去除重複的 loading 佔位
 const BottomNav = dynamic(
   () => import("@/src/app/(components)/(bottomnav)/BottomNav"),
+  {
+    loading: () => <div className="h-16 w-full bg-transparent" />,
+    ssr: true,
+  },
 );
 
 export const metadata: Metadata = {
@@ -41,24 +45,6 @@ export interface AboutSection {
   items: AboutItem[];
 }
 
-function AboutHeadIcon() {
-  return (
-    <svg
-      className={styles.aboutHeadDot}
-      xmlns="http://www.w3.org/2000/svg"
-      width="32"
-      height="32"
-      viewBox="0 0 32 32"
-      fill="none"
-    >
-      <path
-        d="M9.6 16C9.6 17.6974 10.2743 19.3253 11.4745 20.5255C12.6747 21.7257 14.3026 22.4 16 22.4C17.6974 22.4 19.3253 21.7257 20.5255 20.5255C21.7257 19.3253 22.4 17.6974 22.4 16C22.4 14.3026 21.7257 12.6748 20.5255 11.4745C19.3253 10.2743 17.6974 9.60001 16 9.60001C14.3026 9.60001 12.6747 10.2743 11.4745 11.4745C10.2743 12.6748 9.6 14.3026 9.6 16Z"
-        fill="var(--text-white-aaaa)"
-      />
-    </svg>
-  );
-}
-
 // 增加 isFirst 參數，讓首屏 Section 不套用 content-visibility
 function SectionBlock({
   section,
@@ -78,26 +64,27 @@ function SectionBlock({
       {section.subtitle && (
         <p className={styles.aboutDetailText}>{section.subtitle}</p>
       )}
-
-      {section.items.map((item, iIndex) => {
-        const itemKey = item.id || `item-${iIndex}`;
-        return (
-          <div key={itemKey} className={styles.aboutDetail}>
-            <AboutHeadIcon />
-            <p className={styles.aboutDetailText}>
+      <ul>
+        {section.items.map((item, iIndex) => {
+          const itemKey = item.id || `item-${iIndex}`;
+          return (
+            <li
+              key={itemKey}
+              className={`${styles.aboutDetail} ${styles.aboutDetailText}`}
+            >
               {item.subtitle && <strong>{item.subtitle}</strong>}
               {item.content}
-            </p>
-          </div>
-        );
-      })}
+            </li>
+          );
+        })}
+      </ul>
     </section>
   );
 }
 
 export default function AboutPage() {
   const sections = ABOUT_DATA as AboutSection[];
-  const ESTIMATED_HEIGHTS = [460, 470, 340, 1140];
+  const ESTIMATED_HEIGHTS = [460, 430, 340, 1140];
   return (
     <div className={styles.aboutPageContainer}>
       <div className={styles.aboutContainer}>
@@ -112,8 +99,8 @@ export default function AboutPage() {
         {sections.map((section, sIndex) => {
           const sectionKey = section.id || `section-${sIndex}`;
 
-          // 前 2 個區塊純 SSR 直出，完全不走任何 Lazy 邏輯
-          if (sIndex < 2) {
+          // 僅保留第一段首屏 SSR，降低慢速 CPU 的初始文字排版量。
+          if (sIndex === 0) {
             return (
               <SectionBlock key={sectionKey} section={section} isFirst={true} />
             );

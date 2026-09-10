@@ -2,12 +2,11 @@
 import { notFound } from "next/navigation";
 import { getConnections } from "@/src/app/_lib/mongodb_connections";
 import { RailwaySchema } from "@/src/models/Railway";
-import { Types } from "mongoose";
 import { Metadata } from "next";
 import styles from "@/src/styles/pages/railway/RailwayList.module.css";
 import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
 import BottomNav from "@/src/app/(components)/(bottomnav)/BottomNav";
-import { RailwayCompanyGroup } from "@/src/app/(components)/(railways)/RailwayCompanyGroup";
+import { RailwayCompanyGroupShell } from "@/src/app/(components)/(railways)/RailwayCompanyGroupShell";
 
 export const metadata: Metadata = {
   title: "全台鐵路路線總覽｜台鐵、林鐵、糖鐵與廢線遺跡",
@@ -37,25 +36,19 @@ export const metadata: Metadata = {
   },
 };
 
-interface BaseDistrict {
+interface RailwayDistrict {
   districtID: number;
   districtName: string;
-  prevArea?: number;
-  nextArea?: number;
-}
-
-interface MongoDistrict extends BaseDistrict {
-  _id?: Types.ObjectId;
 }
 
 interface MongoRailway {
-  _id: Types.ObjectId;
   id: number;
   name: string;
   co: number;
-  systemName?: string;
-  district: MongoDistrict[];
+  district: RailwayDistrict[];
 }
+
+type RailwayListItem = Pick<MongoRailway, "id" | "name" | "co">;
 
 const COMPANY_MAP: Record<number, string> = {
   1: "台鐵",
@@ -72,7 +65,10 @@ export default async function LinePageServer() {
     const RailwayModel =
       railwayConn.models.Railway || railwayConn.model("Railway", RailwaySchema);
 
-    allRailways = (await RailwayModel.find({}).lean()) as MongoRailway[];
+    allRailways = (await RailwayModel.find({})
+      .select("id name co district.districtID district.districtName -_id")
+      .sort({ id: 1 })
+      .lean()) as MongoRailway[];
 
     if (!allRailways || allRailways.length === 0) {
       notFound();
@@ -90,15 +86,23 @@ export default async function LinePageServer() {
     throw new Error(error?.message || "無法載入鐵路資料，請檢查資料庫連線。");
   }
 
-  // 純 JS 物件化並排序
-  const safeRailways = JSON.parse(
-    JSON.stringify(allRailways),
-  ) as MongoRailway[];
+  // 排除 Mongo 子文件的 _id，保留清單與 JSON-LD 所需的資料；排序已交給資料庫。
+  const safeRailways = allRailways.map(({ id, name, co, district }) => ({
+    id,
+    name,
+    co,
+    district: district.map(({ districtID, districtName }) => ({
+      districtID,
+      districtName,
+    })),
+  }));
 
-  safeRailways.sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
+  const railwayListItems: RailwayListItem[] = safeRailways.map(
+    ({ id, name, co }) => ({ id, name, co }),
+  );
 
   // 依據 co 分組
-  const groupedByCo = safeRailways.reduce<Record<number, MongoRailway[]>>(
+  const groupedByCo = railwayListItems.reduce<Record<number, RailwayListItem[]>>(
     (acc, line) => {
       if (!acc[line.co]) acc[line.co] = [];
       acc[line.co].push(line);
@@ -139,7 +143,7 @@ export default async function LinePageServer() {
           <div className={styles.divider} />
 
           {Object.entries(groupedByCo).map(([co, lineList]) => (
-            <RailwayCompanyGroup
+            <RailwayCompanyGroupShell
               key={co}
               co={co}
               companyName={COMPANY_MAP[Number(co)] || `公司 ${co}`}

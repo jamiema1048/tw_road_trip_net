@@ -41,7 +41,7 @@ const getStationData = cache(async (stationId: number) => {
     StationModel.findOne({
       id: stationId,
     }).lean() as Promise<MongoStation | null>,
-    RailwayModel.find({}).lean() as Promise<RailwayData[]>,
+    RailwayModel.find({}).select("id name").lean() as Promise<RailwayData[]>,
   ]);
 
   if (!rawStation) return null;
@@ -60,7 +60,9 @@ const getStationData = cache(async (stationId: number) => {
     uniqueAdjacentIDs.length > 0
       ? ((await StationModel.find({
           id: { $in: uniqueAdjacentIDs },
-        }).lean()) as MongoStation[])
+        })
+          .select("id name hasDetail line.lineID")
+          .lean()) as MongoStation[])
       : [];
 
   return { rawStation, allRailways, rawAdjacentStations };
@@ -110,10 +112,22 @@ export async function generateMetadata({
     }
 
     const stationId = Number(rawId);
-    if (!stationId || isNaN(stationId)) return { title: "無效的車站 ID" };
+    if (!stationId || isNaN(stationId)) {
+      return {
+        title: "無效的車站 ID",
+        description: "此車站資料頁面的識別碼無效。",
+        robots: { index: false, follow: false },
+      };
+    }
 
     const data = await getStationData(stationId);
-    if (!data || !data.rawStation) return { title: "找不到車站" };
+    if (!data || !data.rawStation) {
+      return {
+        title: "找不到車站",
+        description: "找不到此車站的資料。",
+        robots: { index: false, follow: false },
+      };
+    }
 
     const { rawStation, allRailways } = data;
     const lineIDs = rawStation.line.map((l) => String(l.lineID));
@@ -147,6 +161,10 @@ export async function generateMetadata({
     return {
       title,
       description,
+      // 同一車站可由不同 line query 進入；搜尋引擎只索引一個正式網址。
+      alternates: {
+        canonical: `/stations/${stationId}`,
+      },
       openGraph: {
         title,
         description,
@@ -158,7 +176,11 @@ export async function generateMetadata({
     };
   } catch (error) {
     console.error("Metadata error:", error);
-    return { title: "載入錯誤" };
+    return {
+      title: "車站資料暫時無法載入",
+      description: "此車站資料頁面暫時無法載入，請稍後再試。",
+      robots: { index: false, follow: false },
+    };
   }
 }
 

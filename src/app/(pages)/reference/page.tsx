@@ -45,26 +45,52 @@ export interface ReferenceSection {
   items: ReferenceItem[];
 }
 
-// 抽離純向量 Dot 圖示 (Server 端直接繪製 HTML)
-const ReferenceHeadIcon = () => (
-  <svg
-    className={styles.refHeadDot}
-    xmlns="http://www.w3.org/2000/svg"
-    width="32"
-    height="32"
-    viewBox="0 0 32 32"
-    fill="none"
-  >
-    <path
-      d="M9.6 16C9.6 17.6974 10.2743 19.3253 11.4745 20.5255C12.6747 21.7257 14.3026 22.4 16 22.4C17.6974 22.4 19.3253 21.7257 20.5255 20.5255C21.7257 19.3253 22.4 17.6974 22.4 16C22.4 14.3026 21.7257 12.6748 20.5255 11.4745C19.3253 10.2743 17.6974 9.60001 16 9.60001C14.3026 9.60001 12.6747 10.2743 11.4745 11.4745C10.2743 12.6748 9.6 14.3026 9.6 16Z"
-      fill="var(--text-white-aaaa)"
-    />
-  </svg>
-);
+// 抽出單一 Section 內容，保持程式碼乾淨
+function ReferenceSectionBlock({ section }: { section: ReferenceSection }) {
+  return (
+    <section className={styles.refInfoSection}>
+      <h2 className={styles.refTitle}>{section.title}</h2>
+
+      {section.subtitle && (
+        <p className={styles.refDetailText}>{section.subtitle}</p>
+      )}
+      <ul>
+        {section.items.map((item, iIndex) => {
+          const itemKey = item.id || `ref-item-${iIndex}`;
+
+          return (
+            <li
+              key={itemKey}
+              className={`${styles.refDetail} ${styles.refDetailText}`}
+            >
+              {item.link ? (
+                <Link
+                  className={styles.refDetailLink}
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  prefetch={false}
+                >
+                  {item.subtitle && <strong>{item.subtitle}</strong>}
+                  {item.content}
+                </Link>
+              ) : (
+                <>
+                  {item.subtitle && <strong>{item.subtitle}</strong>}
+                  {item.content}
+                </>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
 
 export default function ReferencePage() {
   const rawSections = Reference_DATA as ReferenceSection[];
-
+  const ESTIMATED_HEIGHTS = [480, 470, 590, 1400, 500, 290];
   return (
     <div className={styles.refPageContainer}>
       <div className={styles.refContainer}>
@@ -81,49 +107,24 @@ export default function ReferencePage() {
         {rawSections.map((section, sIndex) => {
           const sectionKey = section.id || `ref-section-${sIndex}`;
 
+          // 僅保留第一段首屏 SSR，降低慢速 CPU 的初始文字排版量。
+          if (sIndex === 0) {
+            return <ReferenceSectionBlock key={sectionKey} section={section} />;
+          }
+          const minHeight = `${ESTIMATED_HEIGHTS[sIndex] || 90}px`;
+
+          // 🟢 2. 針對離屏區塊給予預估 minHeight 佔位，避免 Layout Shift (CLS)
           return (
-            <LazyItem key={sectionKey}>
-              <section className={styles.refInfoSection}>
-                <h2 className={styles.refTitle}>{section.title}</h2>
-
-                {section.subtitle && (
-                  <p className={styles.refDetailText}>{section.subtitle}</p>
-                )}
-
-                {section.items.map((item, iIndex) => {
-                  const itemKey = item.id || `ref-item-${iIndex}`;
-
-                  return (
-                    <div key={itemKey} className={styles.refDetail}>
-                      <ReferenceHeadIcon />
-
-                      {item.link ? (
-                        <Link
-                          className={styles.refDetailLink}
-                          href={item.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          prefetch={false}
-                        >
-                          {item.subtitle && <strong>{item.subtitle}</strong>}
-                          {item.content}
-                        </Link>
-                      ) : (
-                        <div className={styles.refDetailText}>
-                          {item.subtitle && <strong>{item.subtitle}</strong>}
-                          {item.content}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </section>
+            <LazyItem key={sectionKey} minHeight={minHeight}>
+              <ReferenceSectionBlock section={section} />
             </LazyItem>
           );
         })}
       </div>
 
-      <BottomNav />
+      <LazyItem minHeight="64px">
+        <BottomNav />
+      </LazyItem>
     </div>
   );
 }

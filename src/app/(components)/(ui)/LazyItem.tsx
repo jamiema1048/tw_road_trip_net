@@ -8,9 +8,17 @@ interface LazyItemProps {
   children: React.ReactNode;
   /** 預估該區塊的高度，維護穩定 Layout 防止 CLS */
   minHeight?: string;
+  /** 當延遲內容載入後仍保留最小高度，避免內容比 skeleton 矮時造成 CLS。 */
+  preserveMinHeight?: boolean;
+  className?: string;
 }
 
-export function LazyItem({ children, minHeight = "200px" }: LazyItemProps) {
+export function LazyItem({
+  children,
+  minHeight = "200px",
+  preserveMinHeight = false,
+  className,
+}: LazyItemProps) {
   const [hasRendered, setHasRendered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -45,9 +53,10 @@ export function LazyItem({ children, minHeight = "200px" }: LazyItemProps) {
   return (
     <div
       ref={containerRef}
+      className={className}
       style={{
         // 未渲染前使用固定 minHeight 佔位，渲染後交給真實內容
-        minHeight: hasRendered ? "auto" : minHeight,
+        minHeight: hasRendered && !preserveMinHeight ? "auto" : minHeight,
         // CSS contain 屬性：告訴瀏覽器此區域尺寸獨立，極大幅度降低微小重繪引起的 Layout 鏈鎖反應
         contain: "content",
       }}

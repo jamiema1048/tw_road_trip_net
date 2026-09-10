@@ -3,27 +3,29 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Highway } from "@/src/types/highway";
+import type { HighwayListItem } from "@/src/types/highway";
 import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem"; // 匯入剛剛建立的 LazyItem
 import styles from "@/src/styles/components/highway/Province.module.css";
 
 interface Props {
-  section420: Highway[];
-  section440: Highway[];
+  section420: HighwayListItem[];
+  section440: HighwayListItem[];
+  hideTitle?: boolean;
+  initiallyOpen?: boolean;
 }
 
-const STATUS_CLASS_MAP: Record<Highway["status"], string> = {
+const STATUS_CLASS_MAP: Record<HighwayListItem["status"], string> = {
   active: styles.statusActive,
   disused: styles.statusDisused,
   unlisted: styles.statusUnlisted,
 };
 
 // 提取獨立選單組件，並套用 LazyItem
-function GroupedHighways({ highways }: { highways: Highway[] }) {
+function GroupedHighways({ highways }: { highways: HighwayListItem[] }) {
   if (highways.length === 0) return <div>No highways found</div>;
 
   const sortedSection = [...highways].sort((a, b) => a.id - b.id);
-  const grouped: Record<string, Highway[]> = {};
+  const grouped: Record<string, HighwayListItem[]> = {};
 
   sortedSection.forEach((hwy) => {
     const prefix = Math.floor(hwy.id / 100).toString();
@@ -40,7 +42,7 @@ function GroupedHighways({ highways }: { highways: Highway[] }) {
               STATUS_CLASS_MAP[hwy.status] || styles.statusActive;
 
             return (
-              <LazyItem key={hwy.id}>
+              <LazyItem key={hwy.id} minHeight="48px">
                 <Link
                   href={`/highways/${hwy.id}`}
                   className={`${styles.groupedHighwaysLink} ${statusClass}`}
@@ -66,8 +68,13 @@ function GroupedHighways({ highways }: { highways: Highway[] }) {
   );
 }
 
-export default function Province({ section420, section440 }: Props) {
-  const [isProvinceShow, setIsProvinceShow] = useState(false);
+export default function Province({
+  section420,
+  section440,
+  hideTitle = false,
+  initiallyOpen = false,
+}: Props) {
+  const [isProvinceShow, setIsProvinceShow] = useState(initiallyOpen);
   // 使用 Set 統一管理子區塊展開狀態
   const [openSections, setOpenSections] = useState<Set<string>>(new Set());
 
@@ -93,8 +100,12 @@ export default function Province({ section420, section440 }: Props) {
   ];
 
   return (
-    <div id="province" data-testid="province" className={styles.highwayArea}>
-      <div className={styles.highwayAreaTitle} onClick={toggleProvince}>
+    <div
+      id={hideTitle ? undefined : "province"}
+      data-testid={hideTitle ? undefined : "province"}
+      className={hideTitle ? styles.deferredContent : styles.highwayArea}
+    >
+      {!hideTitle && <div className={styles.highwayAreaTitle} onClick={toggleProvince}>
         <h2 className={styles.highwayAreaTitleText}>省道</h2>
         <svg
           className={`${styles.titleArrowIcon} ${
@@ -111,7 +122,7 @@ export default function Province({ section420, section440 }: Props) {
             fill="var(--text-white-aaaa)"
           />
         </svg>
-      </div>
+      </div>}
 
       {isProvinceShow &&
         sections.map((sec) => {

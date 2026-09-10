@@ -42,26 +42,33 @@ export interface TermSection {
   items: TermItem[];
 }
 
-function TermsHeadIcon() {
+function TermSectionBlock({ section }: { section: TermSection }) {
   return (
-    <svg
-      className={styles.termsHeadDot}
-      xmlns="http://www.w3.org/2000/svg"
-      width="32"
-      height="32"
-      viewBox="0 0 32 32"
-      fill="none"
-    >
-      <path
-        d="M9.6 16C9.6 17.6974 10.2743 19.3253 11.4745 20.5255C12.6747 21.7257 14.3026 22.4 16 22.4C17.6974 22.4 19.3253 21.7257 20.5255 20.5255C21.7257 19.3253 22.4 17.6974 22.4 16C22.4 14.3026 21.7257 12.6748 20.5255 11.4745C19.3253 10.2743 17.6974 9.60001 16 9.60001C14.3026 9.60001 12.6747 10.2743 11.4745 11.4745C10.2743 12.6748 9.6 14.3026 9.6 16Z"
-        fill="var(--text-white-aaaa)"
-      />
-    </svg>
+    <section className={styles.termsInfoSection}>
+      <h2 className={styles.termsTitle}>{section.title}</h2>
+
+      <ul>
+        {section.items.map((item, iIndex) => {
+          const itemKey = item.id || `item-${iIndex}`;
+
+          return (
+            <li
+              key={itemKey}
+              className={`${styles.termsDetail} ${styles.termsDetailText}`}
+            >
+              {item.subtitle && <strong>{item.subtitle}</strong>}
+              {item.content}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }
 
 export default function TermsPage() {
   const sections = TERMS_DATA as TermSection[];
+  const ESTIMATED_HEIGHTS = [400, 540, 380, 450, 350];
 
   return (
     <div className={styles.termsPageContainer}>
@@ -76,35 +83,27 @@ export default function TermsPage() {
         <Breadcrumbs />
         <div className={styles.divider} />
 
-        {/* 條款內容區塊使用 LazyItem 延遲渲染 */}
         {sections.map((section, sIndex) => {
           const sectionKey = section.id || `section-${sIndex}`;
 
+          // 僅保留第一段首屏 SSR，降低慢速 CPU 的初始文字排版量。
+          if (sIndex === 0) {
+            return <TermSectionBlock key={sectionKey} section={section} />;
+          }
+          const minHeight = `${ESTIMATED_HEIGHTS[sIndex] || 400}px`;
+
+          // 第 3 個區塊起交給 IntersectionObserver Lazy 化，並給予預估 minHeight 佔位
           return (
-            <LazyItem key={sectionKey}>
-              <section className={styles.termsInfoSection}>
-                <h2 className={styles.termsTitle}>{section.title}</h2>
-
-                {section.items.map((item, iIndex) => {
-                  const itemKey = item.id || `item-${iIndex}`;
-
-                  return (
-                    <div key={itemKey} className={styles.termsDetail}>
-                      <TermsHeadIcon />
-                      <p className={styles.termsDetailText}>
-                        <strong>{item.subtitle}</strong>
-                        {item.content}
-                      </p>
-                    </div>
-                  );
-                })}
-              </section>
+            <LazyItem key={sectionKey} minHeight={minHeight}>
+              <TermSectionBlock section={section} />
             </LazyItem>
           );
         })}
       </div>
 
-      <BottomNav />
+      <LazyItem minHeight="64px">
+        <BottomNav />
+      </LazyItem>
     </div>
   );
 }
