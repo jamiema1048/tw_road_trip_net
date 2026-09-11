@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import styles from "@/src/styles/components/railway/RailwayGroup.module.css";
 
@@ -14,8 +12,6 @@ interface RailwayCompanyGroupProps {
   co: string | number;
   companyName: string;
   lineList: Line[];
-  hideTitle?: boolean;
-  initiallyOpen?: boolean;
 }
 
 const PATH_MAP: Record<number | string, { d: string; fill: string }> = {
@@ -39,6 +35,7 @@ const PATH_MAP: Record<number | string, { d: string; fill: string }> = {
 
 const TransportIcon = ({ cop }: { cop: string | number }) => {
   const currentPath = PATH_MAP[cop] || PATH_MAP[1];
+
   return (
     <svg
       className={styles.trainIcon}
@@ -55,34 +52,17 @@ export const RailwayCompanyGroup: React.FC<RailwayCompanyGroupProps> = ({
   co,
   companyName,
   lineList,
-  hideTitle = false,
-  initiallyOpen = false,
 }) => {
-  const [isRailwayShow, setIsRailwayShow] = useState(initiallyOpen);
-
-  // 移除 useTransition，回歸同步切換
-  const handleToggle = () => {
-    setIsRailwayShow((prev) => !prev);
-  };
-
-  const arrowClass = `${styles.arrowIcon} ${
-    isRailwayShow ? styles.arrowIconOpen : styles.arrowIconClosed
-  }`;
-
   return (
-    <div className={hideTitle ? styles.deferredContent : styles.railwayGroup}>
-      {!hideTitle && <button
-        onClick={handleToggle}
-        className={styles.railwayCoTitle}
-        type="button"
-        aria-expanded={isRailwayShow}
-      >
+    <details className={styles.railwayGroup}>
+      <summary className={styles.railwayCoTitle}>
         <h2 className={styles.railwayText}>{companyName}</h2>
         <svg
-          className={arrowClass}
+          className={styles.arrowIcon}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 48 48"
           fill="none"
+          aria-hidden="true"
         >
           <path
             fillRule="evenodd"
@@ -91,24 +71,22 @@ export const RailwayCompanyGroup: React.FC<RailwayCompanyGroupProps> = ({
             fill="var(--text-white-aaaa)"
           />
         </svg>
-      </button>}
+      </summary>
 
-      {isRailwayShow && (
-        <div className={styles.frameContainer}>
-          {lineList.map((l) => (
-            <div className={styles.routeItem} key={l.id}>
-              <Link
-                href={`/railways/${l.id}`}
-                className={styles.routeCell}
-                prefetch={false}
-              >
-                <TransportIcon cop={Number(co)} />
-                <h3 className={styles.routeName}>{l.name}</h3>
-              </Link>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+      <div className={styles.frameContainer}>
+        {lineList.map((l) => (
+          <div className={styles.routeItem} key={l.id}>
+            <Link
+              href={`/railways/${l.id}`}
+              className={styles.routeCell}
+              prefetch={false}
+            >
+              <TransportIcon cop={Number(co)} />
+              <h3 className={styles.routeName}>{l.name}</h3>
+            </Link>
+          </div>
+        ))}
+      </div>
+    </details>
   );
 };
