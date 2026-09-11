@@ -14,7 +14,7 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:1140](http://localhost:1140) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
@@ -36,9 +36,7 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 ## To-Do
-1. Add Test File
-2. Add Meta data
-3. boost performence
-4. Fix type error
-5. Combine station's bottom nav to main bottom nav file
-6. Design all error, empty, loading state
+1. Finish Test File
+2. performence done but system(child) problem
+3. Try build on Vercel
+
