@@ -45,7 +45,7 @@ export default function HomePage(): React.ReactElement {
           >
             <Image
               alt="車站旅途"
-              src={TempImg}
+              src="https://my-road-trip-archive-photos.s3.ap-east-2.amazonaws.com/image/station/3800/618/20200515_171652.jpg"
               fill
               priority
               sizes="(max-width: 768px) 100vw, 360px"
@@ -60,7 +60,7 @@ export default function HomePage(): React.ReactElement {
           >
             <Image
               alt="公路旅途"
-              src={TempImg}
+              src="https://my-road-trip-archive-photos.s3.ap-east-2.amazonaws.com/image/highway/120/20230126_101538.jpg"
               fill
               sizes="(max-width: 768px) 100vw, 360px"
               className={styles.cardImage}
