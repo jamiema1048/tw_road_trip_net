@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/src/app/providers";
@@ -12,6 +13,8 @@ const inter = Inter({
   display: "swap",
   adjustFontFallback: true,
 });
+
+const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -46,6 +49,7 @@ export default function RootLayout({
           </LazyItem>
         </Providers>
       </body>
+      {gaMeasurementId ? <GoogleAnalytics gaId={gaMeasurementId} /> : null}
     </html>
   );
 }
