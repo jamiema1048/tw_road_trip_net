@@ -2,13 +2,13 @@ import React from "react";
 import { Metadata } from "next";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
-import { Reference_DATA } from "@/src/data/referenceData";
-import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem";
-import styles from "@/src/styles/pages/reference/Reference.module.css";
+import Breadcrumbs from "@/src/components/layout/Breadcrumbs/Breadcrumbs";
+import { Reference_DATA } from "@/src/content/reference";
+import { LazyItem } from "@/src/components/ui/LazyItem/LazyItem";
+import styles from "./page.module.css";
 
 const BottomNav = dynamic(
-  () => import("@/src/app/(components)/(bottomnav)/BottomNav"),
+  () => import("@/src/components/layout/BottomNav/BottomNav"),
   {
     loading: () => <div className="h-16 w-full bg-transparent" />,
     ssr: true,

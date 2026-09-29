@@ -2,8 +2,8 @@
 export const dynamic = "force-dynamic";
 
 import { Metadata } from "next";
-import { getGlobalSearchResults } from "@/src/app/_lib/search";
-import SearchResultsClient from "@/src/app/(client)/(search)/SearchResultsClient";
+import { getGlobalSearchResults } from "@/src/features/search/server";
+import { SearchResultsClient } from "@/src/features/search/client";
 
 type SearchPageProps = {
   searchParams: Promise<{ q?: string }>;

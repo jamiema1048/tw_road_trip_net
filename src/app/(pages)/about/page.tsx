@@ -2,14 +2,14 @@ import React from "react";
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
 
-import Breadcrumbs from "@/src/app/(components)/(breadcrumbs)/Breadcrumbs";
-import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem";
-import { ABOUT_DATA } from "@/src/data/aboutData";
-import styles from "@/src/styles/pages/about/About.module.css";
+import Breadcrumbs from "@/src/components/layout/Breadcrumbs/Breadcrumbs";
+import { LazyItem } from "@/src/components/ui/LazyItem/LazyItem";
+import { ABOUT_DATA } from "@/src/content/about";
+import styles from "./page.module.css";
 
 // 簡化 BottomNav 的 dynamic 載入，去除重複的 loading 佔位
 const BottomNav = dynamic(
-  () => import("@/src/app/(components)/(bottomnav)/BottomNav"),
+  () => import("@/src/components/layout/BottomNav/BottomNav"),
   {
     loading: () => <div className="h-16 w-full bg-transparent" />,
     ssr: true,

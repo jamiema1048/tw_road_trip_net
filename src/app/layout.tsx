@@ -3,9 +3,9 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/src/app/providers";
-import { LazyItem } from "@/src/app/(components)/(ui)/LazyItem";
-import Header from "@/src/app/(components)/(header)/header";
-import { Footer } from "@/src/app/(components)/(footer)/footer";
+import { LazyItem } from "@/src/components/ui/LazyItem/LazyItem";
+import Header from "@/src/components/layout/Header/Header";
+import { Footer } from "@/src/components/layout/Footer/Footer";
 
 const inter = Inter({
   variable: "--font-inter",

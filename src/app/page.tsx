@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import TempImg from "@/public/Logo/Header.png";
-import styles from "@/src/styles/pages/home/Home.module.css";
+import styles from "@/src/app/page.module.css";
 
 export const metadata: Metadata = {
   title: "首頁 | 探索台灣鐵路與公路歷史遺蹟",
