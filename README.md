@@ -36,7 +36,9 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 ## To-Do
-1. Finish Test File
-2. performence done but system(child) problem
-3. Try build on Vercel
+1. Finish map and add map information to db
+2. Write a ts script to change data into new structure
+3. Write history
+4. fix UI
+5. Add announcement page
 
