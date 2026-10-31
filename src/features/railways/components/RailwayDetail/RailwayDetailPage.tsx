@@ -56,11 +56,13 @@ const getRailwayData = cache(async (railwayId: number) => {
   const [rawRailway, rawStations, allRailways] = await Promise.all([
     RailwayModel.findOne({ id: railwayId })
       .select(
-        "id name co systemName district.districtID district.districtName district.prevArea district.nextArea",
+        "id name region co systemName historySummary chronology district.districtID district.districtName district.prevArea district.nextArea district.geometry",
       )
       .lean() as Promise<RailwayData | null>,
     StationModel.find({ "line.lineID": railwayId })
-      .select("id name status hasDetail line.lineID line.lineDistrict")
+      .select(
+        "id name status location historySummary chronology hasDetail line.lineID line.lineDistrict",
+      )
       .lean() as Promise<
       MongoStation[]
     >,
@@ -204,6 +206,9 @@ export default async function RailwayContentServer({
         id: s.id,
         name: s.name,
         status: s.status,
+        location: s.location,
+        historySummary: s.historySummary,
+        chronology: s.chronology,
         openDate: Array.isArray(s.openDate) ? s.openDate : [],
         closeDate: Array.isArray(s.closeDate) ? s.closeDate : [],
         originalName: Array.isArray(s.originalName) ? s.originalName : [],

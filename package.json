@@ -12,7 +12,9 @@
     "test:watch": "vitest --watch",
     "test:run": "vitest run",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage.enabled=true"
+    "test:coverage": "vitest --coverage.enabled=true",
+    "migrate:railways:dev-schema": "node --env-file=.env.local scripts/migrations/railways/initialize-dev-schema.js",
+    "migrate:stations:dev-map-schema": "node --env-file=.env.local scripts/migrations/stations/initialize-dev-map-schema.js"
   },
   "dependencies": {
     "@eslint/eslintrc": "^3.3.6",

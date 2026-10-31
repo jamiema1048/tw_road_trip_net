@@ -1,5 +1,21 @@
 import mongoose, { Schema, model, models } from "mongoose";
 
+const chronologyEntrySchema = new Schema(
+  {
+    time: { type: String, default: "" },
+    event: { type: String, default: "" },
+  },
+  { _id: false },
+);
+
+const pointLocationSchema = new Schema(
+  {
+    type: { type: String, enum: ["Point"], default: "Point" },
+    coordinates: { type: [Number], default: [null, null] },
+  },
+  { _id: false },
+);
+
 export const StationSchema = new Schema(
   {
     id: { type: Number, required: true, unique: true },
@@ -8,6 +24,15 @@ export const StationSchema = new Schema(
       type: String,
       enum: ["active", "disused", "plan"],
       default: "active",
+    },
+    location: {
+      type: pointLocationSchema,
+      default: () => ({ type: "Point", coordinates: [null, null] }),
+    },
+    historySummary: { type: String, default: "" },
+    chronology: {
+      type: [chronologyEntrySchema],
+      default: () => [{ time: "", event: "" }],
     },
     openDate: { type: [String], default: [] },
     closeDate: { type: [String], default: [] },

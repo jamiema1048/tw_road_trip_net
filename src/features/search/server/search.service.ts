@@ -2,6 +2,10 @@ import { getConnections } from "@/src/_lib/db/connections";
 import { HighwaySchema } from "@/src/features/highways/server/highway.model";
 import { RailwaySchema } from "@/src/features/railways/server/railway.model";
 import { StationSchema } from "@/src/features/stations/server/station.model";
+import type {
+  ChronologyEntry,
+  PointLocation,
+} from "@/src/features/railways/railway.types";
 import { Types } from "mongoose";
 
 // 1. 定義基礎資料庫 Document 型別 (匹配 MongoDB 結構)
@@ -18,6 +22,9 @@ export interface RailwayDoc {
   id: number;
   name: string;
   co: number | string;
+  region?: string;
+  historySummary?: string;
+  chronology?: ChronologyEntry[];
   lineName?: string;
   otherName?: string | string[];
 }
@@ -31,6 +38,9 @@ export interface StationDoc {
   _id: Types.ObjectId | string;
   id: number;
   name: string;
+  location?: PointLocation;
+  historySummary?: string;
+  chronology?: ChronologyEntry[];
   line?: StationLineRef | StationLineRef[];
   lineName?: string;
   otherName?: string | string[];

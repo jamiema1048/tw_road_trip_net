@@ -41,7 +41,9 @@ const getStationData = cache(async (stationId: number) => {
     StationModel.findOne({
       id: stationId,
     }).lean() as Promise<MongoStation | null>,
-    RailwayModel.find({}).select("id name").lean() as Promise<RailwayData[]>,
+    RailwayModel.find({})
+      .select("id name region co historySummary chronology district")
+      .lean() as Promise<RailwayData[]>,
   ]);
 
   if (!rawStation) return null;
@@ -61,7 +63,9 @@ const getStationData = cache(async (stationId: number) => {
       ? ((await StationModel.find({
           id: { $in: uniqueAdjacentIDs },
         })
-          .select("id name hasDetail line.lineID")
+          .select(
+            "id name location historySummary chronology hasDetail line.lineID",
+          )
           .lean()) as MongoStation[])
       : [];
 
@@ -231,6 +235,9 @@ export default async function StationPage({
           id: s.id,
           name: s.name,
           status: s.status,
+          location: s.location,
+          historySummary: s.historySummary,
+          chronology: s.chronology,
           openDate: Array.isArray(s.openDate) ? s.openDate : [],
           closeDate: Array.isArray(s.closeDate) ? s.closeDate : [],
           originalName: Array.isArray(s.originalName) ? s.originalName : [],

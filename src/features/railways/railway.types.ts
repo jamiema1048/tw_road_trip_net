@@ -4,8 +4,24 @@ import { Types } from "mongoose";
 export interface BaseDistrict {
   districtID: number;
   districtName: string;
-  prevArea?: number;
-  nextArea?: number;
+  prevArea?: number | null;
+  nextArea?: number | null;
+  geometry: LineStringGeometry;
+}
+
+export interface LineStringGeometry {
+  type: "LineString";
+  coordinates: [number, number][];
+}
+
+export interface PointLocation {
+  type: "Point";
+  coordinates: [number | null, number | null];
+}
+
+export interface ChronologyEntry {
+  time: string;
+  event: string;
 }
 
 // --- B. 車站專用 (Station Database) ---
@@ -27,6 +43,9 @@ export interface Station {
   id: number;
   name: string;
   status: "active" | "disused" | "plan";
+  location: PointLocation;
+  historySummary: string;
+  chronology: ChronologyEntry[];
   openDate: string[];
   closeDate: string[];
   originalName: string[];
@@ -51,8 +70,11 @@ export interface RailwayData {
   _id: string;
   id: number;
   name: string;
+  region: string;
   co: number;
   systemName?: string;
+  historySummary: string;
+  chronology: ChronologyEntry[];
   district: (BaseDistrict & { _id?: string })[];
 }
 
@@ -61,7 +83,23 @@ export interface MongoStation extends Omit<Station, "_id" | "line" | "images"> {
   _id: Types.ObjectId;
   line: {
     lineID: number;
-    lineDistrict: number; // 資料庫可能很亂
+    lineDistrict:
+      | number
+      | {
+          id?: number;
+          districtID?: number;
+          order?: number;
+          _id?: Types.ObjectId;
+        }
+      | Array<
+          | number
+          | {
+              id?: number;
+              districtID?: number;
+              order?: number;
+              _id?: Types.ObjectId;
+            }
+        >;
     _id?: Types.ObjectId;
   }[];
   images?: {

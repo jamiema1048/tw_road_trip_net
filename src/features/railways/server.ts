@@ -5,4 +5,8 @@ export type {
   StationLine,
   StationLineDistrict,
   MongoStation,
+  BaseDistrict,
+  ChronologyEntry,
+  LineStringGeometry,
+  PointLocation,
 } from "./railway.types";

@@ -33,6 +33,33 @@ describe("database schemas", () => {
     });
   });
 
+  it("provides the new railway and station map-data defaults", () => {
+    const railway = new Railway({
+      id: 100,
+      name: "測試線",
+      district: [{ districtID: 1, districtName: "測試區間" }],
+    });
+    const station = new Station({
+      id: 1,
+      line: [{ lineID: 100, lineDistrict: [] }],
+    });
+
+    expect(railway.region).toBe("");
+    expect(railway.historySummary).toBe("");
+    expect(railway.chronology).toEqual([]);
+    expect(railway.district[0].geometry).toMatchObject({
+      type: "LineString",
+      coordinates: [],
+    });
+
+    expect(station.location).toMatchObject({
+      type: "Point",
+      coordinates: [null, null],
+    });
+    expect(station.historySummary).toBe("");
+    expect(station.chronology).toEqual([{ time: "", event: "" }]);
+  });
+
   it("requires a URL for every highway image", async () => {
     const highway = new Highway({ id: 1, name: "台一線", images: [{}] });
 
