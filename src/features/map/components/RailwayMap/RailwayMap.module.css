@@ -1,0 +1,20 @@
+.mapShell { position: relative; height: 460px; overflow: hidden; border-radius: 12px; background: #0d0d6b; }
+.map { height: 100%; width: 100%; }
+.legend { position: absolute; z-index: 500; top: 24px; right: 24px; display: flex; min-width: 150px; flex-direction: column; gap: 12px; padding: 12px; pointer-events: none; border-radius: 8px; background: #0d0d6b; color: #fff; font-size: 12px; box-shadow: 0 4px 16px rgb(0 0 0 / 18%); }
+.legend span { display: flex; align-items: center; gap: 10px; }
+.routeLegend { width: 24px; height: 3px; background: #008e9b; }
+.stationLegend { width: 16px; height: 16px; border: 2px solid #fff; border-radius: 999px; background: #008e9b; }
+.emptyState { position: absolute; z-index: 500; bottom: 16px; left: 50%; margin: 0; padding: 8px 12px; transform: translateX(-50%); border-radius: 8px; background: rgb(13 13 107 / 88%); color: #fff; font-size: 14px; white-space: nowrap; }
+.mapShell :global(.leaflet-popup-pane) { z-index: 1000 !important; }
+.stationPopup { z-index: 1001 !important; }
+.stationPopup :global(.leaflet-popup-content-wrapper) { overflow: hidden; padding: 0; border-radius: 16px; }
+.stationPopup :global(.leaflet-popup-content) { width: 280px !important; margin: 0; }
+.popupHeader { padding: 12px 16px; background: #090980; color: #fff; font-size: 20px; font-weight: 600; }
+.closeButton { position: absolute; z-index: 1; top: 7px; right: 10px; border: 0; background: transparent; color: #fff; font-size: 24px; line-height: 1; cursor: pointer; }
+.popupBody { display: flex; flex-direction: column; gap: 16px; padding: 16px; color: #343434; font-size: 14px; }
+.popupStatus { display: flex; align-items: center; gap: 6px; }
+.statusDot { width: 8px; height: 8px; border-radius: 50%; }
+.stationPopup .stationLink { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 14px; border-radius: 10px; background: #090980; color: #fff; font-weight: 600; text-decoration: none; }
+.stationPopup .stationLink:hover { background: #4b4bff; color: #fff; }
+.noDetail { color: #949494; }
+@media (max-width: 768px) { .mapShell { height: 340px; } .legend { top: 12px; right: 12px; min-width: 126px; } }

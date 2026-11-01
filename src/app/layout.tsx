@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Inter } from "next/font/google";
+import "leaflet/dist/leaflet.css";
+import "leaflet/dist/leaflet.css";
 import "./globals.css";
 import { Providers } from "@/src/app/providers";
 import { LazyItem } from "@/src/components/ui/LazyItem/LazyItem";

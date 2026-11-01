@@ -54,8 +54,17 @@
   width: 100%;
 }
 
+.networkMapArea {
+  width: 100%;
+  margin: 0 0 2.5rem;
+}
+
 @media (max-width: 768px) {
   .divider {
     margin: 0.75rem auto;
+  }
+
+  .networkMapArea {
+    margin-bottom: 1.5rem;
   }
 }

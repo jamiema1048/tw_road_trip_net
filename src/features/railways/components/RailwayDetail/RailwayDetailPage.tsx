@@ -16,6 +16,11 @@ import {
   type StationLineDistrict,
 } from "@/src/features/railways/server";
 import { StationSchema } from "@/src/features/stations/server";
+import RailwayMapPanel from "@/src/components/layout/map/RailwayMapPanel";
+import {
+  getRailwayMapData,
+  type RailwayMapData,
+} from "@/src/features/map/server";
 const BottomNav = dynamic(
   () => import("@/src/components/layout/BottomNav/BottomNav"),
   {
@@ -180,15 +185,20 @@ export default async function RailwayContentServer({
   let serializedRailway: RailwayData & { _id: string };
   let serializedStations: Station[];
   let railwayNameMap: Record<number, string>;
+  let railwayMapData: RailwayMapData;
 
   try {
-    const data = await getRailwayData(railwayId);
-    if (!data || !data.rawRailway) {
+    const [data, mapData] = await Promise.all([
+      getRailwayData(railwayId),
+      getRailwayMapData(railwayId),
+    ]);
+    if (!data || !data.rawRailway || !mapData) {
       notFound();
     }
 
     const { rawRailway, rawStations, railwayNameMap: nameMap } = data;
     railwayNameMap = nameMap;
+    railwayMapData = mapData;
 
     // --- 序列化處理 (Serialization) ---
     serializedRailway = {
@@ -318,12 +328,19 @@ export default async function RailwayContentServer({
           }}
         />
         <div className={styles.divider} />
-        <DistrictGroupedStations
-          lineID={serializedRailway.id}
-          lineData={serializedRailway}
-          stations={serializedStations}
-          railwayNameMap={railwayNameMap}
-        />
+        <div className={styles.railwayDetailContent}>
+          <div className={styles.mapArea}>
+            <RailwayMapPanel data={railwayMapData} />
+          </div>
+          <div className={styles.stationListArea}>
+            <DistrictGroupedStations
+              lineID={serializedRailway.id}
+              lineData={serializedRailway}
+              stations={serializedStations}
+              railwayNameMap={railwayNameMap}
+            />
+          </div>
+        </div>
       </div>
       <BottomNav />
     </div>

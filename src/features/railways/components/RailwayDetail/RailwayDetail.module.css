@@ -20,9 +20,41 @@
   padding: 1.75rem 3rem;
 }
 
+.railwayDetailContent {
+  display: grid;
+  grid-template-areas: "stations map";
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.stationListArea {
+  grid-area: stations;
+  min-width: 0;
+}
+
+.mapArea {
+  position: sticky;
+  top: 1.5rem;
+  grid-area: map;
+  min-width: 0;
+}
+
 @media (max-width: 768px) {
   .railwayListContainerArea {
     padding: 1.25rem 2.5rem;
+  }
+
+  .railwayDetailContent {
+    grid-template-areas:
+      "map"
+      "stations";
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  .mapArea {
+    position: static;
   }
 }
 

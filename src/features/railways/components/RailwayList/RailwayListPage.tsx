@@ -7,6 +7,11 @@ import styles from "@/src/features/railways/components/RailwayList/RailwayList.m
 import Breadcrumbs from "@/src/components/layout/Breadcrumbs/Breadcrumbs";
 import BottomNav from "@/src/components/layout/BottomNav/BottomNav";
 import { RailwayCompanyGroupShell } from "@/src/features/railways/client";
+import RailwayNetworkMapPanel from "@/src/components/layout/map/RailwayNetworkMapPanel";
+import {
+  getRailwayNetworkMapData,
+  type RailwayNetworkMapData,
+} from "@/src/features/map/server";
 
 export const metadata: Metadata = {
   title: "全台鐵路路線總覽｜台鐵、林鐵、糖鐵與廢線遺跡",
@@ -59,16 +64,23 @@ const COMPANY_MAP: Record<number, string> = {
 
 export default async function LinePageServer() {
   let allRailways: MongoRailway[] = [];
+  let railwayNetworkMapData: RailwayNetworkMapData;
 
   try {
     const { railwayConn } = await getConnections();
     const RailwayModel =
       railwayConn.models.Railway || railwayConn.model("Railway", RailwaySchema);
 
-    allRailways = (await RailwayModel.find({})
-      .select("id name co district.districtID district.districtName -_id")
-      .sort({ id: 1 })
-      .lean()) as MongoRailway[];
+    const [railways, mapData] = await Promise.all([
+      RailwayModel.find({})
+        .select("id name co district.districtID district.districtName -_id")
+        .sort({ id: 1 })
+        .lean() as Promise<MongoRailway[]>,
+      getRailwayNetworkMapData(),
+    ]);
+
+    allRailways = railways;
+    railwayNetworkMapData = mapData;
 
     if (!allRailways || allRailways.length === 0) {
       notFound();
@@ -141,6 +153,9 @@ export default async function LinePageServer() {
           </div>
           <Breadcrumbs />
           <div className={styles.divider} />
+          <div className={styles.networkMapArea}>
+            <RailwayNetworkMapPanel data={railwayNetworkMapData} />
+          </div>
 
           {Object.entries(groupedByCo).map(([co, lineList]) => (
             <RailwayCompanyGroupShell
