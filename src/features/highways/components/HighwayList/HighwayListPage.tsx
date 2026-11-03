@@ -69,12 +69,26 @@ type HighwayPageData = Omit<
 export const revalidate = 86400; // 靜態快取更新時間 (24 hrs)
 
 const COUNTY_SECTION_CONFIGS = [
-  { id: "120", label: "101~120", min: 100, max: 121 },
-  { id: "140", label: "121~140", min: 121, max: 141 },
-  { id: "160", label: "141~160", min: 141, max: 161 },
-  { id: "180", label: "161~180", min: 161, max: 181 },
-  { id: "200", label: "181~200", min: 181, max: 201 },
-  { id: "220", label: "201~", min: 201, max: 221 },
+  { id: "110", label: "101-110", min: 101, max: 111 },
+  { id: "120", label: "111-120", min: 111, max: 121 },
+  { id: "130", label: "121-130", min: 121, max: 131 },
+  { id: "140", label: "131-140", min: 131, max: 141 },
+  { id: "150", label: "141-150", min: 141, max: 151 },
+  { id: "160", label: "151-160", min: 151, max: 161 },
+  { id: "170", label: "161-170", min: 161, max: 171 },
+  { id: "180", label: "171-180", min: 171, max: 181 },
+  { id: "190", label: "181-190", min: 181, max: 191 },
+  { id: "200", label: "191-200", min: 191, max: 201 },
+  { id: "220", label: "201-", min: 201, max: 221 },
+];
+
+const PROVINCE_SECTION_CONFIGS = [
+  { id: "410", label: "1-10", min: 401, max: 411 },
+  { id: "420", label: "11-20", min: 411, max: 421 },
+  { id: "430", label: "21-30", min: 421, max: 431 },
+  { id: "439", label: "31-39", min: 431, max: 440 },
+  { id: "478", label: "61-78", min: 461, max: 479 },
+  { id: "499", label: "82-", min: 482, max: 500 },
 ];
 
 const toHighwayListItem = ({
@@ -137,13 +151,16 @@ export default async function HighwayListPage() {
     })),
   };
 
-  const province420 = detailedHighways
-    .filter((hwy) => hwy.id / 100 >= 400 && hwy.id / 100 < 421)
-    .map(toHighwayListItem);
+  const provinceSections = PROVINCE_SECTION_CONFIGS.map((config) => {
+    const highways = detailedHighways!
+      .filter((hwy) => {
+        const value = hwy.id / 100;
+        return value >= config.min && value < config.max;
+      })
+      .map(toHighwayListItem);
 
-  const province440 = detailedHighways
-    .filter((hwy) => hwy.id / 100 >= 421 && hwy.id / 100 < 500)
-    .map(toHighwayListItem);
+    return { id: config.id, label: config.label, highways };
+  });
 
   // 在 Server 端預先分類縣市道資料
   const countySections = COUNTY_SECTION_CONFIGS.map((config) => {
@@ -183,7 +200,7 @@ export default async function HighwayListPage() {
           </div>
         ) : (
           <div className={styles.highwayContentContainer}>
-            <Province section420={province420} section440={province440} />
+            <Province sections={provinceSections} />
             <County sections={countySections} />
           </div>
         )}

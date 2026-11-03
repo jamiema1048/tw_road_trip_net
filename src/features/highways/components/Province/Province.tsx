@@ -8,8 +8,11 @@ import { LazyItem } from "@/src/components/ui/LazyItem/LazyItem"; // 匯入剛�
 import styles from "@/src/features/highways/components/Province/Province.module.css";
 
 interface Props {
-  section420: HighwayListItem[];
-  section440: HighwayListItem[];
+  sections: {
+    id: string;
+    label: string;
+    highways: HighwayListItem[];
+  }[];
   hideTitle?: boolean;
   initiallyOpen?: boolean;
 }
@@ -69,8 +72,7 @@ function GroupedHighways({ highways }: { highways: HighwayListItem[] }) {
 }
 
 export default function Province({
-  section420,
-  section440,
+  sections,
   hideTitle = false,
   initiallyOpen = false,
 }: Props) {
@@ -93,11 +95,6 @@ export default function Province({
       return next;
     });
   };
-
-  const sections = [
-    { id: "sec420", label: "1~20", data: section420 },
-    { id: "sec440", label: "21~", data: section440 },
-  ];
 
   return (
     <div
@@ -154,7 +151,7 @@ export default function Province({
               </div>
               {isOpen && (
                 <div className={styles.numberGroupedHighways}>
-                  <GroupedHighways highways={sec.data} />
+                  <GroupedHighways highways={sec.highways} />
                 </div>
               )}
             </div>

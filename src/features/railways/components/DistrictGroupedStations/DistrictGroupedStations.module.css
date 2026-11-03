@@ -152,6 +152,11 @@
   font-style: normal;
 }
 
+.planBadge {
+  font-size: 1.75rem;
+  opacity: 0.8;
+}
+
 .emptyNotice {
   color: var(--text-gray-aa);
   font-style: italic;

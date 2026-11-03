@@ -6,6 +6,7 @@ interface Line {
   id: number;
   name: string;
   co: number;
+  region?: string;
 }
 
 interface RailwayCompanyGroupProps {
@@ -48,45 +49,73 @@ const TransportIcon = ({ cop }: { cop: string | number }) => {
   );
 };
 
+const ChevronIcon = ({ className }: { className: string }) => (
+  <svg
+    className={className}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 48 48"
+    fill="none"
+    aria-hidden="true"
+  >
+    <path
+      d="M12 18L24 30L36 18"
+      stroke="var(--text-white-aaaa)"
+      strokeWidth="4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export const RailwayCompanyGroup: React.FC<RailwayCompanyGroupProps> = ({
   co,
   companyName,
   lineList,
 }) => {
+  const directLines = lineList.filter((line) => !line.region);
+  const linesByRegion = lineList.reduce<Record<string, Line[]>>((groups, line) => {
+    if (line.region) {
+      (groups[line.region] ||= []).push(line);
+    }
+    return groups;
+  }, {});
+
+  const renderRouteItems = (lines: Line[]) =>
+    lines.map((line) => (
+      <div className={styles.routeItem} key={line.id}>
+        <Link
+          href={`/railways/${line.id}`}
+          className={styles.routeCell}
+          prefetch={false}
+        >
+          <TransportIcon cop={Number(co)} />
+          <h3 className={styles.routeName}>{line.name}</h3>
+        </Link>
+      </div>
+    ));
+
   return (
     <details className={styles.railwayGroup}>
       <summary className={styles.railwayCoTitle}>
         <h2 className={styles.railwayText}>{companyName}</h2>
-        <svg
-          className={styles.arrowIcon}
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 48 48"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M25.414 31.414C25.039 31.7889 24.5303 31.9995 24 31.9995C23.4697 31.9995 22.9611 31.7889 22.586 31.414L11.272 20.1C11.081 19.9155 10.9286 19.6948 10.8238 19.4508C10.719 19.2068 10.6638 18.9443 10.6615 18.6788C10.6592 18.4132 10.7098 18.1498 10.8104 17.904C10.9109 17.6583 11.0594 17.4349 11.2472 17.2472C11.435 17.0594 11.6583 16.9109 11.9041 16.8103C12.1499 16.7097 12.4133 16.6591 12.6788 16.6615C12.9444 16.6638 13.2068 16.7189 13.4508 16.8238C13.6948 16.9286 13.9155 17.0809 14.1 17.272L24 27.172L33.9 17.272C34.2772 16.9076 34.7824 16.706 35.3068 16.7106C35.8312 16.7152 36.3328 16.9255 36.7037 17.2963C37.0745 17.6671 37.2848 18.1688 37.2894 18.6932C37.2939 19.2175 37.0923 19.7227 36.728 20.1L25.414 31.414Z"
-            fill="var(--text-white-aaaa)"
-          />
-        </svg>
+        <ChevronIcon className={styles.arrowIcon} />
       </summary>
 
-      <div className={styles.frameContainer}>
-        {lineList.map((l) => (
-          <div className={styles.routeItem} key={l.id}>
-            <Link
-              href={`/railways/${l.id}`}
-              className={styles.routeCell}
-              prefetch={false}
-            >
-              <TransportIcon cop={Number(co)} />
-              <h3 className={styles.routeName}>{l.name}</h3>
-            </Link>
+      {directLines.length > 0 && (
+        <div className={styles.frameContainer}>{renderRouteItems(directLines)}</div>
+      )}
+
+      {Object.entries(linesByRegion).map(([region, regionalLines]) => (
+        <details className={styles.regionGroup} key={region}>
+          <summary className={styles.regionTitle}>
+            <h3 className={styles.regionText}>{region}</h3>
+            <ChevronIcon className={styles.regionArrowIcon} />
+          </summary>
+          <div className={styles.frameContainer}>
+            {renderRouteItems(regionalLines)}
           </div>
-        ))}
-      </div>
+        </details>
+      ))}
     </details>
   );
 };

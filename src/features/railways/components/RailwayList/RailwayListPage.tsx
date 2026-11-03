@@ -50,10 +50,11 @@ interface MongoRailway {
   id: number;
   name: string;
   co: number;
+  region: string;
   district: RailwayDistrict[];
 }
 
-type RailwayListItem = Pick<MongoRailway, "id" | "name" | "co">;
+type RailwayListItem = Pick<MongoRailway, "id" | "name" | "co" | "region">;
 
 const COMPANY_MAP: Record<number, string> = {
   1: "台鐵",
@@ -73,7 +74,7 @@ export default async function LinePageServer() {
 
     const [railways, mapData] = await Promise.all([
       RailwayModel.find({})
-        .select("id name co district.districtID district.districtName -_id")
+        .select("id name co region district.districtID district.districtName -_id")
         .sort({ id: 1 })
         .lean() as Promise<MongoRailway[]>,
       getRailwayNetworkMapData(),
@@ -99,10 +100,11 @@ export default async function LinePageServer() {
   }
 
   // 排除 Mongo 子文件的 _id，保留清單與 JSON-LD 所需的資料；排序已交給資料庫。
-  const safeRailways = allRailways.map(({ id, name, co, district }) => ({
+  const safeRailways = allRailways.map(({ id, name, co, region, district }) => ({
     id,
     name,
     co,
+    region: region || "",
     district: district.map(({ districtID, districtName }) => ({
       districtID,
       districtName,
@@ -110,7 +112,7 @@ export default async function LinePageServer() {
   }));
 
   const railwayListItems: RailwayListItem[] = safeRailways.map(
-    ({ id, name, co }) => ({ id, name, co }),
+    ({ id, name, co, region }) => ({ id, name, co, region }),
   );
 
   // 依據 co 分組

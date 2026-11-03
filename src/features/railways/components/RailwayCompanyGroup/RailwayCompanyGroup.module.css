@@ -69,6 +69,45 @@
   transform: rotate(180deg);
 }
 
+.regionGroup {
+  width: 100%;
+  margin-top: 1.75rem;
+}
+
+.regionTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  list-style: none;
+}
+
+.regionTitle::-webkit-details-marker {
+  display: none;
+}
+
+.regionText {
+  margin: 0;
+  color: var(--text-white-aaaa);
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.regionArrowIcon {
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+}
+
+.regionGroup[open] .regionArrowIcon {
+  transform: rotate(180deg);
+}
+
 .arrowIconClosed {
   transform: rotate(0deg);
 }
@@ -77,6 +116,23 @@
   .arrowIcon {
     width: 1.5rem;
     height: 1.5rem;
+  }
+
+  .regionGroup {
+    margin-top: 1.25rem;
+  }
+
+  .regionTitle {
+    gap: 0.5rem;
+  }
+
+  .regionText {
+    font-size: 1.25rem;
+  }
+
+  .regionArrowIcon {
+    width: 1.25rem;
+    height: 1.25rem;
   }
 }
 

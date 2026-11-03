@@ -4,6 +4,7 @@ interface Line {
   id: number;
   name: string;
   co: number;
+  region?: string;
 }
 
 export function RailwayCompanyGroupShell({

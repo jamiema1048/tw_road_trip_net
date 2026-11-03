@@ -143,6 +143,11 @@ export default function DistrictGroupedStations({
                                 className={styles.stationLink}
                               >
                                 {station.name}
+                                {station.status === "plan" && (
+                                  <span className={styles.planBadge}>
+                                    {" "}(計畫中)
+                                  </span>
+                                )}
                               </Link>
                             ) : (
                               <span className={styles.stationDisabled}>
@@ -150,6 +155,11 @@ export default function DistrictGroupedStations({
                                 <span className={styles.disabledBadge}>
                                   (無細節)
                                 </span>
+                                {station.status === "plan" && (
+                                  <span className={styles.planBadge}>
+                                    {" "}(計畫中)
+                                  </span>
+                                )}
                               </span>
                             )}
                           </div>

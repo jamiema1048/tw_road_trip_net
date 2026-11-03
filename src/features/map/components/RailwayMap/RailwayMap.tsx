@@ -118,12 +118,12 @@ export default function RailwayMap({ data }: { data: RailwayMapData }) {
             </Popup>
           </CircleMarker>
         ))}
-        <aside className={styles.legend} aria-label="地圖圖例">
-          <strong>圖例</strong>
-          <span><i className={styles.routeLegend} />鐵道路線</span>
-          <span><i className={styles.stationLegend} />車站</span>
-        </aside>
       </MapContainer>
+      <aside className={styles.legend} aria-label="地圖圖例">
+        <strong>圖例</strong>
+        <span><i className={styles.routeLegend} />鐵道路線</span>
+        <span><i className={styles.stationLegend} />車站</span>
+      </aside>
       {!hasMapContent && <p className={styles.emptyState}>此路線尚無可繪製的座標資料。</p>}
     </div>
   );

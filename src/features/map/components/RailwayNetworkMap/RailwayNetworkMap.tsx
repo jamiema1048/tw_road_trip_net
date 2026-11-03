@@ -1,8 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { MapContainer, Polyline, TileLayer, useMap } from "react-leaflet";
+import {
+  Fragment,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { MapContainer, Polyline, Popup, TileLayer, useMap } from "react-leaflet";
 import type { LatLngBoundsExpression, LatLngExpression } from "leaflet";
 
 import type {
@@ -20,6 +25,15 @@ const COMPANY_NAME: Record<number, string> = {
   3: "糖業鐵路",
   4: "其他鐵路",
 };
+
+const COMPANY_COLOR: Record<number, string> = {
+  1: "#090980",
+  2: "#159b62",
+  3: "#d84b4b",
+  4: "#e88824",
+};
+
+const DEFAULT_ROUTE_COLOR = "#008e9b";
 
 function toLatLng([longitude, latitude]: [number, number]): LatLngExpression {
   return [latitude, longitude];
@@ -47,13 +61,53 @@ function MapViewport({ routes }: { routes: RailwayNetworkMapRoute[] }) {
   return null;
 }
 
+function RoutePopupContent({
+  route,
+  onClose,
+}: {
+  route: RailwayNetworkMapRoute;
+  onClose: () => void;
+}) {
+  const map = useMap();
+
+  const closePopup = () => {
+    map.closePopup();
+    onClose();
+  };
+
+  return (
+    <>
+      <button
+        className={styles.closeButton}
+        type="button"
+        aria-label="關閉路線資訊"
+        onClick={closePopup}
+      >
+        ×
+      </button>
+      <div className={styles.popupHeader}>{route.railwayName}</div>
+      <div className={styles.popupBody}>
+        <p>{COMPANY_NAME[route.company] || `co：${route.company}`}</p>
+        <Link className={styles.railwayLink} href={`/railways/${route.railwayId}`}>
+          進入路線頁面 <span aria-hidden>›</span>
+        </Link>
+      </div>
+    </>
+  );
+}
+
 export default function RailwayNetworkMap({
   data,
 }: {
   data: RailwayNetworkMapData;
 }) {
   const [selectedRailwayId, setSelectedRailwayId] = useState<number | null>(null);
+  const [selectedPopupPosition, setSelectedPopupPosition] =
+    useState<LatLngExpression | null>(null);
   const selectedRoute = data.routes.find(
+    (route) => route.railwayId === selectedRailwayId,
+  );
+  const selectedRoutes = data.routes.filter(
     (route) => route.railwayId === selectedRailwayId,
   );
 
@@ -65,49 +119,81 @@ export default function RailwayNetworkMap({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <MapViewport routes={data.routes} />
-        {data.routes.map((route) => {
-          const isSelected = route.railwayId === selectedRailwayId;
-          return (
+        {data.routes.map((route) => (
+          <Polyline
+            key={`${route.railwayId}-${route.districtID}`}
+            positions={route.coordinates.map(toLatLng)}
+            pathOptions={{
+              color: COMPANY_COLOR[route.company] || DEFAULT_ROUTE_COLOR,
+              weight: 4,
+              opacity: 0.78,
+            }}
+            eventHandlers={{
+              click: (event) => {
+                setSelectedRailwayId(route.railwayId);
+                setSelectedPopupPosition([event.latlng.lat, event.latlng.lng]);
+              },
+            }}
+          />
+        ))}
+        {selectedRoutes.map((route) => (
+          <Fragment key={`selected-${route.railwayId}-${route.districtID}`}>
             <Polyline
-              key={`${route.railwayId}-${route.districtID}`}
+              positions={route.coordinates.map(toLatLng)}
+              pathOptions={{ color: "#ffffff", weight: 10, opacity: 1 }}
+              eventHandlers={{
+                click: (event) => {
+                  setSelectedRailwayId(route.railwayId);
+                  setSelectedPopupPosition([event.latlng.lat, event.latlng.lng]);
+                },
+              }}
+            />
+            <Polyline
               positions={route.coordinates.map(toLatLng)}
               pathOptions={{
-                color: isSelected ? "#ffbc42" : "#008e9b",
-                weight: isSelected ? 7 : 4,
-                opacity: isSelected ? 1 : 0.68,
+                color: COMPANY_COLOR[route.company] || DEFAULT_ROUTE_COLOR,
+                weight: 6,
+                opacity: 1,
               }}
-              eventHandlers={{ click: () => setSelectedRailwayId(route.railwayId) }}
+              eventHandlers={{
+                click: (event) => {
+                  setSelectedRailwayId(route.railwayId);
+                  setSelectedPopupPosition([event.latlng.lat, event.latlng.lng]);
+                },
+              }}
             />
-          );
-        })}
+          </Fragment>
+        ))}
+        {selectedRoute && selectedPopupPosition && (
+          <Popup
+            position={selectedPopupPosition}
+            className={styles.routePopup}
+            closeButton={false}
+            closeOnClick={false}
+          >
+            <RoutePopupContent
+              route={selectedRoute}
+              onClose={() => {
+                setSelectedRailwayId(null);
+                setSelectedPopupPosition(null);
+              }}
+            />
+          </Popup>
+        )}
       </MapContainer>
-
       <aside className={styles.legend} aria-label="地圖圖例">
         <strong>圖例</strong>
-        <span><i className={styles.routeLegend} />鐵道路線</span>
-        <span><i className={styles.selectedLegend} />已選取路線</span>
+        {Object.entries(COMPANY_NAME).map(([company, name]) => (
+          <span key={company}>
+            <i
+              className={styles.companyLegend}
+              style={{ backgroundColor: COMPANY_COLOR[Number(company)] }}
+            />
+            {name}
+          </span>
+        ))}
+        <span><i className={styles.selectedLegend} />白框：已選取</span>
       </aside>
-
-      {selectedRoute && (
-        <section className={styles.routeDialog} aria-live="polite">
-          <button
-            className={styles.closeButton}
-            type="button"
-            aria-label="關閉路線資訊"
-            onClick={() => setSelectedRailwayId(null)}
-          >
-            ×
-          </button>
-          <div className={styles.dialogHeader}>{selectedRoute.railwayName}</div>
-          <div className={styles.dialogBody}>
-            <p>{selectedRoute.region}・{COMPANY_NAME[selectedRoute.company] || "鐵路"}</p>
-            <p className={styles.districtName}>已選取：{selectedRoute.districtName}</p>
-            <Link className={styles.railwayLink} href={`/railways/${selectedRoute.railwayId}`}>
-              進入路線頁面 <span aria-hidden>›</span>
-            </Link>
-          </div>
-        </section>
-      )}
 
       {data.routes.length === 0 && (
         <p className={styles.emptyState}>目前尚無可繪製的路線座標資料。</p>

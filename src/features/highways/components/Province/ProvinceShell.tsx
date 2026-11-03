@@ -10,9 +10,14 @@ const DeferredProvince = dynamic(() => import("./Province"), {
   loading: () => <div role="status">載入省道路線中…</div>,
 });
 
+export interface ProvinceSection {
+  id: string;
+  label: string;
+  highways: HighwayListItem[];
+}
+
 interface Props {
-  section420: HighwayListItem[];
-  section440: HighwayListItem[];
+  sections: ProvinceSection[];
 }
 
 export default function ProvinceShell(props: Props) {
