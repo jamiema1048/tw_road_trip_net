@@ -449,6 +449,30 @@ export default async function StationPage({
           )}
         </section>
 
+        {station.chronology.some(
+          ({ time, event }) => time.trim() !== "" || event.trim() !== "",
+        ) && (
+          <section className={styles.stationHistorySection}>
+            <h2 className={styles.stationDataTitle}>歷史資料</h2>
+            <ol className={styles.chronologyList}>
+              {station.chronology
+                .filter(
+                  ({ time, event }) =>
+                    time.trim() !== "" || event.trim() !== "",
+                )
+                .map(({ time, event }, index) => (
+                  <li
+                    key={`${time}-${event}-${index}`}
+                    className={styles.chronologyItem}
+                  >
+                    <p className={styles.chronologyTime}>{time}</p>
+                    <p className={styles.chronologyEvent}>{event}</p>
+                  </li>
+                ))}
+            </ol>
+          </section>
+        )}
+
         <section className={styles.stationMediaGallerySection}>
           <h2 className={styles.stationPhotoTitle}>Images and Descriptions</h2>
           {station.images && station.images.length > 0 && (

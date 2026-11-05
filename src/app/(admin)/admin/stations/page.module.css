@@ -1,0 +1,117 @@
+.page {
+  width: min(100% - 2rem, 1100px);
+  margin: 0 auto;
+  padding: 3rem 0 6rem;
+  color: #fff;
+}
+
+.header {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.header h1,
+.header p {
+  margin: 0;
+}
+
+.header p {
+  color: #c7c7c7;
+}
+
+.eyebrow {
+  color: #ffbc42 !important;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.lookupForms {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.lookupForm {
+  display: flex;
+  align-items: end;
+  gap: 0.75rem;
+}
+
+.lookupForm label {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.lookupForm input {
+  width: 12rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #686868;
+  border-radius: 8px;
+  background: #fff;
+  color: #151515;
+  font: inherit;
+}
+
+.lookupForm button {
+  padding: 0.65rem 1rem;
+  border: 1px solid #9077ff;
+  border-radius: 8px;
+  background: #3636a8;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.searchResults {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border: 1px solid #4f4f4f;
+  border-radius: 8px;
+}
+
+.searchResults h2,
+.searchResults p,
+.searchResults ul {
+  margin: 0;
+}
+
+.searchResults ul {
+  display: grid;
+  gap: 0.5rem;
+  padding-left: 1.25rem;
+}
+
+.searchResults li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.searchResults a {
+  color: #c4b7ff;
+}
+
+.searchResults span {
+  color: #c7c7c7;
+}
+
+@media (max-width: 768px) {
+  .page {
+    width: min(100% - 1.5rem, 1100px);
+    padding-top: 2rem;
+  }
+
+  .lookupForm {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .lookupForm input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
