@@ -21,6 +21,7 @@ export function Footer({ className = "" }: ComponentFooterProps) {
         <div className={styles.navigationColumn}>
           <Link href="/about" className={styles.navigationItem}><ChevronRightIcon className={styles.styledBreadcrumbRight} /><p className={styles.textWrapper}>關於我們</p></Link>
           <Link href="/reference" className={styles.navigationItem}><ChevronRightIcon className={styles.styledBreadcrumbRight} /><p className={styles.textWrapper}>參考資料</p></Link>
+          <Link href="/announcement" className={styles.navigationItem}><ChevronRightIcon className={styles.styledBreadcrumbRight} /><p className={styles.textWrapper}>公告</p></Link>
         </div>
         <div className={styles.navigationColumn}>
           <Link href="/railways" className={styles.navigationItem}><ChevronRightIcon className={styles.styledBreadcrumbRight} /><p className={styles.textWrapper}>車站旅途</p></Link>

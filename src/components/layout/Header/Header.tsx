@@ -24,6 +24,7 @@ export default function Header({ className = "" }: ComponentHeaderProps) {
         <HeaderSearchBar />
         <Link href="/highways" className={`${styles.navTextButton} text-wrapper`}>公路旅途</Link>
         <Link href="/railways" className={`${styles.navTextButton} text-wrapper`}>車站旅途</Link>
+        <Link href="/announcement" className={`${styles.navTextButton} text-wrapper`}>公告</Link>
         <ThemeToggle />
         <Link href="/" className={`${styles.homeButton} icon-home`} aria-label="回首頁"><HomeIcon /></Link>
         <MobileMenuToggle />
@@ -34,6 +35,7 @@ export default function Header({ className = "" }: ComponentHeaderProps) {
         <Link href="/" className={`${styles.dropListHomeButton} icon-home`} aria-label="回首頁" data-mobile-menu-link><HomeIcon /></Link>
         <Link href="/highways" className={`${styles.dropListTextButton} text-wrapper`} data-mobile-menu-link>公路旅途</Link>
         <Link href="/railways" className={`${styles.dropListTextButton} text-wrapper`} data-mobile-menu-link>車站旅途</Link>
+        <Link href="/announcement" className={`${styles.dropListTextButton} text-wrapper`} data-mobile-menu-link>公告</Link>
       </div>
     </nav>
   </header>;

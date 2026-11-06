@@ -1,0 +1,132 @@
+.page {
+  width: 100%;
+  background: var(--background);
+  color: var(--text-white-aaaa);
+}
+
+:global([data-theme="dark"]) .page {
+  background: #000;
+}
+
+.listContainer { padding: 28px 48px 0; }
+.listHeader { padding: 0 8px; }
+.pageTitle {
+  font-size: 50px;
+  font-weight: 400;
+  line-height: 1.25;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.listHeader .pageTitle { margin-bottom: 20px; }
+.breadcrumbs a { color: var(--text-white-aaaa); text-decoration: underline; font-weight: 400; }
+.breadcrumbs span { font-weight: 400; }
+.divider { height: 1px; background: var(--text-white-aaaa); }
+.listHeader .divider { margin-top: 20px; }
+.listDescription {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 24px 0;
+}
+.demoNotice { display: flex; align-items: center; gap: 16px; color: var(--text-gray-a); font-size: 20px; line-height: 1.5; }
+.demoBadge { flex-shrink: 0; border: 1px solid var(--text-info); padding: 5px 12px; color: var(--text-white-aaaa); font-size: 18px; }
+.count { flex-shrink: 0; font-size: 20px; color: var(--text-gray-a); }
+.list { list-style: none; }
+.listItem { display: flex; gap: 32px; padding: 24px 8px; border-bottom: 1px solid var(--text-gray-aaa); }
+:global([data-theme="dark"]) .listItem { border-color: #414141; }
+.listMeta { display: flex; flex-direction: column; gap: 10px; width: 156px; flex-shrink: 0; color: var(--text-gray-a); font-size: 20px; line-height: 28px; }
+.category { color: var(--text-gray-aa); font-size: 18px; }
+.listContent { flex: 1; min-width: 0; }
+.listTitle { font-weight: 400; font-size: 28px; line-height: 1.4; margin-bottom: 10px; overflow-wrap: anywhere; }
+.listTitle a { color: inherit; text-decoration: none; }
+.listTitle a:hover { text-decoration: underline; text-underline-offset: 5px; }
+.summary { color: var(--text-gray-a); font-size: 20px; line-height: 30px; }
+.detailContainer { display: flex; flex-direction: column; gap: 32px; padding: 28px 56px 0; }
+.detailHeader { display: flex; flex-direction: column; gap: 20px; }
+.detailMeta { display: flex; align-items: center; gap: 24px; color: var(--text-gray-a); font-size: 20px; }
+.detailMeta .category { border-left: 1px solid var(--text-gray-aa); padding-left: 24px; }
+.body { display: flex; flex-direction: column; gap: 32px; width: 100%; max-width: 1120px; overflow-wrap: anywhere; }
+.lead { font-size: 22px; line-height: 36px; color: var(--text-white-aaa); }
+.section { display: flex; flex-direction: column; gap: 16px; }
+.section h2 { font-size: 28px; font-weight: 400; line-height: 1.4; }
+.section p, .section li { font-size: 20px; line-height: 36px; color: var(--text-gray-a); }
+.section ul { display: flex; flex-direction: column; gap: 8px; padding-left: 1.5em; }
+.articleNav { display: flex; flex-direction: column; gap: 28px; border-block: 1px solid var(--text-gray-aa); padding: 28px 0 32px; }
+:global([data-theme="dark"]) .articleNav { border-color: #414141; }
+.backButton, .pageButton { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border-radius: 12px; box-shadow: 0 6px 16px -6px #00000040, inset 0 1px 2px #ffffff14; }
+.backButton { width: 200px; flex-shrink: 0; background: var(--bg-primary); color: #fff; font-size: 22px; text-decoration: none; }
+.pageButton { width: 144px; border: 1px solid var(--text-gray-aa); font-size: 18px; color: var(--text-white-aaaa); }
+.arrow { flex-shrink: 0; }
+:global([data-theme="light"]) .pageButton .arrow { filter: invert(1); }
+.adjacentNav { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; }
+.adjacentLink { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; color: inherit; text-decoration: none; min-width: 0; }
+.next { grid-column: 2; align-items: flex-end; text-align: right; }
+.adjacentTitle { font-size: 24px; line-height: 36px; overflow-wrap: anywhere; }
+.adjacentDate { font-size: 18px; color: var(--text-gray-aa); }
+.adjacentLink:hover .adjacentTitle { text-decoration: underline; }
+.backButton:hover, .adjacentLink:hover .pageButton { outline: 1px solid var(--text-white-aaaa); }
+.bottomNav { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 48px; padding: 28px 24px 36px; }
+.bottomLink { background: none; border: 0; padding: 0; color: inherit; font: inherit; font-size: 20px; text-decoration: none; cursor: pointer; }
+.bottomLink:hover { text-decoration: underline; }
+.page a:focus-visible, .page button:focus-visible { outline: 2px solid var(--text-info); outline-offset: 5px; }
+
+@media (max-width: 768px) {
+  .listContainer, .detailContainer { padding: 20px 24px 0; }
+  .listHeader { padding: 0; }
+  .pageTitle { font-size: 32px; }
+  .listDescription { align-items: flex-start; flex-wrap: wrap; gap: 12px; padding: 20px 0; }
+  .demoNotice { align-items: flex-start; font-size: 16px; gap: 12px; flex-wrap: wrap; }
+  .demoBadge { font-size: 14px; padding: 3px 8px; }
+  .count { font-size: 16px; }
+  .listItem { flex-direction: column; gap: 12px; padding: 20px 0; }
+  .listMeta { width: auto; flex-direction: row; flex-wrap: wrap; gap: 16px; font-size: 16px; line-height: 24px; }
+  .category { font-size: 16px; }
+  .listTitle, .section h2 { font-size: 22px; }
+  .summary, .section p, .section li { font-size: 18px; line-height: 30px; }
+  .lead { font-size: 20px; line-height: 32px; }
+  .detailContainer, .body { gap: 24px; }
+  .detailMeta { font-size: 16px; gap: 16px; }
+  .detailMeta .category { padding-left: 16px; }
+  .articleNav { align-items: center; }
+  .adjacentNav { width: 100%; grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .adjacentLink, .next { align-items: center; text-align: center; gap: 12px; }
+  .next { grid-column: 1; }
+  .adjacentTitle { width: 100%; font-size: 24px; line-height: 36px; }
+  .adjacentDate { font-size: 16px; }
+  .backButton, .pageButton { width: 240px; max-width: 100%; height: 52px; font-size: 20px; }
+  .bottomNav { gap: 20px 28px; }
+  .bottomLink { font-size: 16px; }
+
+  .listContainer { padding: 20px 56px 0; }
+  .listHeader .pageTitle { margin-bottom: 16px; line-height: normal; }
+  .listHeader .divider { margin-top: 12px; }
+  .listHeader .breadcrumbs svg { width: 16px; height: 16px; }
+  .listDescription {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 24px 0 0;
+  }
+  .listDescription .demoNotice { display: contents; }
+  .listDescription .demoBadge {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    padding: 5px 12px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+  .listDescription .count { grid-column: 2; grid-row: 1; }
+  .listDescription .demoNotice p { grid-column: 1 / -1; grid-row: 2; line-height: 26px; }
+  .listItem { padding: 32px 0; }
+  .listMeta { align-items: center; gap: 12px; }
+  .listMeta .category { display: flex; align-items: center; gap: 12px; }
+  .listMeta .category::before { content: ""; width: 1px; height: 14px; background: var(--text-gray-aa); }
+  .listTitle { margin-bottom: 12px; font-size: 24px; line-height: 36px; }
+  .listContent .summary { font-size: 24px; line-height: 36px; }
+  .listContainer + .bottomNav { flex-direction: column; gap: 12px; padding: 28px 56px; }
+  .listContainer + .bottomNav .bottomLink { line-height: 20px; }
+}
+
